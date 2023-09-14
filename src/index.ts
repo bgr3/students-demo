@@ -27,7 +27,8 @@ app.put('/products/:id', (req: Request, res: Response) => {
 
 app.get('/products', (req: Request, res: Response) => {
   if (req.query.id) {
-    res.send(products.find(i => i.id === +req.query.id));
+    let query = req.query.id;
+    res.send(products.find(i => i.id === +query));
   } else {
     res.send(products);
   }
