@@ -1,8 +1,8 @@
 export let checkVideos = function (req:any) {
   let availableResolutions = [ "P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P2160" ];
   class Messages {
-    "message": string;
-    "field": string;
+    message: string;
+    field: string;
   }
   let arr: any = [];
   let errors = {"errorsMessages" : arr};
@@ -29,11 +29,11 @@ export let checkVideos = function (req:any) {
   } else {
     let err1 = new Messages;
     err1.message = "Title should not be empty!";
-    err1.field = req.body.title;
+    err1.field = "title";
     errors.errorsMessages.push(err1);
   }
 
-  if (req.body.title){
+  if (req.body.author){
     if (req.body.author.length > 40) {
       let err4 = new Messages;
       err4.message = "Author too long!";
@@ -54,8 +54,8 @@ export let checkVideos = function (req:any) {
     }  
   } else {
     let err4 = new Messages;
-    err4.message = "Title should not be empty!";
-    err4.field = req.body.title;
+    err4.message = "Author should not be empty!";
+    err4.field = "author";
     errors.errorsMessages.push(err4);
   }
   
