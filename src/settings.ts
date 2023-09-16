@@ -9,7 +9,7 @@ const parserMidleware = bodyParser({})
 app.use(parserMidleware)
 
 app.get('/', (req: Request, res: Response) => {
-  let hello = `Time: ${Date.now()}`;
+  let hello = `Hello`;
   res.send(hello);
 })
 
