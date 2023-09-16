@@ -1,10 +1,9 @@
-import {Router} from 'express'
+import {Request, Response, Router} from 'express'
 import { videos } from './videos-router'
 
-export const addressesRouter = Router()
+export const testingRouter = Router()
 
-addressesRouter.delete('/all-data', (req: Request, res: Response) => {
-    videos = [];
+testingRouter.delete('/all-data', (req: Request, res: Response) => {
+    videos.splice(0);
     res.sendStatus(204);
-    
 })

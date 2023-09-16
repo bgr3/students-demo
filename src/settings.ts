@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 import { videosRouter } from './routes/videos-router'
-import { addressesRouter } from './routes/testing-router'
+import { testingRouter } from './routes/testing-router'
 
 export const app = express()
 
@@ -13,6 +13,6 @@ app.get('/', (req: Request, res: Response) => {
   res.send(hello);
 })
 
-app.use('hometask/api/testing', videosRouter)
-app.use('/addresses', addressesRouter)
+app.use('/hometask_01/api/testing', testingRouter)
+app.use('/hometask_01/api/videos', videosRouter)
 
