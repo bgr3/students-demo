@@ -7,44 +7,58 @@ export let checkVideos = function (req:any) {
   let arr: any = [];
   let errors = {"errorsMessages" : arr};
 
-  if (req.body.title.length > 40) {
+  if (req.body.title){
+    if (req.body.title.length > 40) {
+      let err1 = new Messages;
+      err1.message = "Title too long!";
+      err1.field = req.body.title;
+      errors.errorsMessages.push(err1);
+    } else if (req.body.title.length < 1) {
+      let err2 = new Messages;
+      err2.message = "Title should not be empty!";
+      err2.field = req.body.title;
+      errors.errorsMessages.push(err2);
+    }
+
+    if (typeof req.body.title != 'string') {
+      let err3 = new Messages;
+      err3.message = "Title must be string!";
+      err3.field = req.body.title;
+      errors.errorsMessages.push(err3);
+    }  
+  } else {
     let err1 = new Messages;
-    err1.message = "Title too long!";
+    err1.message = "Title should not be empty!";
     err1.field = req.body.title;
     errors.errorsMessages.push(err1);
-  } else if (req.body.title.length == 0) {
-    let err2 = new Messages;
-    err2.message = "Title should not be empty!";
-    err2.field = req.body.title;
-    errors.errorsMessages.push(err2);
   }
 
-  if (typeof req.body.title != 'string') {
-    let err3 = new Messages;
-    err3.message = "Title must be string!";
-    err3.field = req.body.title;
-    errors.errorsMessages.push(err3);
-  }
+  if (req.body.title){
+    if (req.body.author.length > 40) {
+      let err4 = new Messages;
+      err4.message = "Author too long!";
+      err4.field = req.body.author;
+      errors.errorsMessages.push(err4);
+    } else if (req.body.author.length == 0) {
+      let err5 = new Messages;
+      err5.message = "Author should not be empty!";
+      err5.field = req.body.author;
+      errors.errorsMessages.push(err5);
+    }
 
-  if (req.body.author.length > 40) {
+    if (typeof req.body.author != 'string') {
+      let err6 = new Messages;
+      err6.message = "Author must be string!";
+      err6.field = req.body.author;
+      errors.errorsMessages.push(err6);
+    }  
+  } else {
     let err4 = new Messages;
-    err4.message = "Author too long!";
-    err4.field = req.body.author;
+    err4.message = "Title should not be empty!";
+    err4.field = req.body.title;
     errors.errorsMessages.push(err4);
-  } else if (req.body.author.length == 0) {
-    let err5 = new Messages;
-    err5.message = "Author should not be empty!";
-    err5.field = req.body.author;
-    errors.errorsMessages.push(err5);
   }
-
-  if (typeof req.body.author != 'string') {
-    let err6 = new Messages;
-    err6.message = "Author must be string!";
-    err6.field = req.body.author;
-    errors.errorsMessages.push(err6);
-  }
-
+  
   if (req.body.availableResolutions.length == 0) {
     let err7 = new Messages;
     err7.message = "No avaliable resolutions!";
