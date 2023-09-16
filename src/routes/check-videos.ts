@@ -1,8 +1,8 @@
 export let checkVideos = function (req:any) {
   let availableResolutions = [ "P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P2160" ];
   class Messages {
-    message: string;
-    field: string;
+    message: string | undefined;
+    field: string | undefined;
   }
   let arr: any = [];
   let errors = {"errorsMessages" : arr};
@@ -34,7 +34,7 @@ export let checkVideos = function (req:any) {
   }
 
   if (req.body.author){
-    if (req.body.author.length > 40) {
+    if (req.body.author.length > 20) {
       let err4 = new Messages;
       err4.message = "Author too long!";
       err4.field = "author";
