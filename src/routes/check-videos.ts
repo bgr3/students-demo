@@ -69,7 +69,7 @@ export let checkVideos = function (req:any) {
   if (!(req.body.availableResolutions.every((i: string) => availableResolutions.includes(i)))) {
     let err8 = new Messages;
     err8.message = "No match resolutions!";
-    err8.field = "availableResolution";
+    err8.field = "availableResolutions";
     errors.errorsMessages.push(err8);
   }
 

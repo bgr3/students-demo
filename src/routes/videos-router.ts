@@ -12,7 +12,7 @@ videosRouter.post('/', (req: Request, res: Response) => {
       id: videos.length > 0 ? videos[videos.length - 1].id + 1 : 1, 
       title: req.body.title,
       author: req.body.author,
-      canBeDownloaded: true,
+      canBeDownloaded: false,
       minAgeRestriction: null,
       createdAt: date.toISOString(),
       publicationDate: new Date(date.setDate(date.getDate() + 1)).toISOString(),
