@@ -31,8 +31,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
 
 videosRouter.get('/:id', (req: Request, res: Response) => {
   if (req.params.id) {
-    let uri = req.params.id;
-    let findId = videos.find((i: any) => i.id === +uri);
+    let findId = videos.find((i: any) => i.id === +req.params.id);
     if (findId){      
       res.status(200).send(findId);
     } else{
@@ -63,12 +62,11 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
 })  
   
 videosRouter.delete('/:id', (req: Request, res: Response) => {
-    for (let i = 0; i < videos.length; i++) {
-      if (videos[i].id === +req.params.id) {
-        videos.splice(i, 1);
-        res.sendStatus(204);
-        return;
-      }
-      res.sendStatus(404);
-    }
+  let findId = videos.findIndex((i: any) => i.id === +req.params.id)
+  if (findId >= 0) {
+    videos.splice(findId, 1);
+    res.sendStatus(204);
+  } else {
+  res.sendStatus(404);
+  }
 })
