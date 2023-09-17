@@ -1,5 +1,6 @@
 import {Request, Response, Router} from 'express'
 import {checkVideos} from './check-videos'
+import { HTTP_STATUSES } from '../settings';
 
 export const videosRouter = Router({});
 
@@ -19,26 +20,26 @@ videosRouter.post('/', (req: Request, res: Response) => {
       availableResolutions: req.body.availableResolutions,
     };
     videos.push(newVideos);
-    res.status(201).send(newVideos);
+    res.status(HTTP_STATUSES.CREATED_201).send(newVideos);
   } else {
-    res.status(400).send(checkVideos(req).errors);
+    res.status(HTTP_STATUSES.BAD_REQUEST_400).send(checkVideos(req).errors);
   }
 })
 
 videosRouter.get('/', (req: Request, res: Response) => {
-    res.status(200).send(videos);
+    res.status(HTTP_STATUSES.OK_200).send(videos);
 })
 
 videosRouter.get('/:id', (req: Request, res: Response) => {
   if (req.params.id) {
     let findId = videos.find((i: any) => i.id === +req.params.id);
     if (findId){      
-      res.status(200).send(findId);
+      res.status(HTTP_STATUSES.OK_200).send(findId);
     } else{
-      res.sendStatus(404);
+      res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }    
   } else {
-    res.status(200).send(videos);
+    res.status(HTTP_STATUSES.OK_200).send(videos);
   }
 })
 
@@ -52,12 +53,12 @@ videosRouter.put('/:id', (req: Request, res: Response) => {
         video.minAgeRestriction = req.body.minAgeRestriction;
         video.publicationDate = req.body.publicationDate;
         video.availableResolutions = req.body.availableResolutions;
-        res.sendStatus(204);
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
       } else {
-        res.status(400).send(checkVideos(req).errors);
+        res.status(HTTP_STATUSES.BAD_REQUEST_400).send(checkVideos(req).errors);
       }
     } else {
-      res.sendStatus(404);
+      res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
 })  
   
@@ -65,8 +66,8 @@ videosRouter.delete('/:id', (req: Request, res: Response) => {
   let findId = videos.findIndex((i: any) => i.id === +req.params.id)
   if (findId >= 0) {
     videos.splice(findId, 1);
-    res.sendStatus(204);
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   } else {
-  res.sendStatus(404);
+  res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   }
 })
