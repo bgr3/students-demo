@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express'
-import {checkVideos} from './check-videos'
+import {checkVideos} from '../check-videos'
 import { HTTP_STATUSES } from '../settings';
 
 export const videosRouter = Router({});
