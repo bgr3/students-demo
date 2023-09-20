@@ -1,10 +1,10 @@
 import {Request, Response, Router} from 'express'
-import { videos } from './videos-router'
 import { HTTP_STATUSES } from '../settings'
+import { videosRepository } from '../repositories/videos-repository'
 
 export const testingRouter = Router()
 
 testingRouter.delete('/all-data', (req: Request, res: Response) => {
-    videos.splice(0);
+    videosRepository.testAllData
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 })

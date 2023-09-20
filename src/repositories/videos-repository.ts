@@ -5,6 +5,10 @@ import { VideoPostType, VideoPutType } from "../types";
 const videos: any = [];
 
 export const videosRepository = {
+    testAllData(){
+        videos.splice(0)
+    },
+    
     findVideos() {
         return videos
     },
