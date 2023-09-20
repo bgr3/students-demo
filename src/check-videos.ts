@@ -8,7 +8,7 @@ export let checkVideos = function (body:any) {
   let errors = {"errorsMessages" : arr};
 
   if (body.title.trim()){
-    if (body.title.length.trim() > 40) {
+    if (body.title.trim().length > 40) {
       let err1 = new Messages;
       err1.message = "Title too long!";
       err1.field = "title";
