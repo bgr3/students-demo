@@ -7,7 +7,7 @@ export let checkVideos = function (body:any) {
   let arr: any = [];
   let errors = {"errorsMessages" : arr};
 
-  if (body.title.trim()){
+  if (body.title ? body.title.trim() : null){
     if (body.title.trim().length > 40) {
       let err1 = new Messages;
       err1.message = "Title too long!";
@@ -33,13 +33,13 @@ export let checkVideos = function (body:any) {
     errors.errorsMessages.push(err1);
   }
 
-  if (body.author){
-    if (body.author.length > 20) {
+  if (body.author ? body.author.trim() : null){
+    if (body.author.trim().length > 20) {
       let err4 = new Messages;
       err4.message = "Author too long!";
       err4.field = "author";
       errors.errorsMessages.push(err4);
-    } else if (body.author.length == 0) {
+    } else if (body.author.trim().length == 0) {
       let err5 = new Messages;
       err5.message = "Author should not be empty!";
       err5.field = "author";
