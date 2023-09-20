@@ -18,18 +18,17 @@ videosRouter.post('/', (req: Request, res: Response) => {
   }
 })
 
+videosRouter.get('/', (req: Request, res: Response) => {
+  res.status(HTTP_STATUSES.OK_200).send(videosRepository.findVideos());
+})
+
 videosRouter.get('/:id', (req: Request, res: Response) => {
   const foundVideo = videosRepository.findVideoByID(+req.params.id)
-  if (req.params.id){
-    if (foundVideo){      
-      res.status(HTTP_STATUSES.OK_200).send(foundVideo);
-    } else{
-      res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-    }   
+  if (foundVideo) {      
+    res.status(HTTP_STATUSES.OK_200).send(foundVideo);
   } else {
-    res.status(HTTP_STATUSES.OK_200).send(videosRepository.findVideos());
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   }
-  
 })
 
 videosRouter.put('/:id', (req: Request, res: Response) => {

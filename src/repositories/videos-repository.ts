@@ -5,20 +5,25 @@ import { VideoPostType, VideoPutType } from "../types";
 const videos: any = [];
 
 export const videosRepository = {
-    testAllData(){
+    testAllData () {
         videos.splice(0)
     },
-    
-    findVideos() {
+
+    findVideos () {
         return videos
     },
 
-    findVideoByID(id: number){
+    findVideoByID (id: number) {
         let video = videos.find((i: {id: number}) => i.id === id);
-        return video
+        if (video){
+            return video
+        } else {
+            return false
+        }
+        
     },
 
-    createVideo(body: VideoPostType) {
+    createVideo (body: VideoPostType) {
         if (checkVideos(body).check){
             const date = new Date()
             const newVideo = {
@@ -38,7 +43,7 @@ export const videosRepository = {
         }
     },
 
-    updateVideo(id: number, body: VideoPutType) {
+    updateVideo (id: number, body: VideoPutType) {
         let video = videos.find((i: {id: number}) => i.id === id);
         if (checkVideos(body).check) {
             video.title = body.title.trim();
@@ -53,7 +58,7 @@ export const videosRepository = {
         }
     },
 
-    deleteVideo(id: number) {
+    deleteVideo (id: number) {
         for (let i = 0; i < videos.length; i++){
             if (videos[i].id === id) {
                 videos.splice(i, 1);
