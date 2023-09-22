@@ -54,7 +54,7 @@ blogsRouter.put('/:id',
 blogsRouter.delete('/:id',
   authorizationMiddleware,
   (req: Request, res: Response) => {
-  const foundBlog = blogsRepository.deleteBlog(+req.params.id)
+  const foundBlog = blogsRepository.deleteBlog(req.params.id)
   if (foundBlog) {
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   } else {
