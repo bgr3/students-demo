@@ -16,6 +16,7 @@ export const blogsRepository = {
     findBlogByID (id: number) {
         let blog = blogs.find((i: {id: number}) => i.id === id);
         if (blog){
+            blog.id = blog.id.toString()
             return blog
         } else {
             return false
