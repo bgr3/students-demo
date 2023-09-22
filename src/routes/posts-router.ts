@@ -2,25 +2,16 @@ import {Request, Response, Router} from 'express'
 import {checkPosts} from '../check/check-posts'
 import { HTTP_STATUSES } from '../settings';
 import { postsRepository } from '../repositories/posts-repository';
-import { inputValidationMiddleware, titleValidationMiddleware } from '../middlewares/input-validation-middleware';
+import { blogValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { authorizationMiddleware } from '../middlewares/authorization-middleware';
 
 export const postsRouter = Router({});
 
-postsRouter.post('/', 
+postsRouter.post('/',
   authorizationMiddleware,
+  blogValidationMiddleware,
   inputValidationMiddleware,
   (req: Request, res: Response) => {
-    let checkRequest = postsRepository.createPost(req.body)
-    if (checkRequest) {
-      const newPost = postsRepository.findPostByID(checkRequest)
-      res.status(HTTP_STATUSES.CREATED_201).send(newPost);
-    } else {
-      res.status(HTTP_STATUSES.BAD_REQUEST_400).send(checkPosts(req.body).errors);
-    }
-})
-
-postsRouter.post('/', (req: Request, res: Response) => {
   let checkRequest = postsRepository.createPost(req.body)
   if (checkRequest) {
     const newPost = postsRepository.findPostByID(checkRequest)
@@ -43,7 +34,9 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
   }
 })
 
-postsRouter.put('/:id', (req: Request, res: Response) => {
+postsRouter.put('/:id',
+  inputValidationMiddleware,
+  (req: Request, res: Response) => {
   const foundPost = postsRepository.findPostByID(+req.params.id)
     if (foundPost) {
       const updatedPost = postsRepository.updatePost(+req.params.id, req.body) 
@@ -57,7 +50,9 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
     }
 })  
   
-postsRouter.delete('/:id', (req: Request, res: Response) => {
+postsRouter.delete('/:id',
+  inputValidationMiddleware,
+  (req: Request, res: Response) => {
   const foundPost = postsRepository.deletePost(+req.params.id)
   if (foundPost) {
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

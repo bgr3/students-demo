@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Buffer } from "buffer";
 import { HTTP_STATUSES } from "../settings";
 
-const users = [{login: 'admin', password: '12345678'}]
+const users = [{login: 'admin', password: 'qwerty'}]
 
 export const authorizationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const authheader = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null;

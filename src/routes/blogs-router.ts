@@ -2,25 +2,17 @@ import {Request, Response, Router} from 'express'
 import {checkBlogs} from '../check/check-blogs'
 import { HTTP_STATUSES } from '../settings';
 import { blogsRepository } from '../repositories/blogs-repository';
-import { inputValidationMiddleware, titleValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { authorizationMiddleware } from '../middlewares/authorization-middleware';
+import { blogValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
 
 export const blogsRouter = Router({});
 
-blogsRouter.post('/', 
-  authorizationMiddleware,
-  inputValidationMiddleware,
-  (req: Request, res: Response) => {
-    let checkRequest = blogsRepository.createBlog(req.body)
-    if (checkRequest) {
-      const newBlog = blogsRepository.findBlogByID(checkRequest)
-      res.status(HTTP_STATUSES.CREATED_201).send(newBlog);
-    } else {
-      res.status(HTTP_STATUSES.BAD_REQUEST_400).send(checkBlogs(req.body).errors);
-    }
-})
 
-blogsRouter.post('/', (req: Request, res: Response) => {
+blogsRouter.post('/',
+  authorizationMiddleware,
+  blogValidationMiddleware,
+  inputValidationMiddleware,  
+  (req: Request, res: Response) => {
   let checkRequest = blogsRepository.createBlog(req.body)
   if (checkRequest) {
     const newBlog = blogsRepository.findBlogByID(checkRequest)
@@ -43,7 +35,9 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
   }
 })
 
-blogsRouter.put('/:id', (req: Request, res: Response) => {
+blogsRouter.put('/:id',
+  authorizationMiddleware,
+  (req: Request, res: Response) => {
   const foundBlog = blogsRepository.findBlogByID(+req.params.id)
     if (foundBlog) {
       const updatedBlog = blogsRepository.updateBlog(+req.params.id, req.body) 
@@ -57,7 +51,9 @@ blogsRouter.put('/:id', (req: Request, res: Response) => {
     }
 })  
   
-blogsRouter.delete('/:id', (req: Request, res: Response) => {
+blogsRouter.delete('/:id',
+  authorizationMiddleware,
+  (req: Request, res: Response) => {
   const foundBlog = blogsRepository.deleteBlog(+req.params.id)
   if (foundBlog) {
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
