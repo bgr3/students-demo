@@ -20,7 +20,7 @@ export const RouterPaths = {
   testing: '/testing',
   videos: '/videos',
   api: '/api',
-  hometask: '/hometask_01',
+  hometask: /*'/hometask_01'*/'/ht_02',
 }
 
 app.use(express.json())
