@@ -26,7 +26,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
 })
 
 postsRouter.get('/:id', (req: Request, res: Response) => {
-  const foundPost = postsRepository.findPostByID(+req.params.id)
+  const foundPost = postsRepository.findPostByID(req.params.id)
   if (foundPost) {      
     res.status(HTTP_STATUSES.OK_200).send(foundPost);
   } else {
@@ -37,9 +37,9 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 postsRouter.put('/:id',
   inputValidationMiddleware,
   (req: Request, res: Response) => {
-  const foundPost = postsRepository.findPostByID(+req.params.id)
+  const foundPost = postsRepository.findPostByID(req.params.id)
     if (foundPost) {
-      const updatedPost = postsRepository.updatePost(+req.params.id, req.body) 
+      const updatedPost = postsRepository.updatePost(req.params.id, req.body) 
       if (updatedPost) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
       } else {
@@ -53,7 +53,7 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id',
   inputValidationMiddleware,
   (req: Request, res: Response) => {
-  const foundPost = postsRepository.deletePost(+req.params.id)
+  const foundPost = postsRepository.deletePost(req.params.id)
   if (foundPost) {
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   } else {

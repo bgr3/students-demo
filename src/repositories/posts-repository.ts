@@ -41,8 +41,8 @@ export const postsRepository = {
         }
     },
 
-    updatePost (id: number, body: PostPutType) {
-        let post = posts.find((i: {id: number}) => i.id === id);
+    updatePost (id: string, body: PostPutType) {
+        let post = posts.find((i: {id: string}) => i.id === id);
         if (checkPosts(body).check) {
             post.title = body.title.trim();
             post.shortDescription = body.shortDescription.trim();
@@ -55,7 +55,7 @@ export const postsRepository = {
         }
     },
 
-    deletePost (id: number) {
+    deletePost (id: string) {
         for (let i = 0; i < posts.length; i++){
             if (posts[i].id === id) {
                 posts.splice(i, 1);
