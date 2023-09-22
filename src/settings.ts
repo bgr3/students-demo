@@ -1,6 +1,8 @@
 import express, {Request, Response} from 'express'
 import { videosRouter } from './routes/videos-router'
 import { testingRouter } from './routes/testing-router'
+import { blogsRouter } from './routes/blogs-router'
+import { postsRouter } from './routes/posts-router'
 
 export const app = express()
 export const HTTP_STATUSES = {
@@ -9,24 +11,30 @@ export const HTTP_STATUSES = {
   NO_CONTENT_204: 204,
 
   BAD_REQUEST_400: 400,
+  UNAUTHORIZED_401: 401,
+  FORBIDDEN_403: 403,
   NOT_FOUND_404: 404,
 }
 
 export const RouterPaths = {
   testing: '/testing',
   videos: '/videos',
-  api: '/hometask_01/api',
+  api: '/api',
+  hometask: '/hometask_01',
 }
 
 app.use(express.json())
+//app.use(authGuardMiddleware)
 
 app.get('/', (req: Request, res: Response) => {
   let hello = `Hello!`;
   res.send(hello);
 })
 
-app.use(RouterPaths.api + RouterPaths.testing, testingRouter)
-app.use(RouterPaths.api + RouterPaths.videos, videosRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.testing, testingRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.videos, videosRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.videos, blogsRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.videos, postsRouter)
 
 
 

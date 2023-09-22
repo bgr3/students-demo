@@ -1,14 +1,24 @@
 import {Request, Response, Router} from 'express'
-import {checkVideos} from '../check-videos'
+import {checkVideos} from '../check/check-videos'
 import { HTTP_STATUSES } from '../settings';
-import { VideoType } from '../types';
 import { videosRepository } from '../repositories/videos-repository';
+import { inputValidationMiddleware, titleValidationMiddleware } from '../middlewares/input-validation-middleware';
+import { authorizationMiddleware } from '../middlewares/authorization-middleware';
 
 export const videosRouter = Router({});
 
+// export const authGuardMiddleware = (req: Request, res: Response, next: NextFunction) => {
+//   if (req.query.token === '123') {
+//     next();
+//   } else {
+//     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED);
+//   }
+// }
 
-
-videosRouter.post('/', (req: Request, res: Response) => {
+videosRouter.post('/',
+  authorizationMiddleware,
+  inputValidationMiddleware,
+  (req: Request, res: Response) => {
   let checkRequest = videosRepository.createVideo(req.body)
   if (checkRequest) {
     const newVideo = videosRepository.findVideoByID(checkRequest)

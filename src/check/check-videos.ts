@@ -27,10 +27,10 @@ export let checkVideos = function (body:any) {
       errors.errorsMessages.push(err3);
     }  
   } else {
-    let err1 = new Messages;
-    err1.message = "Title should not be empty!";
-    err1.field = "title";
-    errors.errorsMessages.push(err1);
+    let err2 = new Messages;
+    err2.message = "Title should not be empty!";
+    err2.field = "title";
+    errors.errorsMessages.push(err2);
   }
 
   if (body.author ? body.author.trim() : null){
@@ -53,10 +53,10 @@ export let checkVideos = function (body:any) {
       errors.errorsMessages.push(err6);
     }  
   } else {
-    let err4 = new Messages;
-    err4.message = "Author should not be empty!";
-    err4.field = "author";
-    errors.errorsMessages.push(err4);
+    let err5 = new Messages;
+    err5.message = "Author should not be empty!";
+    err5.field = "author";
+    errors.errorsMessages.push(err5);
   }
   
   if (body.availableResolutions.length == 0) {
