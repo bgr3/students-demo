@@ -14,8 +14,8 @@ export const postsRepository = {
         return posts
     },
 
-    findPostByID (id: number) {
-        let post = posts.find((i: {id: number}) => i.id === id);
+    findPostByID (id: string) {
+        let post = posts.find((i: {id: string}) => i.id === id);
         if (post){
             return post
         } else {
@@ -27,12 +27,12 @@ export const postsRepository = {
     createPost (body: PostPostType) {
         if (checkPosts(body).check){
             const newpost = {
-                id: posts.length > 0 ? posts[posts.length - 1].id + 1 : 1, 
+                id: posts.length > 0 ? (posts[posts.length - 1].id + 1).toString() : '1', 
                 title: body.title.trim(),
                 shortDescription: body.shortDescription.trim(),
                 content: body.content.trim(),
                 blogId: body.blogId.trim(),
-                blogName:  blogsRepository.findBlogByID(+body.blogId.trim()).name,
+                blogName:  blogsRepository.findBlogByID(body.blogId.trim()).name,
             };
             posts.push(newpost);
             return newpost.id
@@ -48,7 +48,7 @@ export const postsRepository = {
             post.shortDescription = body.shortDescription.trim();
             post.content = body.content.trim();
             post.blogId = body.blogId.trim();
-            post.blogName =  blogsRepository.findBlogByID(+body.blogId.trim()).name;
+            post.blogName =  blogsRepository.findBlogByID(body.blogId.trim()).name;
             return true
         } else { 
             return false

@@ -27,7 +27,7 @@ blogsRouter.get('/', (req: Request, res: Response) => {
 })
 
 blogsRouter.get('/:id', (req: Request, res: Response) => {
-  const foundBlog = blogsRepository.findBlogByID(+req.params.id)
+  const foundBlog = blogsRepository.findBlogByID(req.params.id)
   if (foundBlog) {      
     res.status(HTTP_STATUSES.OK_200).send(foundBlog);
   } else {
@@ -38,9 +38,9 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
 blogsRouter.put('/:id',
   authorizationMiddleware,
   (req: Request, res: Response) => {
-  const foundBlog = blogsRepository.findBlogByID(+req.params.id)
+  const foundBlog = blogsRepository.findBlogByID(req.params.id)
     if (foundBlog) {
-      const updatedBlog = blogsRepository.updateBlog(+req.params.id, req.body) 
+      const updatedBlog = blogsRepository.updateBlog(req.params.id, req.body) 
       if (updatedBlog) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
       } else {

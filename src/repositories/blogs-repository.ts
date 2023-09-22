@@ -13,10 +13,9 @@ export const blogsRepository = {
         return blogs
     },
 
-    findBlogByID (id: number) {
-        let blog = blogs.find((i: {id: number}) => i.id === id);
+    findBlogByID (id: string) {
+        let blog = blogs.find((i: {id: string}) => i.id === id);
         if (blog){
-            blog.id = blog.id.toString()
             return blog
         } else {
             return false
@@ -27,7 +26,7 @@ export const blogsRepository = {
     createBlog (body: BlogPostType) {
         if (checkBlogs(body).check){
             const newblog = {
-                id: blogs.length > 0 ? blogs[blogs.length - 1].id + 1 : 1, 
+                id: blogs.length > 0 ? (blogs[blogs.length - 1].id + 1).toString() : '1', 
                 name: body.name.trim(),
                 description: body.description.trim(),
                 websiteUrl: body.websiteUrl.trim(),
@@ -39,8 +38,8 @@ export const blogsRepository = {
         }
     },
 
-    updateBlog (id: number, body: BlogPutType) {
-        let blog = blogs.find((i: {id: number}) => i.id === id);
+    updateBlog (id: string, body: BlogPutType) {
+        let blog = blogs.find((i: {id: string}) => i.id === id);
         if (checkBlogs(body).check) {
             blog.name = body.name.trim();
             blog.description = body.description.trim();
