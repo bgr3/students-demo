@@ -20,7 +20,7 @@ export const RouterPaths = {
   testing: '/testing',
   videos: '/videos',
   blogs: '/blogs',
-  posts: 'posts',
+  posts: '/posts',
   api: '/api',
   hometask: /*'/hometask_01'*/'/ht_02',
 }

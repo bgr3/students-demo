@@ -79,7 +79,7 @@ export let checkBlogs = function (body:any) {
       errors.errorsMessages.push(err8);
     }  
 
-    if (/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(body.websiteUrl)) {
+    if (/*/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(body.websiteUrl)*/false) {
       let err9 = new Messages;
       err9.message = "WebsiteUrl not correct!";
       err9.field = "websiteUrl";

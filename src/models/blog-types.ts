@@ -1,18 +1,18 @@
 export type BlogType = {
     id:	number,
-    name:	string,
+    name: string,
     description: string,
     websiteUrl: string,
 }
 
 export type BlogPostType = {
-    name:	string,
+    name: string,
     description: string,
     websiteUrl: string,
 }
 
 export type BlogPutType = {
-    name:	string,
+    name: string,
     description: string,
     websiteUrl: string,
 }

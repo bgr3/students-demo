@@ -13,8 +13,6 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
 
 export const blogValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const checkBlog = blogsRepository.findBlogByID(req.body.blogId)
-    if (checkBlog){
-        next()
-    }
-    body('blogId').isObject(checkBlog).withMessage('Blog does not exist')
+    body('blogId').isString().withMessage('Blog does not exist')
+    next()
 }
