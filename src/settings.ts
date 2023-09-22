@@ -19,6 +19,8 @@ export const HTTP_STATUSES = {
 export const RouterPaths = {
   testing: '/testing',
   videos: '/videos',
+  blogs: '/blogs',
+  posts: 'posts',
   api: '/api',
   hometask: /*'/hometask_01'*/'/ht_02',
 }
@@ -33,8 +35,8 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.testing, testingRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.videos, videosRouter)
-app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.videos, blogsRouter)
-app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.videos, postsRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.blogs, blogsRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.posts, postsRouter)
 
 
 
