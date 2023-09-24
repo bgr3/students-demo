@@ -11,8 +11,17 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     }
 }
 
-export const blogValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const checkBlog = blogsRepository.findBlogByID(req.body.blogId)
-    body('blogId').isString().withMessage('Blog does not exist')
-    next()
-}
+export const blogValidationMiddleware =
+    body('blogId')
+    .trim()
+    .isLength({min:1})
+    .customSanitizer(async (value) => {
+        const checkBlog = blogsRepository.findBlogByID(value)
+        if (!checkBlog){
+            return null
+        } else {
+            return value
+        }
+    })
+    .exists({checkNull: true})
+    .withMessage('Blog does not exist')

@@ -36,6 +36,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 
 postsRouter.put('/:id',
   authorizationMiddleware,
+  blogValidationMiddleware,
   inputValidationMiddleware,
   (req: Request, res: Response) => {
   const foundPost = postsRepository.findPostByID(req.params.id)
