@@ -2,15 +2,15 @@ import {Request, Response, Router} from 'express'
 import {checkPosts} from '../check/check-posts'
 import { HTTP_STATUSES } from '../settings';
 import { postsRepository } from '../repositories/posts-repository';
-import { blogValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
+import { inputValidationMiddleware, postInputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { authorizationMiddleware } from '../middlewares/authorization-middleware';
 
 export const postsRouter = Router({});
 
 postsRouter.post('/',
   authorizationMiddleware,
-  blogValidationMiddleware,
-  inputValidationMiddleware,
+  postInputValidationMiddleware,
+  postInputValidationMiddleware,
   (req: Request, res: Response) => {
   let checkRequest = postsRepository.createPost(req.body)
   if (checkRequest) {
@@ -36,7 +36,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 
 postsRouter.put('/:id',
   authorizationMiddleware,
-  blogValidationMiddleware,
+  postInputValidationMiddleware,
   inputValidationMiddleware,
   (req: Request, res: Response) => {
   const foundPost = postsRepository.findPostByID(req.params.id)
@@ -54,7 +54,6 @@ postsRouter.put('/:id',
   
 postsRouter.delete('/:id',
   authorizationMiddleware,
-  inputValidationMiddleware,
   (req: Request, res: Response) => {
   const foundPost = postsRepository.deletePost(req.params.id)
   if (foundPost) {

@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction } from "express";
 import { body, validationResult } from "express-validator";
-import { blogsRepository } from "../repositories/blogs-repository";
+import { postBlogIdValidation, postContentValidation, postTitleValidation, shortDescriptionValidation } from "../check/post-validation";
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -11,17 +11,10 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     }
 }
 
-export const blogValidationMiddleware =
-    body('blogId')
-    .trim()
-    .isLength({min:1})
-    .customSanitizer(async (value) => {
-        const checkBlog = blogsRepository.findBlogByID(value)
-        if (!checkBlog){
-            return null
-        } else {
-            return value
-        }
-    })
-    .exists({checkNull: true}) 
-    .withMessage('Blog does not exist')
+export const postInputValidationMiddleware = () => {
+    postTitleValidation;
+    postContentValidation;
+    postBlogIdValidation;
+    shortDescriptionValidation;
+}
+    
