@@ -1,3 +1,5 @@
+import { blogsRepository } from "../repositories/blogs-repository";
+
 export let checkPosts = function (body:any) {
 
   class Messages {
@@ -104,6 +106,14 @@ export let checkPosts = function (body:any) {
       err12.field = "blogId";
       errors.errorsMessages.push(err12);
     }  
+
+    if (!blogsRepository.findBlogByID(body.blogId)) {
+      let err13 = new Messages;
+      err13.message = "BlogId does not exist!";
+      err13.field = "blogId";
+      errors.errorsMessages.push(err13);
+    }
+
   } else {
     let err11 = new Messages;
     err11.message = "BlogId should not be empty!";
