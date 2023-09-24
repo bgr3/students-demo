@@ -22,7 +22,7 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
             }
 
         });
-        res.status(400).json({ errorMessages: validationErrors });
+        res.status(400).json({ errorsMessages: validationErrors });
     } else {
         next()
     }
