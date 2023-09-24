@@ -1,16 +1,17 @@
 import { body } from "express-validator"
 import { blogsRepository } from "../repositories/blogs-repository"
 
-export const postTitleValidation = body('title')
+export const postTitleValidation = 
+    body('title')
     .trim()
     .isLength({min:1, max: 15})
     .withMessage('ShortDescription not exist')
 
 export const postContentValidation =
-body('content')
-.trim()
-.isLength({min:1, max: 1000})
-.withMessage('Content not exist')
+    body('content')
+    .trim()
+    .isLength({min:1, max: 1000})
+    .withMessage('Content not exist')
 
 
 
