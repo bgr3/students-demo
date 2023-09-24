@@ -10,7 +10,6 @@ export const blogsRouter = Router({});
 
 blogsRouter.post('/',
   authorizationMiddleware,
-  /*blogValidationMiddleware,*/
   inputValidationMiddleware,  
   (req: Request, res: Response) => {
   let checkRequest = blogsRepository.createBlog(req.body)
