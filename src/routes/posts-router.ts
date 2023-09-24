@@ -4,12 +4,16 @@ import { HTTP_STATUSES } from '../settings';
 import { postsRepository } from '../repositories/posts-repository';
 import { inputValidationMiddleware, postInputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { authorizationMiddleware } from '../middlewares/authorization-middleware';
-import { postBlogIdValidation, postContentValidation, postTitleValidation, shortDescriptionValidation } from '../check/post-validation';
+import { postBlogIdValidation, postContentValidation, postTitleValidation, postShortDescriptionValidation } from '../check/post-validation';
 
 export const postsRouter = Router({});
 
 postsRouter.post('/',
   authorizationMiddleware,
+  postTitleValidation,
+  postContentValidation,
+  postBlogIdValidation,
+  postShortDescriptionValidation,
   inputValidationMiddleware,
   (req: Request, res: Response) => {
   let checkRequest = postsRepository.createPost(req.body)
@@ -36,6 +40,10 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 
 postsRouter.put('/:id',
   authorizationMiddleware,
+  postTitleValidation,
+  postContentValidation,
+  postBlogIdValidation,
+  postShortDescriptionValidation,
   inputValidationMiddleware,
   (req: Request, res: Response) => {
   const foundPost = postsRepository.findPostByID(req.params.id)

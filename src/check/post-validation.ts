@@ -30,7 +30,7 @@ export const postBlogIdValidation =
     .exists({checkNull: true}) 
     .withMessage('Blog does not exist')
 
-export const shortDescriptionValidation =
+export const postShortDescriptionValidation =
     body('shortDescription')
     .trim()
     .isLength({min:1, max: 100})
