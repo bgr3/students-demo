@@ -5,7 +5,7 @@ import { blogsRepository } from "../repositories/blogs-repository";
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
+        res.status(400).json({ errorMessages: errors.array() });
     } else {
         next()
     }
@@ -23,5 +23,5 @@ export const blogValidationMiddleware =
             return value
         }
     })
-    .exists({checkNull: true})
+    .exists({checkNull: true}) 
     .withMessage('Blog does not exist')
