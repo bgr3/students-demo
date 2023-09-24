@@ -3,7 +3,7 @@ import {checkBlogs} from '../check/check-blogs'
 import { HTTP_STATUSES } from '../settings';
 import { blogsRepository } from '../repositories/blogs-repository';
 import { authorizationMiddleware } from '../middlewares/authorization-middleware';
-import { blogValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
+import { inputValidationMiddleware } from '../middlewares/input-validation-middleware';
 
 export const blogsRouter = Router({});
 
