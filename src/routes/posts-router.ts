@@ -35,6 +35,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 })
 
 postsRouter.put('/:id',
+  authorizationMiddleware,
   inputValidationMiddleware,
   (req: Request, res: Response) => {
   const foundPost = postsRepository.findPostByID(req.params.id)
@@ -51,6 +52,7 @@ postsRouter.put('/:id',
 })  
   
 postsRouter.delete('/:id',
+  authorizationMiddleware,
   inputValidationMiddleware,
   (req: Request, res: Response) => {
   const foundPost = postsRepository.deletePost(req.params.id)

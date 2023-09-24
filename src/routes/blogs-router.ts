@@ -37,6 +37,7 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
 
 blogsRouter.put('/:id',
   authorizationMiddleware,
+  inputValidationMiddleware, 
   (req: Request, res: Response) => {
   const foundBlog = blogsRepository.findBlogByID(req.params.id)
     if (foundBlog) {
@@ -53,6 +54,7 @@ blogsRouter.put('/:id',
   
 blogsRouter.delete('/:id',
   authorizationMiddleware,
+  inputValidationMiddleware, 
   (req: Request, res: Response) => {
   const foundBlog = blogsRepository.deleteBlog(req.params.id)
   if (foundBlog) {
