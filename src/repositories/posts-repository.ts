@@ -27,7 +27,7 @@ export const postsRepository = {
     createPost (body: PostPostType) {
         if (checkPosts(body).check){
             const newpost = {
-                id: posts.length > 0 ? (posts[posts.length - 1].id + 1).toString() : '1', 
+                id: posts.length > 0 ? (+posts[posts.length - 1].id + 1).toString() : '1', 
                 title: body.title.trim(),
                 shortDescription: body.shortDescription.trim(),
                 content: body.content.trim(),

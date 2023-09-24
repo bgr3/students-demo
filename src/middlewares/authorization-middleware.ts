@@ -12,7 +12,7 @@ export const authorizationMiddleware = (req: Request, res: Response, next: NextF
         if (users.find(i => i.login === user[0] && i.password === user[1])) {
             next();
         } else {
-            res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
         }
     } else {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)

@@ -26,7 +26,7 @@ export const blogsRepository = {
     createBlog (body: BlogPostType) {
         if (checkBlogs(body).check){
             const newblog = {
-                id: blogs.length > 0 ? (blogs[blogs.length - 1].id + 1).toString() : '1', 
+                id: blogs.length > 0 ? (+blogs[blogs.length - 1].id + 1).toString() : '1', 
                 name: body.name.trim(),
                 description: body.description.trim(),
                 websiteUrl: body.websiteUrl.trim(),
