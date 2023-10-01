@@ -3,6 +3,19 @@ import { PostPostType, PostPutType, PostType } from "../types/post-types";
 import { blogsRepository } from "./blogs-db-repository";
 import { postsCollection } from "../db/db";
 
+const postOptions = {
+    projection: {
+        _id: 0,
+        id:	1,
+        title:	1,
+        shortDescription: 1,
+        content: 1,
+        blogId: 1,
+        blogName: 1,
+        createdAt: 1,
+    }
+  }
+
 export const postsRepository = {
     async testAllData (): Promise<void> {
         const result = await postsCollection.deleteMany({})
@@ -10,11 +23,11 @@ export const postsRepository = {
     },
 
     async findPosts (): Promise<PostType[]> {
-        return await postsCollection.find().toArray()
+        return await postsCollection.find({}, postOptions).toArray()
     },
 
     async findPostByID (id: string): Promise<PostType | null> {
-        let post: PostType | null = await postsCollection.findOne({id: id});
+        let post: PostType | null = await postsCollection.findOne({id: id}, postOptions);
         if (post){
             return post
         } else {

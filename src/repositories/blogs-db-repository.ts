@@ -2,6 +2,18 @@ import { checkBlogs } from "../validation/--NO check-blogs";
 import { BlogPostType, BlogPutType, BlogType } from "../types/blog-types";
 import { blogsCollection } from "../db/db";
 
+const blogOptions = {
+    projection: {
+      _id: 0,
+      id:	1,
+      name: 1,
+      description: 1,
+      websiteUrl: 1,
+      createdAt: 	1,
+      isMembership: 1,
+    }
+  }
+
 export const blogsRepository = {
     async testAllData (): Promise<void> {
         const result = await blogsCollection.deleteMany({})
@@ -9,12 +21,12 @@ export const blogsRepository = {
     },
 
     async findBlogs (): Promise<BlogType[]> {
-        return await blogsCollection.find().toArray()
+        return await blogsCollection.find({}, blogOptions).toArray()
     },
 
     async findBlogByID (id: string): Promise<BlogType | null> {
         
-        let blog: BlogType | null = await blogsCollection.findOne({id: id});
+        let blog: BlogType | null = await blogsCollection.findOne({id: id}, blogOptions);
         
         if (blog){
             return blog

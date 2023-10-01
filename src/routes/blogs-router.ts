@@ -7,7 +7,6 @@ import { blogInputValidationMiddleware, inputValidationMiddleware } from '../mid
 
 export const blogsRouter = Router({});
 
-
 blogsRouter.post('/',
   authorizationMiddleware,
   blogInputValidationMiddleware(),
