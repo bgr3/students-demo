@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUSES } from "../settings";
-import { checkAuthorization } from "../validation/validation-authorization";
+import { checkAuthorization } from "../validation/authorization-validation";
 
 export const authorizationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     
