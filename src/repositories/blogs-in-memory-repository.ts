@@ -1,29 +1,32 @@
-import { checkBlogs } from "../check/check-blogs"; 
-import { BlogPostType, BlogPutType } from "../models/blog-types";
+import { checkBlogs } from "../validation/--NO check-blogs"; 
+import { BlogPostType, BlogPutType, BlogType } from "../types/blog-types";
 
 
 const blogs: any = [];
 
 export const blogsRepository = {
-    testAllData () {
+    async testAllData (): Promise<void> {
         blogs.splice(0)
     },
 
-    findBlogs () {
+    async findBlogs (): Promise<BlogType[]> {
         return blogs
     },
 
-    findBlogByID (id: string) {
+    async findBlogByID (id: string): Promise<BlogType | null> {
+        
         let blog = blogs.find((i: {id: string}) => i.id === id);
+        
         if (blog){
             return blog
         } else {
-            return false
+            return null
         }
         
     },
 
-    createBlog (body: BlogPostType) {
+    async createBlog (body: BlogPostType): Promise<string | null> {
+        
         if (checkBlogs(body).check){
             const newblog = {
                 id: blogs.length > 0 ? (+blogs[blogs.length - 1].id + 1).toString() : '1', 
@@ -34,12 +37,14 @@ export const blogsRepository = {
             blogs.push(newblog);
             return newblog.id
         } else {
-            return false
+            return null
         }
     },
 
-    updateBlog (id: string, body: BlogPutType) {
+    async updateBlog (id: string, body: BlogPutType): Promise<boolean> {
+        
         let blog = blogs.find((i: {id: string}) => i.id === id);
+        
         if (checkBlogs(body).check) {
             blog.name = body.name.trim();
             blog.description = body.description.trim();
@@ -50,7 +55,8 @@ export const blogsRepository = {
         }
     },
 
-    deleteBlog (id: string) {
+    async deleteBlog (id: string): Promise<boolean> {
+        
         for (let i = 0; i < blogs.length; i++){
             if (blogs[i].id === id) {
                 blogs.splice(i, 1);

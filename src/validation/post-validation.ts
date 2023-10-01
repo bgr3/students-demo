@@ -1,37 +1,39 @@
 import { body } from "express-validator"
-import { blogsRepository } from "../repositories/blogs-repository"
+import { blogsRepository } from "../repositories/blogs-db-repository"
 
 export const postTitleValidation = 
+    
     body('title')
     .trim()
-    .isLength({min:1, max: 15})
-    .withMessage('ShortDescription not exist')
+    .isLength({min:1, max: 15}).withMessage('title does not exist')
 
 export const postContentValidation =
+    
     body('content')
     .trim()
-    .isLength({min:1, max: 1000})
-    .withMessage('Content not exist')
+    .exists()
+    .isLength({min:1, max: 1000}).withMessage('Content not exist')
 
 
 
 export const postBlogIdValidation =
+    
     body('blogId')
     .trim()
     .isLength({min:1})
     .customSanitizer(async (value) => {
-        const checkBlog = blogsRepository.findBlogByID(value)
+        const checkBlog = await blogsRepository.findBlogByID(value)
         if (!checkBlog){
+            console.log(typeof value)
             return null
         } else {
             return value
         }
     })
-    .exists({checkNull: true}) 
-    .withMessage('Blog does not exist')
+    .exists({checkNull: true}).withMessage('Blog does not exist')
 
 export const postShortDescriptionValidation =
+    
     body('shortDescription')
     .trim()
-    .isLength({min:1, max: 100})
-    .withMessage('ShortDescription not exist')
+    .isLength({min:1, max: 100}).withMessage('ShortDescription not exist')

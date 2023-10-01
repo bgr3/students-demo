@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction } from "express";
-import { body, validationResult } from "express-validator";
-import { postBlogIdValidation, postContentValidation, postTitleValidation, postShortDescriptionValidation } from "../check/post-validation";
-import { ValidationResultError } from "../models/validation-types";
+import { ValidationChain, validationResult } from "express-validator";
+import { postBlogIdValidation, postContentValidation, postTitleValidation, postShortDescriptionValidation } from "../validation/post-validation";
+import { blogDescriptionValidation, blogTitleValidation, blogWebsiteUrlValidation } from "../validation/blog-validation";
 
 class Messages {
     message: string | undefined;
@@ -9,15 +9,26 @@ class Messages {
   }
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    
     const errors = validationResult(req);
+    
     if (!errors.isEmpty()) {
+       
         errors.array({ onlyFirstError: true })
+        
         const validationErrors: any = [];
+       
         errors.array().forEach((error) => {
+            
             if (error.type === 'field') {
                 let err = new Messages;
                 err.message = error.msg;
                 err.field = error.path;
+                validationErrors.push(err);
+            } else {
+                let err = new Messages;
+                err.message = error.msg;
+                err.field = 'any';
                 validationErrors.push(err);
             }
 
@@ -28,16 +39,15 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     }
 }
 
-export const postInputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    postTitleValidation;
-    postContentValidation;
-    postBlogIdValidation;
-    postShortDescriptionValidation;
-    next()
-}
+export const postInputValidationMiddleware = (): ValidationChain[] => [
+    postTitleValidation,
+    postContentValidation,
+    postBlogIdValidation,
+    postShortDescriptionValidation,
+]
     
-// "type": "field",
-// "value": null,
-// "msg": "Blog does not exist",
-// "path": "blogId",
-// "location": "body"
+export const blogInputValidationMiddleware = (): ValidationChain[] => [
+    blogTitleValidation,
+    blogDescriptionValidation,
+    blogWebsiteUrlValidation,
+]
