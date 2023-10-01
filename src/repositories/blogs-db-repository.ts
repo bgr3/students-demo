@@ -31,7 +31,7 @@ export const blogsRepository = {
             name: body.name.trim(),
             description: body.description.trim(),
             websiteUrl: body.websiteUrl.trim(),
-            createdAt: new Date().toLocaleString().split(', ').join('-'),
+            createdAt: new Date().toISOString(),
             isMembership: false,
         };
 

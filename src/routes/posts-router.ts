@@ -46,7 +46,7 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 
 postsRouter.put('/:id',
   authorizationMiddleware,
-  postInputValidationMiddleware,
+  postInputValidationMiddleware(),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
   
