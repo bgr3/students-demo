@@ -19,7 +19,7 @@ export const blogWebsiteUrlValidation =
     body('websiteUrl')
     .trim()
     .exists()
-    .isLength({min:1, max: 100})
+    .isLength({min:1, max: 100}).withMessage('WebsiteUrl length does not exist')
     .customSanitizer(async (value) => {
         if (!/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(value)){
             return null

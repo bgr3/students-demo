@@ -13,12 +13,10 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     const errors = validationResult(req);
     
     if (!errors.isEmpty()) {
-       
-        errors.array({ onlyFirstError: true })
         
         const validationErrors: any = [];
        
-        errors.array().forEach((error) => {
+        errors.array({ onlyFirstError: true }).forEach((error) => {
             
             if (error.type === 'field') {
                 let err = new Messages;

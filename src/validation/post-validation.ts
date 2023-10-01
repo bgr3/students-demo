@@ -24,7 +24,6 @@ export const postBlogIdValidation =
     .customSanitizer(async (value) => {
         const checkBlog = await blogsRepository.findBlogByID(value)
         if (!checkBlog){
-            console.log(typeof value)
             return null
         } else {
             return value
