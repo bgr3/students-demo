@@ -5,11 +5,6 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-export type ProductType = {
-    title: string
-    _id: ObjectId
-}
-
 const url = process.env.MONGO_URL;
 
 if (!url) {
@@ -18,7 +13,6 @@ if (!url) {
 
 const client = new MongoClient(url);
 
-export const productCollection = client.db().collection<ProductType>('products')
 export const db = client.db()
 export const blogsCollection = db.collection<BlogType>('blogs')
 export const postsCollection = db.collection<PostType>('posts')
