@@ -23,8 +23,9 @@ export const blogsRepository = {
 
     async findBlogs (filter: BlogFilter): Promise<BlogPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize
+        const regex = new RegExp(filter.searchNameTerm, 'i')
         const dbCount = await blogsCollection.countDocuments()
-        const dbResult = await blogsCollection.find().sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
+        const dbResult = await blogsCollection.find({name: RegExp(regex)}).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
 
         const paginator = {
             pagesCount: Math.ceil(dbCount / filter.pageSize),

@@ -3,7 +3,7 @@ import { HTTP_STATUSES } from '../settings';
 import { blogFilter, blogsService } from '../domain/blog-service'; 
 import { authorizationMiddleware } from '../middlewares/authorization-middleware';
 import { blogInputValidationMiddleware, blogPostInputValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
-import { postsService } from '../domain/post-service';
+import { postFilter, postsService } from '../domain/post-service';
 
 export const blogsRouter = Router({});
 
@@ -66,6 +66,12 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
   } else {
     blogFilter.sortDirection = 'desc'
   }
+
+  if (typeof req.query.searchNameTerm === 'string') {
+    blogFilter.searchNameTerm = req.query.searchNameTerm
+  } else {
+    blogFilter.searchNameTerm = ''
+  }
   
   res.status(HTTP_STATUSES.OK_200).send(await blogsService.findBlogs(blogFilter));
 })
@@ -82,7 +88,30 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
-  const posts = await postsService.findPosts(req.params.id)
+  if (req.query.pageNumber) {
+    postFilter.pageNumber = Number (req.query.pageNumber)
+  } else {
+    postFilter.pageNumber = 1
+  }
+
+  if (req.query.pageSize) {
+    postFilter.pageSize = Number (req.query.pageSize)
+  } else {
+    postFilter.pageSize = 10
+  }
+
+  if (typeof req.query.sortBy == 'string') {
+    postFilter.sortBy = req.query.sortBy
+  } else {
+    postFilter.sortBy = 'createdAt'
+  }
+
+  if (typeof req.query.sortDirection === 'string') {
+    postFilter.sortDirection = req.query.sortDirection
+  } else {
+    postFilter.sortDirection = 'desc'
+  }
+  const posts = await postsService.findPosts(req.params.id, postFilter)
 
   if (posts.items.length > 0) {
     res.status(HTTP_STATUSES.OK_200).send(posts);

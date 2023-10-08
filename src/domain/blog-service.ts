@@ -7,6 +7,7 @@ export const blogFilter = {
     pageSize: 10,
     sortBy: 'createdAt',
     sortDirection: 'desc',
+    searchNameTerm: '',
   }
 
 export const blogsService = {
@@ -16,6 +17,13 @@ export const blogsService = {
 
     async findBlogs (filterService:any = blogFilter): Promise<BlogPaginatorType> {
         const blogs = await blogsRepository.findBlogs(filterService)
+
+        blogFilter.pageNumber = 1
+        blogFilter.pageSize = 10
+        blogFilter.sortBy = 'createdAt'
+        blogFilter.sortDirection = 'desc'
+        blogFilter.searchNameTerm = ''
+
         return blogs
     },
 

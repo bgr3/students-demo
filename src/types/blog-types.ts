@@ -32,6 +32,7 @@ export type BlogFilter = {
     pageSize: number,
     sortBy: string,
     sortDirection: string,
+    searchNameTerm: string,
 }
 
 export type BlogPaginatorType = {
