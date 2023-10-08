@@ -82,7 +82,12 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
-  res.status(HTTP_STATUSES.OK_200).send(await postsService.findPosts(req.params.id));
+  const posts = await postsService.findPosts(req.params.id)
+  if (posts.items.length > 0) {
+    res.status(HTTP_STATUSES.OK_200).send(posts);
+    return
+  }
+  res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
 
 blogsRouter.put('/:id',
