@@ -34,7 +34,7 @@ async (req: Request, res: Response) => {
   let result = await postsService.createPost(req.body)
   
   if (!result) {
-    res.status(HTTP_STATUSES.BAD_REQUEST_400);
+    res.status(HTTP_STATUSES.NOT_FOUND_404);
     return
   } 
 

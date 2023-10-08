@@ -30,19 +30,24 @@ export const postsService = {
     async createPost (body: PostPostType): Promise<string | null> {
 
         const blogName = await blogsRepository.findBlogByID(body.blogId.trim())
-
-        const newPost = {    
+        
+        if (blogName){
+            const newPost = {    
             title: body.title.trim(),
             shortDescription: body.shortDescription.trim(),
             content: body.content.trim(),
             blogId: body.blogId.trim(),
-            blogName:  blogName?.name || null,
+            blogName:  blogName.name,
             createdAt: new Date().toISOString(),
-        };
-
-        const result = await postsRepository.createPost(newPost);
+            };
         
-        return result
+            const result = await postsRepository.createPost(newPost);
+        
+            return result
+        }
+
+        return null  
+
     },
 
     async updatePost (id: string, body: PostPutType): Promise<boolean> {
