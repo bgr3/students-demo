@@ -1,4 +1,3 @@
-import { checkPosts } from "../validation/--NO check-posts"; 
 import { PostPostType, PostPutType, PostType } from "../types/post-types";
 import { blogsRepository } from "./blogs-in-memory-repository";
 
@@ -15,7 +14,9 @@ export const postsRepository = {
     },
 
     async findPostByID (id: string): Promise<PostType | null> {
+        
         let post = posts.find((i: {id: string}) => i.id === id);
+        
         if (post){
             return post
         } else {
@@ -25,45 +26,45 @@ export const postsRepository = {
     },
 
     async createPost (body: PostPostType): Promise<string | null> {
-        if (checkPosts(body).check){
-            const blogName = await blogsRepository.findBlogByID(body.blogId.trim())
-            const newpost = {
-                id: posts.length > 0 ? (+posts[posts.length - 1].id + 1).toString() : '1', 
-                title: body.title.trim(),
-                shortDescription: body.shortDescription.trim(),
-                content: body.content.trim(),
-                blogId: body.blogId.trim(),
-                blogName:  blogName?.name,
-            };
-            posts.push(newpost);
-            return newpost.id
-        } else {
-            return null
-        }
+        const blogName = await blogsRepository.findBlogByID(body.blogId.trim())
+        
+        const newpost = {
+            id: posts.length > 0 ? (+posts[posts.length - 1].id + 1).toString() : '1', 
+            title: body.title.trim(),
+            shortDescription: body.shortDescription.trim(),
+            content: body.content.trim(),
+            blogId: body.blogId.trim(),
+            blogName:  blogName?.name,
+        };
+        
+        posts.push(newpost);
+        
+        return newpost.id
     },
 
     async updatePost (id: string, body: PostPutType): Promise<boolean> {
         let post = posts.find((i: {id: string}) => i.id === id);
-        if (checkPosts(body).check) {
-            const blogName = await blogsRepository.findBlogByID(body.blogId.trim())
-            post.title = body.title.trim();
-            post.shortDescription = body.shortDescription.trim();
-            post.content = body.content.trim();
-            post.blogId = body.blogId.trim();
-            post.blogName =  blogName?.name;
-            return true
-        } else { 
-            return false
-        }
+
+        const blogName = await blogsRepository.findBlogByID(body.blogId.trim())
+        
+        post.title = body.title.trim();
+        post.shortDescription = body.shortDescription.trim();
+        post.content = body.content.trim();
+        post.blogId = body.blogId.trim();
+        post.blogName =  blogName?.name;
+        
+        return true
     },
 
     async deletePost (id: string): Promise<boolean> {
+        
         for (let i = 0; i < posts.length; i++){
             if (posts[i].id === id) {
                 posts.splice(i, 1);
                 return true
             }
         }
+        
         return false
     }
 }

@@ -1,7 +1,6 @@
-import { checkPosts } from "../validation/--NO check-posts"; 
-import { PostPostType, PostPutType, PostType } from "../types/post-types";
-import { blogsRepository } from "./blogs-db-repository";
+import { PostDb, PostFilter, PostOutput, PostPaginatorType, PostPutServiceType, PostType } from "../types/post-types";
 import { postsCollection } from "../db/db";
+import { ObjectId } from "mongodb";
 
 const postOptions = {
     projection: {
@@ -22,74 +21,94 @@ export const postsRepository = {
         console.log('post delete: ', result.deletedCount)
     },
 
-    async findPosts (): Promise<PostType[]> {
-        return await postsCollection.find({}, postOptions).toArray()
-    },
-
-    async findPostByID (id: string): Promise<PostType | null> {
-        let post: PostType | null = await postsCollection.findOne({id: id}, postOptions);
-        if (post){
-            return post
-        } else {
-            return null
-        }
+    async findPosts (blogId: string | null, filter: PostFilter): Promise<PostPaginatorType> {
+        let find:any = {}
         
+        if (blogId){
+            find.id = blogId
+        }
+
+        const skip = (filter.pageNumber - 1) * filter.pageSize
+
+        const dbCount = await postsCollection.find(find).count()
+        const dbResult = await postsCollection.find(find).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
+
+        const paginator = {
+            pagesCount: Math.ceil(dbCount / filter.pageSize),
+            page: filter.pageNumber,
+            pageSize: filter.pageSize,
+            totalCount: dbCount,
+            items: dbResult.map((p: PostDb) => postMapper(p))
+        }
+
+        return paginator
     },
 
-    async createPost (body: PostPostType): Promise<string | null> {
-        const posts = await postsCollection.find().toArray()
-        if (checkPosts(body).check){
-
-            const blogName = await blogsRepository.findBlogByID(body.blogId.trim())
-
-            const newPost = {
-                id: posts.length > 0 ? (+posts[posts.length - 1].id + 1).toString() : '1', 
-                title: body.title.trim(),
-                shortDescription: body.shortDescription.trim(),
-                content: body.content.trim(),
-                blogId: body.blogId.trim(),
-                blogName:  blogName?.name || null,
-                createdAt: new Date().toISOString(),
-            };
-
-            const result = await postsCollection.insertOne(newPost);
-            console.log(result.insertedId)
+    async findPostByID (id: string): Promise<PostOutput | null> {
+        if (ObjectId.isValid(id)){
+            const post = await postsCollection.findOne({_id: new ObjectId(id)});
             
-            return newPost.id
+            if (post){
+                return postMapper(post)
+            }
+            
+            return post
+        }
+        
+        return null
+    },
+
+    async createPost (newPost: PostType): Promise<string | null> {
+        const result = await postsCollection.insertOne(newPost);
+        console.log(result.insertedId)
+        
+        if (result.insertedId){
+            return result.insertedId.toString()
         } else {
             return null
         }
+        
     },
 
-    async updatePost (id: string, body: PostPutType): Promise<boolean> {
-        
-        const blogName = await blogsRepository.findBlogByID(body.blogId.trim())
-        
-        const result = await postsCollection.updateOne({id: id}, { $set: {             
-            title: body.title.trim(),
-            shortDescription: body.shortDescription.trim(),
-            content: body.content.trim(),
-            blogId: body.blogId.trim(),
-            blogName:  blogName?.name,
-        }})
+    async updatePost (id: string, updatePost: PostPutServiceType): Promise<boolean> {
+        if (ObjectId.isValid(id)) {
+            const result = await postsCollection.updateOne({_id: new ObjectId(id)}, { $set: updatePost})
 
-        if (result.matchedCount) {
-            return true
-        } else { 
-            return false
+            if (result.matchedCount) {
+                return true
+            }
+
+        
         }
+
+        return false
     },
 
     async deletePost (id: string): Promise<boolean> {
-        const result = await postsCollection.deleteOne({id: id})
+        if (ObjectId.isValid(id)) {
+            const result = await postsCollection.deleteOne({_id: new ObjectId(id)})
         
-        if (result.deletedCount) {
-            return true
+            if (result.deletedCount) {
+                return true
+            }
         }
+        
         return false
     }
 }
 
 function findBlogById(arg0: string) {
     throw new Error("Function not implemented.");
+}
+
+const postMapper = (post: PostDb): PostOutput => {
+    return {
+        id: post._id.toString(),
+        title: post.title,
+        shortDescription: post.shortDescription,
+        content: post.content,
+        blogId: post.blogId,
+        blogName: post.blogName,
+        createdAt: post.createdAt,
+    }
 }

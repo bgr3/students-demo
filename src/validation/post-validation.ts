@@ -1,5 +1,5 @@
-import { body } from "express-validator"
-import { blogsRepository } from "../repositories/blogs-db-repository"
+import { body, param } from "express-validator"
+import { blogsService } from "../domain/blog-service" 
 
 export const postTitleValidation = 
     
@@ -22,7 +22,7 @@ export const postBlogIdValidation =
     .trim()
     .isLength({min:1})
     .customSanitizer(async (value) => {
-        const checkBlog = await blogsRepository.findBlogByID(value)
+        const checkBlog = await blogsService.findBlogByID(value)
         if (!checkBlog){
             return null
         } else {
@@ -36,3 +36,18 @@ export const postShortDescriptionValidation =
     body('shortDescription')
     .trim()
     .isLength({min:1, max: 100}).withMessage('ShortDescription not exist')
+
+export const blogPostBlogIdValidation =
+    
+    param('id')
+    .trim()
+    .isLength({min:1})
+    .customSanitizer(async (value) => {
+        const checkBlog = await blogsService.findBlogByID(value)
+        if (!checkBlog){
+            return null
+        } else {
+            return value
+        }
+    })
+    .exists({checkNull: true}).withMessage('Blog does not exist')

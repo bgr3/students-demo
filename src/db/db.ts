@@ -11,9 +11,9 @@ if (!url) {
     throw new Error('! URL doesn`t found')
 }
 
-const client = new MongoClient(url);
+export const client = new MongoClient(url);
 
-export const db = client.db()
+export const db = client.db('test')
 export const blogsCollection = db.collection<BlogType>('blogs')
 export const postsCollection = db.collection<PostType>('posts')
 

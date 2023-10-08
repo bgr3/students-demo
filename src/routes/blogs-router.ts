@@ -1,9 +1,9 @@
 import {Request, Response, Router} from 'express'
-import {checkBlogs} from '../validation/--NO check-blogs'
 import { HTTP_STATUSES } from '../settings';
-import { blogsRepository } from '../repositories/blogs-db-repository';
+import { blogFilter, blogsService } from '../domain/blog-service'; 
 import { authorizationMiddleware } from '../middlewares/authorization-middleware';
-import { blogInputValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
+import { blogInputValidationMiddleware, blogPostInputValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
+import { postsService } from '../domain/post-service';
 
 export const blogsRouter = Router({});
 
@@ -13,24 +13,67 @@ blogsRouter.post('/',
   inputValidationMiddleware,  
   async (req: Request, res: Response) => {
     
-    let result = await blogsRepository.createBlog(req.body)
+    let result = await blogsService.createBlog(req.body)
     
     if (result) {
-      const newBlog = await blogsRepository.findBlogByID(result)
+      const newBlog = await blogsService.findBlogByID(result)
       res.status(HTTP_STATUSES.CREATED_201).send(newBlog);
     } else {
       res.status(HTTP_STATUSES.BAD_REQUEST_400)
     }
 })
 
-blogsRouter.get('/', async (req: Request, res: Response) => {
+blogsRouter.post('/:id/posts',
+authorizationMiddleware,
+blogPostInputValidationMiddleware(),
+inputValidationMiddleware,
+async (req: Request, res: Response) => {
+
+  req.body.blogId = req.params.id.toString()
+
+  let result = await postsService.createPost(req.body)
   
-  res.status(HTTP_STATUSES.OK_200).send(await blogsRepository.findBlogs());
+  if (!result) {
+    res.status(HTTP_STATUSES.BAD_REQUEST_400);
+    return
+  } 
+
+  const newPost = await postsService.findPostById(result)
+    
+  res.status(HTTP_STATUSES.CREATED_201).send(newPost);
+})
+
+blogsRouter.get('/', async (req: Request, res: Response) => {
+  if (req.query.pageNumber) {
+    blogFilter.pageNumber = Number (req.query.pageNumber)
+  } else {
+    blogFilter.pageNumber = 1
+  }
+
+  if (req.query.pageSize) {
+    blogFilter.pageSize = Number (req.query.pageSize)
+  } else {
+    blogFilter.pageSize = 10
+  }
+
+  if (typeof req.query.sortBy == 'string') {
+    blogFilter.sortBy = req.query.sortBy
+  } else {
+    blogFilter.sortBy = 'createdAt'
+  }
+
+  if (typeof req.query.sortDirection === 'string') {
+    blogFilter.sortDirection = req.query.sortDirection
+  } else {
+    blogFilter.sortDirection = 'desc'
+  }
+  
+  res.status(HTTP_STATUSES.OK_200).send(await blogsService.findBlogs(blogFilter));
 })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
   
-  const foundBlog = await blogsRepository.findBlogByID(req.params.id)
+  const foundBlog = await blogsService.findBlogByID(req.params.id)
   
   if (foundBlog) {      
     res.status(HTTP_STATUSES.OK_200).send(foundBlog);
@@ -39,16 +82,20 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 })
 
+blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
+  res.status(HTTP_STATUSES.OK_200).send(await postsService.findPosts(req.params.id));
+})
+
 blogsRouter.put('/:id',
   authorizationMiddleware,
   blogInputValidationMiddleware(),
   inputValidationMiddleware, 
   async (req: Request, res: Response) => {
   
-    const foundBlog = await blogsRepository.findBlogByID(req.params.id)
+    const foundBlog = await blogsService.findBlogByID(req.params.id)
     
     if (foundBlog) {
-      const updatedBlog = await blogsRepository.updateBlog(req.params.id, req.body) 
+      const updatedBlog = await blogsService.updateBlog(req.params.id, req.body) 
       
       if (updatedBlog) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
@@ -65,7 +112,7 @@ blogsRouter.delete('/:id',
   inputValidationMiddleware, 
   async (req: Request, res: Response) => {
   
-    const foundBlog = await blogsRepository.deleteBlog(req.params.id)
+    const foundBlog = await blogsService.deleteBlog(req.params.id)
   
     if (foundBlog) {
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

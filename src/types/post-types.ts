@@ -1,5 +1,6 @@
+import { WithId } from "mongodb"
+
 export type PostType = {
-    id:	string,
     title:	string,
     shortDescription: string,
     content: string,
@@ -7,6 +8,10 @@ export type PostType = {
     blogName: string | null,
     createdAt: string,
 }
+
+export type PostDb = WithId <PostType>
+
+export type PostOutput = PostType & {id: string}
 
 export type PostPostType = {
     title:	string,
@@ -20,4 +25,26 @@ export type PostPutType = {
     shortDescription: string,
     content: string,
     blogId: string,
+}
+
+export type PostPutServiceType = {
+    title:	string,
+    shortDescription: string,
+    content: string,
+    blogId: string,
+}
+
+export type PostFilter = {
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string,
+    sortDirection: string,
+}
+
+export type PostPaginatorType = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: PostOutput[],
 }

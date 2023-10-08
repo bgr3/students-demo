@@ -1,4 +1,3 @@
-import { checkBlogs } from "../validation/--NO check-blogs"; 
 import { BlogPostType, BlogPutType, BlogType } from "../types/blog-types";
 
 
@@ -27,32 +26,24 @@ export const blogsRepository = {
 
     async createBlog (body: BlogPostType): Promise<string | null> {
         
-        if (checkBlogs(body).check){
-            const newblog = {
-                id: blogs.length > 0 ? (+blogs[blogs.length - 1].id + 1).toString() : '1', 
-                name: body.name.trim(),
-                description: body.description.trim(),
-                websiteUrl: body.websiteUrl.trim(),
-            };
-            blogs.push(newblog);
-            return newblog.id
-        } else {
-            return null
-        }
+        const newblog = {
+            id: blogs.length > 0 ? (+blogs[blogs.length - 1].id + 1).toString() : '1', 
+            name: body.name.trim(),
+            description: body.description.trim(),
+            websiteUrl: body.websiteUrl.trim(),
+        };
+        blogs.push(newblog);
+        return newblog.id
     },
 
     async updateBlog (id: string, body: BlogPutType): Promise<boolean> {
         
         let blog = blogs.find((i: {id: string}) => i.id === id);
-        
-        if (checkBlogs(body).check) {
-            blog.name = body.name.trim();
-            blog.description = body.description.trim();
-            blog.websiteUrl = body.websiteUrl.trim();
-            return true
-        } else { 
-            return false
-        }
+    
+        blog.name = body.name.trim();
+        blog.description = body.description.trim();
+        blog.websiteUrl = body.websiteUrl.trim();
+        return true
     },
 
     async deleteBlog (id: string): Promise<boolean> {

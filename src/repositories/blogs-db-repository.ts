@@ -1,6 +1,7 @@
-import { checkBlogs } from "../validation/--NO check-blogs"; 
-import { BlogPostType, BlogPutType, BlogType } from "../types/blog-types";
+import { BlogDb, BlogFilter, BlogOutput, BlogPaginatorType, BlogPutType, BlogType } from "../types/blog-types";
 import { blogsCollection } from "../db/db";
+import { ObjectId } from "mongodb";
+import { PostDb } from "../types/post-types";
 
 const blogOptions = {
     projection: {
@@ -20,66 +21,82 @@ export const blogsRepository = {
         console.log('blogs delete: ', result.deletedCount)
     },
 
-    async findBlogs (): Promise<BlogType[]> {
-        return await blogsCollection.find({}, blogOptions).toArray()
-    },
+    async findBlogs (filter: BlogFilter): Promise<BlogPaginatorType> {
+        const skip = (filter.pageNumber - 1) * filter.pageSize
+        const dbCount = await blogsCollection.find().count()
+        const dbResult = await blogsCollection.find().sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
 
-    async findBlogByID (id: string): Promise<BlogType | null> {
-        
-        let blog: BlogType | null = await blogsCollection.findOne({id: id}, blogOptions);
-        
-        if (blog){
-            return blog
-        } else {
-            return null
+        const paginator = {
+            pagesCount: Math.ceil(dbCount / filter.pageSize),
+            page: filter.pageNumber,
+            pageSize: filter.pageSize,
+            totalCount: dbCount,
+            items: dbResult.map((p: BlogDb) => blogMapper(p))
         }
-        
+
+        return paginator
     },
 
-    async createBlog (body: BlogPostType): Promise<string | null> {
-        const blogs = await blogsCollection.find().toArray()
-        const newblog = {
-            id: blogs.length > 0 ? (+blogs[blogs.length - 1].id + 1).toString() : '1', 
-            name: body.name.trim(),
-            description: body.description.trim(),
-            websiteUrl: body.websiteUrl.trim(),
-            createdAt: new Date().toISOString(),
-            isMembership: false,
-        };
+    async findBlogByID (id: string): Promise<BlogOutput | null> {
+        if (ObjectId.isValid(id)) {
+            const blog = await blogsCollection.findOne({_id: new ObjectId(id) });
+            if (blog) {
+                return blogMapper(blog)
+            }
+            return blog
+        }
 
-        console.log(newblog.createdAt)
+        return null
+    },
+
+    async createBlog (newblog: BlogType): Promise<string | null> {
 
         const result = await blogsCollection.insertOne(newblog);
         console.log(result.insertedId)
         if (result.insertedId) {
-            return newblog.id
+            return result.insertedId.toString()
         } else {
             return null
         }
     },
 
-    async updateBlog (id: string, body: BlogPutType): Promise<Boolean> {
+    async updateBlog (id: string, updateBlog: BlogPutType): Promise<Boolean> {
+        if (ObjectId.isValid(id)) {
+            const result = await blogsCollection.updateOne({_id: new ObjectId(id)}, { $set: updateBlog});
         
-        const result = await blogsCollection.updateOne({id: id}, { $set: {
-            name: body.name.trim(),
-            description: body.description.trim(),
-            websiteUrl: body.websiteUrl.trim(),
-        }});
-        
-        if (result.matchedCount) {
-            return true
-        } else { 
-            return false
+            if (result.matchedCount) {
+                return true
+            }
         }
+
+        return false
     },
 
     async deleteBlog (id: string): Promise<Boolean> {
+        if (ObjectId.isValid(id)) {
 
-        const result = await blogsCollection.deleteOne({id: id})
-        
-        if (result.deletedCount) {
-            return true
+            const result = await blogsCollection.deleteOne({_id: new ObjectId(id)})
+            
+            if (result.deletedCount) {
+                return true
+            }
         }
         return false
+    }
+}
+
+const idValidation = (id: string): ObjectId => {
+    return ObjectId.isValid(id) ? new ObjectId(id) : new ObjectId ('123456789012')
+}
+
+
+const blogMapper = (blog: BlogDb): BlogOutput => {
+    return {
+        id: blog._id.toString(),
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
+        createdAt: 	blog.createdAt,
+        isMembership: blog.isMembership,
     }
 }
