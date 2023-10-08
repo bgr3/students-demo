@@ -28,16 +28,15 @@ authorizationMiddleware,
 blogPostInputValidationMiddleware(),
 inputValidationMiddleware,
 async (req: Request, res: Response) => {
-
   req.body.blogId = req.params.id.toString()
-
+  
   let result = await postsService.createPost(req.body)
   
   if (!result) {
-    res.status(HTTP_STATUSES.NOT_FOUND_404);
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     return
   } 
-
+  
   const newPost = await postsService.findPostById(result)
     
   res.status(HTTP_STATUSES.CREATED_201).send(newPost);

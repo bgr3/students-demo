@@ -28,7 +28,7 @@ export const postsService = {
     },
 
     async createPost (body: PostPostType): Promise<string | null> {
-
+        
         const blogName = await blogsRepository.findBlogByID(body.blogId.trim())
         
         if (blogName){
@@ -45,7 +45,7 @@ export const postsService = {
         
             return result
         }
-
+        
         return null  
 
     },

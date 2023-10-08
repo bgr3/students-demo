@@ -41,7 +41,7 @@ export const blogsRepository = {
         if (ObjectId.isValid(id)) {
             const blog = await blogsCollection.findOne({_id: new ObjectId(id) });
             if (blog) {
-                return blogMapper(blog)
+                return blogMapper(blog)                
             }
             return blog
         }

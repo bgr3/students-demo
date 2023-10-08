@@ -30,7 +30,7 @@ export const postsRepository = {
 
         const skip = (filter.pageNumber - 1) * filter.pageSize
 
-        const dbCount = await postsCollection.find(find).count()
+        const dbCount = await postsCollection.countDocuments(find)
         const dbResult = await postsCollection.find(find).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
 
         const paginator = {
