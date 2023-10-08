@@ -25,7 +25,7 @@ export const postsRepository = {
         let find:any = {}
         
         if (blogId){
-            find.id = blogId
+            find.blogId = blogId;
         }
 
         const skip = (filter.pageNumber - 1) * filter.pageSize

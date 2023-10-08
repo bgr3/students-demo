@@ -17,6 +17,7 @@ export const postsService = {
 
     async findPosts (blogId: string | null, filterService:any = postFilter): Promise<PostPaginatorType> {
         const posts = await postsRepository.findPosts(blogId, filterService)
+
         return posts
     },
 
@@ -45,7 +46,7 @@ export const postsService = {
         
             return result
         }
-        
+
         return null  
 
     },

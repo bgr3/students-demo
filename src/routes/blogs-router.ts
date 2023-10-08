@@ -73,7 +73,7 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
   
   const foundBlog = await blogsService.findBlogByID(req.params.id)
-  
+
   if (foundBlog) {      
     res.status(HTTP_STATUSES.OK_200).send(foundBlog);
   } else {
@@ -83,6 +83,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
   const posts = await postsService.findPosts(req.params.id)
+
   if (posts.items.length > 0) {
     res.status(HTTP_STATUSES.OK_200).send(posts);
     return
