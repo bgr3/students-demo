@@ -23,7 +23,7 @@ export const blogsRepository = {
 
     async findBlogs (filter: BlogFilter): Promise<BlogPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize
-        const dbCount = await blogsCollection.find().count()
+        const dbCount = await blogsCollection.countDocuments()
         const dbResult = await blogsCollection.find().sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
 
         const paginator = {

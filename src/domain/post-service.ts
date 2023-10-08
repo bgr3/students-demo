@@ -17,7 +17,10 @@ export const postsService = {
 
     async findPosts (blogId: string | null, filterService:any = postFilter): Promise<PostPaginatorType> {
         const posts = await postsRepository.findPosts(blogId, filterService)
-
+        postFilter.pageNumber = 1
+        postFilter.pageSize = 10
+        postFilter.sortBy = 'createdAt'
+        postFilter.sortDirection = 'desc'
         return posts
     },
 

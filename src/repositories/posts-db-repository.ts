@@ -32,7 +32,7 @@ export const postsRepository = {
 
         const dbCount = await postsCollection.countDocuments(find)
         const dbResult = await postsCollection.find(find).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
-
+        
         const paginator = {
             pagesCount: Math.ceil(dbCount / filter.pageSize),
             page: filter.pageNumber,
