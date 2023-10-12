@@ -1,5 +1,5 @@
 import { usersRepository } from "../repositories/users-db-repository"
-import { UserDb, UserPaginatorType, UserPostType } from "../types/user-types"
+import { UserDb, UserOutput, UserPaginatorType, UserPostType } from "../types/user-types"
 import  bcrypt  from 'bcrypt'
 
 
@@ -10,9 +10,15 @@ export const usersService = {
     },
 
     async findUsers (filterService?:any): Promise<UserPaginatorType> {
-        const blogs = await usersRepository.findBlogs(filterService)
+        const blogs = await usersRepository.findUsers(filterService)
 
         return blogs
+    },
+
+    async findUserByID (id: string): Promise<UserOutput| null> {
+        const user = await usersRepository.findUserByID(id)
+
+        return user
     },
 
     async createUser (login: string, email: string, password: string): Promise<string | null> {     

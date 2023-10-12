@@ -18,7 +18,7 @@ export const usersRepository = {
         console.log('users delete: ', result.deletedCount)
     },
 
-    async findBlogs (filter: UserFilter = userFilter): Promise<UserPaginatorType> {
+    async findUsers (filter: UserFilter = userFilter): Promise<UserPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize
         const regexLogin = new RegExp(filter.searchLoginTerm, 'i')
         const regexEmail = new RegExp(filter.searchEmailTerm, 'i')
@@ -34,6 +34,18 @@ export const usersRepository = {
         }
 
         return paginator
+    },
+
+    async findUserByID (id: string): Promise<UserOutput | null> {
+        if (ObjectId.isValid(id)) {
+            const user = await usersCollection.findOne({_id: new ObjectId(id) });
+            if (user) {
+                return userMapper(user)                
+            }
+            return user
+        }
+
+        return null
     },
 
     async createUser (newUser: UserType): Promise<string | null> {

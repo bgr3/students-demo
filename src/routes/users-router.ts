@@ -16,11 +16,14 @@ usersRouter.post('/',
     
     let result = await usersService.createUser(req.body.login, req.body.email, req.body.password)
     
-    if (result) {
-      res.status(HTTP_STATUSES.CREATED_201).send(result);
-    } else {
-      res.status(HTTP_STATUSES.BAD_REQUEST_400)
-    }
+    if (!result) {
+      res.status(HTTP_STATUSES.BAD_REQUEST_400);
+      return
+    } 
+
+    const newUser = await usersService.findUserByID(result)
+      
+    res.status(HTTP_STATUSES.CREATED_201).send(newUser);
 })
 
 usersRouter.get('/', async (req: Request, res: Response) => {

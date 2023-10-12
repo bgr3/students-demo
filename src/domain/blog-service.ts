@@ -1,5 +1,5 @@
 import { blogsRepository } from "../repositories/blogs-db-repository"
-import { BlogFilter, BlogPaginatorType, BlogPostType, BlogPutType, BlogType } from "../types/blog-types"
+import { BlogFilter, BlogOutput, BlogPaginatorType, BlogPostType, BlogPutType, BlogType } from "../types/blog-types"
 
 
 
@@ -14,7 +14,7 @@ export const blogsService = {
         return blogs
     },
 
-    async findBlogByID (id: string): Promise<BlogType | null> {
+    async findBlogByID (id: string): Promise<BlogOutput | null> {
         const blog = await blogsRepository.findBlogByID(id)
 
         return blog
