@@ -62,15 +62,16 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
+  const foundBlog = await blogsService.findBlogByID(req.params.id)
   const queryFilter = postCheckQuery(req.query)
   
   const posts = await postsService.findPosts(req.params.id, queryFilter)
 
-  if (posts.totalCount == 0) {
+  if (foundBlog) {
     res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-  }
-
-  res.status(HTTP_STATUSES.OK_200).send(posts);
+  } else {
+    res.status(HTTP_STATUSES.OK_200).send(posts);
+  } 
 })
 
 blogsRouter.put('/:id',
