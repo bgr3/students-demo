@@ -1,18 +1,13 @@
 import { BlogDb, BlogFilter, BlogOutput, BlogPaginatorType, BlogPutType, BlogType } from "../types/blog-types";
 import { blogsCollection } from "../db/db";
 import { ObjectId } from "mongodb";
-import { PostDb } from "../types/post-types";
 
-const blogOptions = {
-    projection: {
-      _id: 0,
-      id:	1,
-      name: 1,
-      description: 1,
-      websiteUrl: 1,
-      createdAt: 	1,
-      isMembership: 1,
-    }
+export const blogFilter = {
+    pageNumber: 1,
+    pageSize: 10,
+    sortBy: 'createdAt',
+    sortDirection: 'desc',
+    searchNameTerm: '',
   }
 
 export const blogsRepository = {
@@ -21,7 +16,7 @@ export const blogsRepository = {
         console.log('blogs delete: ', result.deletedCount)
     },
 
-    async findBlogs (filter: BlogFilter): Promise<BlogPaginatorType> {
+    async findBlogs (filter: BlogFilter = blogFilter): Promise<BlogPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize
         const regex = new RegExp(filter.searchNameTerm, 'i')
         const dbCount = await blogsCollection.countDocuments({name: RegExp(regex)})
@@ -50,9 +45,8 @@ export const blogsRepository = {
         return null
     },
 
-    async createBlog (newblog: BlogType): Promise<string | null> {
-
-        const result = await blogsCollection.insertOne(newblog);
+    async createBlog (newBlog: BlogType): Promise<string | null> {
+        const result = await blogsCollection.insertOne(newBlog);
         console.log(result.insertedId)
         if (result.insertedId) {
             return result.insertedId.toString()

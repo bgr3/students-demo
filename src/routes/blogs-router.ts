@@ -1,9 +1,11 @@
 import {Request, Response, Router} from 'express'
 import { HTTP_STATUSES } from '../settings';
-import { blogFilter, blogsService } from '../domain/blog-service'; 
+import { blogsService } from '../domain/blog-service'; 
 import { authorizationMiddleware } from '../middlewares/authorization-middleware';
 import { blogInputValidationMiddleware, blogPostInputValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
-import { postFilter, postsService } from '../domain/post-service';
+import { postsService } from '../domain/post-service';
+import { blogCheckQuery } from '../features/blog-features';
+import { postCheckQuery } from '../features/post-features';
 
 export const blogsRouter = Router({});
 
@@ -43,37 +45,9 @@ async (req: Request, res: Response) => {
 })
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-  if (req.query.pageNumber) {
-    blogFilter.pageNumber = Number (req.query.pageNumber)
-  } else {
-    blogFilter.pageNumber = 1
-  }
-
-  if (req.query.pageSize) {
-    blogFilter.pageSize = Number (req.query.pageSize)
-  } else {
-    blogFilter.pageSize = 10
-  }
-
-  if (typeof req.query.sortBy == 'string') {
-    blogFilter.sortBy = req.query.sortBy
-  } else {
-    blogFilter.sortBy = 'createdAt'
-  }
-
-  if (typeof req.query.sortDirection === 'string') {
-    blogFilter.sortDirection = req.query.sortDirection
-  } else {
-    blogFilter.sortDirection = 'desc'
-  }
-
-  if (typeof req.query.searchNameTerm === 'string') {
-    blogFilter.searchNameTerm = req.query.searchNameTerm
-  } else {
-    blogFilter.searchNameTerm = ''
-  }
+  const queryFilter = blogCheckQuery(req.query)
   
-  res.status(HTTP_STATUSES.OK_200).send(await blogsService.findBlogs(blogFilter));
+  res.status(HTTP_STATUSES.OK_200).send(await blogsService.findBlogs(queryFilter));
 })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
@@ -88,36 +62,11 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
-  if (req.query.pageNumber) {
-    postFilter.pageNumber = Number (req.query.pageNumber)
-  } else {
-    postFilter.pageNumber = 1
-  }
+  const queryFilter = postCheckQuery(req.query)
+  
+  const posts = await postsService.findPosts(req.params.id, queryFilter)
 
-  if (req.query.pageSize) {
-    postFilter.pageSize = Number (req.query.pageSize)
-  } else {
-    postFilter.pageSize = 10
-  }
-
-  if (typeof req.query.sortBy == 'string') {
-    postFilter.sortBy = req.query.sortBy
-  } else {
-    postFilter.sortBy = 'createdAt'
-  }
-
-  if (typeof req.query.sortDirection === 'string') {
-    postFilter.sortDirection = req.query.sortDirection
-  } else {
-    postFilter.sortDirection = 'desc'
-  }
-  const posts = await postsService.findPosts(req.params.id, postFilter)
-
-  if (posts.items.length > 0) {
-    res.status(HTTP_STATUSES.OK_200).send(posts);
-    return
-  }
-  res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+  res.status(HTTP_STATUSES.OK_200).send(posts);
 })
 
 blogsRouter.put('/:id',

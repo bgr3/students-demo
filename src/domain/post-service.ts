@@ -1,26 +1,16 @@
-import { PostDb, PostOutput, PostPaginatorType, PostPostType, PostPutType, PostType } from "../types/post-types";
+import { PostDb, PostFilter, PostOutput, PostPaginatorType, PostPostType, PostPutType, PostType } from "../types/post-types";
 import { blogsService } from "./blog-service";
 import { postsRepository } from "../repositories/posts-db-repository";
 import { blogsRepository } from "../repositories/blogs-db-repository";
-
-export const postFilter = {
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'createdAt',
-    sortDirection: 'desc',
-  }
 
 export const postsService = {
     async testAllData (): Promise<void> {
         return await postsRepository.testAllData()
     },
 
-    async findPosts (blogId: string | null, filterService:any = postFilter): Promise<PostPaginatorType> {
+    async findPosts (blogId?: string | null, filterService?: PostFilter): Promise<PostPaginatorType> {
         const posts = await postsRepository.findPosts(blogId, filterService)
-        postFilter.pageNumber = 1
-        postFilter.pageSize = 10
-        postFilter.sortBy = 'createdAt'
-        postFilter.sortDirection = 'desc'
+
         return posts
     },
 
@@ -37,10 +27,10 @@ export const postsService = {
         
         if (blogName){
             const newPost = {    
-            title: body.title.trim(),
-            shortDescription: body.shortDescription.trim(),
-            content: body.content.trim(),
-            blogId: body.blogId.trim(),
+            title: body.title,
+            shortDescription: body.shortDescription,
+            content: body.content,
+            blogId: body.blogId,
             blogName:  blogName.name,
             createdAt: new Date().toISOString(),
             };
@@ -59,10 +49,10 @@ export const postsService = {
         const blogName = await blogsService.findBlogByID(body.blogId.trim())
         
         const updatePost = {             
-            title: body.title.trim(),
-            shortDescription: body.shortDescription.trim(),
-            content: body.content.trim(),
-            blogId: body.blogId.trim(),
+            title: body.title,
+            shortDescription: body.shortDescription,
+            content: body.content,
+            blogId: body.blogId,
             blogName:  blogName?.name,
         }
 

@@ -2,17 +2,11 @@ import { PostDb, PostFilter, PostOutput, PostPaginatorType, PostPutServiceType, 
 import { postsCollection } from "../db/db";
 import { ObjectId } from "mongodb";
 
-const postOptions = {
-    projection: {
-        _id: 0,
-        id:	1,
-        title:	1,
-        shortDescription: 1,
-        content: 1,
-        blogId: 1,
-        blogName: 1,
-        createdAt: 1,
-    }
+export const postFilter = {
+    pageNumber: 1,
+    pageSize: 10,
+    sortBy: 'createdAt',
+    sortDirection: 'desc',
   }
 
 export const postsRepository = {
@@ -21,7 +15,7 @@ export const postsRepository = {
         console.log('post delete: ', result.deletedCount)
     },
 
-    async findPosts (blogId: string | null, filter: PostFilter): Promise<PostPaginatorType> {
+    async findPosts (blogId: string | null = null, filter: PostFilter = postFilter): Promise<PostPaginatorType> {
         let find:any = {}
         
         if (blogId){

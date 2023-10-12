@@ -1,28 +1,15 @@
-import { ObjectId } from "mongodb"
 import { blogsRepository } from "../repositories/blogs-db-repository"
-import { BlogDb, BlogOutput, BlogPaginatorType, BlogPostType, BlogPutType, BlogType } from "../types/blog-types"
+import { BlogFilter, BlogPaginatorType, BlogPostType, BlogPutType, BlogType } from "../types/blog-types"
 
-export const blogFilter = {
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'createdAt',
-    sortDirection: 'desc',
-    searchNameTerm: '',
-  }
+
 
 export const blogsService = {
     async testAllData (): Promise<void> {
         return blogsRepository.testAllData()
     },
 
-    async findBlogs (filterService:any = blogFilter): Promise<BlogPaginatorType> {
+    async findBlogs (filterService?: BlogFilter): Promise<BlogPaginatorType> {
         const blogs = await blogsRepository.findBlogs(filterService)
-
-        blogFilter.pageNumber = 1
-        blogFilter.pageSize = 10
-        blogFilter.sortBy = 'createdAt'
-        blogFilter.sortDirection = 'desc'
-        blogFilter.searchNameTerm = ''
 
         return blogs
     },
@@ -35,9 +22,9 @@ export const blogsService = {
 
     async createBlog (body: BlogPostType): Promise<string | null> {     
         const newblog = {
-            name: body.name.trim(),
-            description: body.description.trim(),
-            websiteUrl: body.websiteUrl.trim(),
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl,
             createdAt: new Date().toISOString(),
             isMembership: false,
         };
@@ -48,9 +35,9 @@ export const blogsService = {
     async updateBlog (id: string, body: BlogPutType): Promise<Boolean> {
         
         const updateBlog = {
-            name: body.name.trim(),
-            description: body.description.trim(),
-            websiteUrl: body.websiteUrl.trim(),
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl,
         };
         
         return await blogsRepository.updateBlog(id, updateBlog)

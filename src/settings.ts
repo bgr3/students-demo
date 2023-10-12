@@ -3,6 +3,8 @@ import { videosRouter } from './routes/videos-router'
 import { testingRouter } from './routes/testing-router'
 import { blogsRouter } from './routes/blogs-router'
 import { postsRouter } from './routes/posts-router'
+import { usersRouter } from './routes/users-router'
+// import { usersRouter } from './routes/users-router'
 
 export const app = express()
 export const HTTP_STATUSES = {
@@ -17,6 +19,7 @@ export const HTTP_STATUSES = {
 }
 
 export const RouterPaths = {
+  users: '/users',
   testing: '/testing',
   videos: '/videos',
   blogs: '/blogs',
@@ -38,6 +41,7 @@ app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.testing, testingRou
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.videos, videosRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.blogs, blogsRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.posts, postsRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.users, usersRouter)
 
 
 
