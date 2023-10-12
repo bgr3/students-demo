@@ -16,8 +16,8 @@ export const userPasswordValidation =
 
 export const userEmailValidation =
     
-    body('websiteUrl')
+    body('email')
     .trim()
     .exists()
     .isLength({min:1, max: 100})
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage('WebsiteUrl length does not exist')
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage('Email length does not exist')
