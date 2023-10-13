@@ -36,6 +36,13 @@ export const usersRepository = {
         return paginator
     },
 
+    async findUserByLoginOrEmail (loginOrEmail: string): Promise<UserDb | null> {
+        const regexLoginOrEmail = new RegExp(loginOrEmail, 'i')
+        const dbResult = await usersCollection.findOne({$or : [{login: RegExp(regexLoginOrEmail)}, {email: RegExp(regexLoginOrEmail)}]})
+        
+        return dbResult
+    },
+
     async findUserByID (id: string): Promise<UserOutput | null> {
         if (ObjectId.isValid(id)) {
             const user = await usersCollection.findOne({_id: new ObjectId(id) });

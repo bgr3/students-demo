@@ -3,12 +3,18 @@ import { WithId } from "mongodb"
 export type UserType = {
     login: string,
     email: string,
+    password: string
     createdAt: string,
 }
 
 export type UserDb = WithId <UserType>
 
-export type UserOutput = UserType & {id:string}
+export type UserOutput = {
+    id:string,
+    login: string,
+    email: string,
+    createdAt: string,
+}
 
 export type UserPostType = {
     login: string,

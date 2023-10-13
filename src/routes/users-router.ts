@@ -26,16 +26,17 @@ usersRouter.post('/',
     res.status(HTTP_STATUSES.CREATED_201).send(newUser);
 })
 
-usersRouter.get('/', async (req: Request, res: Response) => {
-  const queryFilter = userCheckQuery(req.query)
-  
-  res.status(HTTP_STATUSES.OK_200).send(await usersService.findUsers(queryFilter));
+usersRouter.get('/',
+  authorizationMiddleware,
+  async (req: Request, res: Response) => {
+    const queryFilter = userCheckQuery(req.query)
+    
+    res.status(HTTP_STATUSES.OK_200).send(await usersService.findUsers(queryFilter));
 })
 
 
 usersRouter.delete('/:id',
   authorizationMiddleware,
-  inputValidationMiddleware, 
   async (req: Request, res: Response) => {
   
     const foundBlog = await usersService.deleteUser(req.params.id)

@@ -1,5 +1,5 @@
 import { usersRepository } from "../repositories/users-db-repository"
-import { UserDb, UserOutput, UserPaginatorType, UserPostType } from "../types/user-types"
+import { UserOutput, UserPaginatorType } from "../types/user-types"
 import  bcrypt  from 'bcrypt'
 
 
@@ -19,6 +19,21 @@ export const usersService = {
         const user = await usersRepository.findUserByID(id)
 
         return user
+    },
+
+    async checkCredentials(loginOrEmail: string, password: string): Promise<boolean> {
+        const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
+        
+        if (!user) return false
+        
+        const passwordSalt = await this._getSalt(user.password)
+        const passwordHash = await this._generateHash(password, passwordSalt)
+        
+        if (passwordHash !== user.password) {
+            return false
+        }
+
+        return true
     },
 
     async createUser (login: string, email: string, password: string): Promise<string | null> {     
@@ -44,5 +59,14 @@ export const usersService = {
     async _generateHash (password: string, salt: string) {
         const hash = await bcrypt.hash(password, salt)
         return hash
+    },
+
+    async _getSalt (password: string) {
+        const salt = password.match(/\$..\$..\$.{22}/)
+        console.log(password, salt)
+        if (salt) {
+            return salt.toString()
+        }
+        return ''
     }
 }
