@@ -67,7 +67,7 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
   
   const posts = await postsService.findPosts(req.params.id, queryFilter)
 
-  if (foundBlog) {
+  if (!foundBlog) {
     res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
   } else {
     res.status(HTTP_STATUSES.OK_200).send(posts);
