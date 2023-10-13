@@ -12,7 +12,7 @@ export const userCheckQuery = (query: any): UserFilter => {
         queryFilter.pageSize = Number (query.pageSize)
       }
     
-      if (typeof query.sortBy == 'string') {
+      if (typeof query.sortBy === 'string') {
         queryFilter.sortBy = query.sortBy
       }
     
