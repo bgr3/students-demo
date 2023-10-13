@@ -37,8 +37,7 @@ export const usersRepository = {
     },
 
     async findUserByLoginOrEmail (loginOrEmail: string): Promise<UserDb | null> {
-        const regexLoginOrEmail = new RegExp(loginOrEmail, 'i')
-        const dbResult = await usersCollection.findOne({$or : [{login: RegExp(regexLoginOrEmail)}, {email: RegExp(regexLoginOrEmail)}]})
+        const dbResult = await usersCollection.findOne({$or : [{login: loginOrEmail}, {email: loginOrEmail}]})
         
         return dbResult
     },

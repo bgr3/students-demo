@@ -20,7 +20,7 @@ export const HTTP_STATUSES = {
 
 export const RouterPaths = {
   users: '/users',
-  auth: 'auth',
+  auth: '/auth',
   testing: '/testing',
   videos: '/videos',
   blogs: '/blogs',

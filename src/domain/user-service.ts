@@ -28,6 +28,7 @@ export const usersService = {
         
         const passwordSalt = await this._getSalt(user.password)
         const passwordHash = await this._generateHash(password, passwordSalt)
+        console.log(passwordHash, user.password)
         
         if (passwordHash !== user.password) {
             return false
@@ -47,7 +48,7 @@ export const usersService = {
             createdAt: new Date().toISOString(),
         };
 
-        console.log(passwordHash, passwordSalt)
+        console.log('hash: ', passwordHash, 'salt: ', passwordSalt)
         
         return await usersRepository.createUser(newUser)
     },
@@ -58,14 +59,15 @@ export const usersService = {
 
     async _generateHash (password: string, salt: string) {
         const hash = await bcrypt.hash(password, salt)
+
         return hash
     },
 
     async _getSalt (password: string) {
-        const salt = password.match(/\$..\$..\$.{22}/)
-        console.log(password, salt)
+        const salt = password.match(/\$..\$..\$.{22}/g)
+        
         if (salt) {
-            return salt.toString()
+            return salt[0]
         }
         return ''
     }
