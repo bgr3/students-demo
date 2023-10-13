@@ -23,7 +23,7 @@ export const usersRepository = {
         const regexLogin = new RegExp(filter.searchLoginTerm, 'i')
         const regexEmail = new RegExp(filter.searchEmailTerm, 'i')
         const dbCount = await usersCollection.countDocuments({login: RegExp(regexLogin), email: RegExp(regexEmail)})
-        const dbResult = await usersCollection.find({login: RegExp(regexLogin), email: RegExp(regexEmail)}).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
+        const dbResult = await usersCollection.find({$or: [{login: RegExp(regexLogin)}, {email: RegExp(regexEmail)}]}).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).toArray()
 
         const paginator = {
             pagesCount: Math.ceil(dbCount / filter.pageSize),
