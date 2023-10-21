@@ -1,4 +1,4 @@
-import { commentsRepository } from "../repositories/commets-db-repository";
+import { commentsRepository } from "../repositories/comments-db-repository";
 import { postsRepository } from "../repositories/posts-db-repository";
 import { CommentOutput, CommentPaginatorType, CommentPostType, CommentPutType, CommentsFilter } from "../types/comment-types";
 import { UserOutput } from "../types/user-types";

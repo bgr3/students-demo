@@ -1,8 +1,8 @@
 import { commentsCollection } from "../db/db";
 import { ObjectId } from "mongodb";
-import { CommentDb, CommentOutput, CommentPaginatorType, CommentPostType, CommentPutType, CommentType, CommentsFilter } from "../types/comment-types";
+import { CommentDb, CommentOutput, CommentPaginatorType, CommentPostType, CommentPutType, CommentsFilter } from "../types/comment-types";
 
-export const postFilter = {
+export const commentFilter = {
     pageNumber: 1,
     pageSize: 10,
     sortBy: 'createdAt',
@@ -15,7 +15,7 @@ export const commentsRepository = {
         console.log('comments delete: ', result.deletedCount)
     },
 
-    async findComments (postId: string | null = null, filter: CommentsFilter = postFilter): Promise<CommentPaginatorType> {
+    async findComments (postId: string | null = null, filter: CommentsFilter = commentFilter): Promise<CommentPaginatorType> {
         let find:any = {}
         
         if (postId){
