@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { HTTP_STATUSES } from "../settings";
 import { usersService } from "../domain/user-service";
 import { jwtService } from "../application/jwt-service";
-import { authorizationJWTMiddleware } from "../middlewares/authorization-middleware";
+import { authenticationJWTMiddleware } from "../middlewares/authorization-middleware";
 
 export const authRouter = Router({});
 
@@ -19,7 +19,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 })
 
 authRouter.get('/me',
-authorizationJWTMiddleware,
+authenticationJWTMiddleware,
 async (req: Request, res: Response) => {
   res.status(HTTP_STATUSES.OK_200).send(req.user)
 })

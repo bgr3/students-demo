@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express'
 import { HTTP_STATUSES } from '../settings';
 import { usersService } from '../domain/user-service';
-import { authorizationMiddleware } from '../middlewares/authorization-middleware';
+import { authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { inputValidationMiddleware, userInputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { userCheckQuery } from '../features/user-features';
 
@@ -9,7 +9,7 @@ import { userCheckQuery } from '../features/user-features';
 export const usersRouter = Router({});
 
 usersRouter.post('/',
-  authorizationMiddleware,
+  authenticationMiddleware,
   userInputValidationMiddleware(),
   inputValidationMiddleware,  
   async (req: Request, res: Response) => {
@@ -27,7 +27,7 @@ usersRouter.post('/',
 })
 
 usersRouter.get('/',
-  authorizationMiddleware,
+  authenticationMiddleware,
   async (req: Request, res: Response) => {
     const queryFilter = userCheckQuery(req.query)
     
@@ -36,7 +36,7 @@ usersRouter.get('/',
 
 
 usersRouter.delete('/:id',
-  authorizationMiddleware,
+  authenticationMiddleware,
   async (req: Request, res: Response) => {
   
     const foundBlog = await usersService.deleteUser(req.params.id)

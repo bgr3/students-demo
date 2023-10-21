@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUSES } from "../settings";
 import { checkAuthorization, checkJWTAuthorization } from "../validation/authorization-validation";
+import { commentsService } from "../domain/comment-service";
 
-export const authorizationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     
     if (await checkAuthorization(req.headers.authorization)){
         next()
@@ -11,7 +12,7 @@ export const authorizationMiddleware = async (req: Request, res: Response, next:
     }
 }
 
-export const authorizationJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticationJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const user = await checkJWTAuthorization(req.headers.authorization)
     if (user){
         req.user = user
@@ -19,4 +20,18 @@ export const authorizationJWTMiddleware = async (req: Request, res: Response, ne
     } else {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
     }
+}
+
+export const authorizationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const comment = await commentsService.findCommentById(req.params.id)
+    
+    if (comment) {
+        if (comment.commentatorInfo.userId === req.user!.id) {
+            next()
+        } else {
+            res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
+        }
+    }
+
+    next()    
 }

@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express'
 import { HTTP_STATUSES } from '../settings';
 import { blogsService } from '../domain/blog-service'; 
-import { authorizationMiddleware } from '../middlewares/authorization-middleware';
+import { authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { blogInputValidationMiddleware, blogPostInputValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { postsService } from '../domain/post-service';
 import { blogCheckQuery } from '../features/blog-features';
@@ -10,7 +10,7 @@ import { postCheckQuery } from '../features/post-features';
 export const blogsRouter = Router({});
 
 blogsRouter.post('/',
-  authorizationMiddleware,
+authenticationMiddleware,
   blogInputValidationMiddleware(),
   inputValidationMiddleware,  
   async (req: Request, res: Response) => {
@@ -26,7 +26,7 @@ blogsRouter.post('/',
 })
 
 blogsRouter.post('/:id/posts',
-authorizationMiddleware,
+authenticationMiddleware,
 blogPostInputValidationMiddleware(),
 inputValidationMiddleware,
 async (req: Request, res: Response) => {
@@ -75,7 +75,7 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
 })
 
 blogsRouter.put('/:id',
-  authorizationMiddleware,
+  authenticationMiddleware,
   blogInputValidationMiddleware(),
   inputValidationMiddleware, 
   async (req: Request, res: Response) => {
@@ -96,7 +96,7 @@ blogsRouter.put('/:id',
 })  
   
 blogsRouter.delete('/:id',
-  authorizationMiddleware,
+  authenticationMiddleware,
   inputValidationMiddleware, 
   async (req: Request, res: Response) => {
   

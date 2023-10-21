@@ -1,14 +1,12 @@
 import { Request, Response, Router } from "express";
 import { HTTP_STATUSES } from "../settings";
-import { authorizationJWTMiddleware } from "../middlewares/authorization-middleware";
+import { authenticationJWTMiddleware, authorizationMiddleware } from "../middlewares/authorization-middleware";
 import { commentsService } from "../domain/comment-service";
 import { commentInputValidationMiddleware, inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 
 export const commentsRouter = Router({});
 
-commentsRouter.get('/:id', 
-authorizationJWTMiddleware,
-async (req: Request, res: Response) => {
+commentsRouter.get('/:id', async (req: Request, res: Response) => {
   
   const foundComment = await commentsService.findCommentById(req.params.id)
   
@@ -20,7 +18,8 @@ async (req: Request, res: Response) => {
 })
 
 commentsRouter.put('/:id',
-authorizationJWTMiddleware,
+authenticationJWTMiddleware,
+authorizationMiddleware,
 commentInputValidationMiddleware(),
 inputValidationMiddleware,
 async (req: Request, res: Response) => {
@@ -37,7 +36,8 @@ async (req: Request, res: Response) => {
   
 
 commentsRouter.delete('/:id',
-authorizationJWTMiddleware,
+authenticationJWTMiddleware,
+authorizationMiddleware,
 async (req: Request, res: Response) => {
 
   const foundComment = await commentsService.deleteComment(req.params.id)

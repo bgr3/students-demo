@@ -2,14 +2,14 @@ import {Request, Response, Router} from 'express'
 import { HTTP_STATUSES } from '../settings';
 import { postsService } from '../domain/post-service';
 import { commentInputValidationMiddleware, inputValidationMiddleware, postInputValidationMiddleware } from '../middlewares/input-validation-middleware';
-import { authorizationJWTMiddleware, authorizationMiddleware } from '../middlewares/authorization-middleware';
+import { authenticationJWTMiddleware, authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { postCheckQuery } from '../features/post-features';
 import { commentsService } from '../domain/comment-service';
 
 export const postsRouter = Router({});
 
 postsRouter.post('/',                                    //create new post
-  authorizationMiddleware,
+  authenticationMiddleware,
   postInputValidationMiddleware(),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
@@ -27,8 +27,8 @@ postsRouter.post('/',                                    //create new post
 })
 
 postsRouter.post('/:postId/comments',                     //create new comment
-  authorizationJWTMiddleware,
-  commentInputValidationMiddleware,
+  authenticationJWTMiddleware,
+  commentInputValidationMiddleware(),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
     let result = await commentsService.createComment(req.body, req.user!, req.params.postId)
@@ -76,7 +76,7 @@ postsRouter.get('/:id/comments', async (req: Request, res: Response) => {      /
 })
 
 postsRouter.put('/:id',
-  authorizationMiddleware,
+  authenticationMiddleware,
   postInputValidationMiddleware(),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
@@ -93,7 +93,7 @@ postsRouter.put('/:id',
   
 
 postsRouter.delete('/:id',
-  authorizationMiddleware,
+  authenticationMiddleware,
   async (req: Request, res: Response) => {
   
     const foundPost = await postsService.deletePost(req.params.id)
