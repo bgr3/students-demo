@@ -28,7 +28,7 @@ postsRouter.post('/',                                    //create new post
 
 postsRouter.post('/:postId/comments',                     //create new comment
   authorizationJWTMiddleware,
-  commentInputValidationMiddleware(),
+  commentInputValidationMiddleware,
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
     let result = await commentsService.createComment(req.body, req.user!, req.params.postId)
