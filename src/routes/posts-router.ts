@@ -5,6 +5,7 @@ import { commentInputValidationMiddleware, inputValidationMiddleware, postInputV
 import { authenticationJWTMiddleware, authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { postCheckQuery } from '../features/post-features';
 import { commentsService } from '../domain/comment-service';
+import { postValidationMiddleware } from '../middlewares/comment-validation-middleware';
 
 export const postsRouter = Router({});
 
@@ -28,9 +29,11 @@ postsRouter.post('/',                                    //create new post
 
 postsRouter.post('/:postId/comments',                     //create new comment
   authenticationJWTMiddleware,
+  postValidationMiddleware,
   commentInputValidationMiddleware(),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
+
     let result = await commentsService.createComment(req.body, req.user!, req.params.postId)
     
     if (!result) {
