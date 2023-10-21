@@ -26,7 +26,7 @@ postsRouter.post('/',                                    //create new post
     res.status(HTTP_STATUSES.CREATED_201).send(newPost);
 })
 
-postsRouter.post('/:postId/comments',                    //create new comment
+postsRouter.post('/:postId/comments',                     //create new comment
   authorizationJWTMiddleware,
   commentInputValidationMiddleware(),
   inputValidationMiddleware,

@@ -18,7 +18,7 @@ export const checkAuthorization = (token: string | undefined) => {
 }
 
 export const checkJWTAuthorization = async (token: string | undefined) => {
-    if (!token) {
+    if (!token) { 
         return false
     }
 

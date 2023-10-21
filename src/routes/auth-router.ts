@@ -15,7 +15,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
       return
     } 
     const token = await jwtService.createJWT(user)  
-    res.status(HTTP_STATUSES.CREATED_201).send(token);
+    res.status(HTTP_STATUSES.CREATED_201).send(token); 
 })
 
 authRouter.get('/me',

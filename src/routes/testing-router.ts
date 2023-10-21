@@ -8,7 +8,7 @@ import { commentsService } from '../domain/comment-service'
 
 export const testingRouter = Router()
 
-testingRouter.delete('/all-data', async (req: Request, res: Response) => {
+testingRouter.delete('/all-data', async (req: Request, res: Response) => { 
     videosRepository.testAllData
     await blogsService.testAllData()
     await postsService.testAllData()
