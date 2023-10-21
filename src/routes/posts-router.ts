@@ -1,13 +1,14 @@
 import {Request, Response, Router} from 'express'
 import { HTTP_STATUSES } from '../settings';
 import { postsService } from '../domain/post-service';
-import { inputValidationMiddleware, postInputValidationMiddleware } from '../middlewares/input-validation-middleware';
-import { authorizationMiddleware } from '../middlewares/authorization-middleware';
+import { commentInputValidationMiddleware, inputValidationMiddleware, postInputValidationMiddleware } from '../middlewares/input-validation-middleware';
+import { authorizationJWTMiddleware, authorizationMiddleware } from '../middlewares/authorization-middleware';
 import { postCheckQuery } from '../features/post-features';
+import { commentsService } from '../domain/comment-service';
 
 export const postsRouter = Router({});
 
-postsRouter.post('/',
+postsRouter.post('/',                                    //create new post
   authorizationMiddleware,
   postInputValidationMiddleware(),
   inputValidationMiddleware,
@@ -21,6 +22,23 @@ postsRouter.post('/',
     } 
 
     const newPost = await postsService.findPostById(result)
+      
+    res.status(HTTP_STATUSES.CREATED_201).send(newPost);
+})
+
+postsRouter.post('/:postId/comments',                    //create new comment
+  authorizationJWTMiddleware,
+  commentInputValidationMiddleware(),
+  inputValidationMiddleware,
+  async (req: Request, res: Response) => {
+    let result = await commentsService.createComment(req.body, req.user!, req.params.postId)
+    
+    if (!result) {
+      res.status(HTTP_STATUSES.BAD_REQUEST_400);
+      return
+    } 
+
+    const newPost = await commentsService.findCommentById(result)
       
     res.status(HTTP_STATUSES.CREATED_201).send(newPost);
 })
@@ -44,6 +62,18 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 })
 
+postsRouter.get('/:id/comments', async (req: Request, res: Response) => {      //returns comments for specified post
+  const queryFilter = postCheckQuery(req.query)
+  const post = await postsService.findPostById(req.params.id)
+
+  const foundcomments = await commentsService.findComments(req.params.id, queryFilter)
+  
+  if (post) {      
+    res.status(HTTP_STATUSES.OK_200).send(foundcomments);
+  } else {
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+  }
+})
 
 postsRouter.put('/:id',
   authorizationMiddleware,

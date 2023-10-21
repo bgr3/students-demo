@@ -1,5 +1,5 @@
 import { blogsRepository } from "../repositories/blogs-db-repository"
-import { BlogFilter, BlogOutput, BlogPaginatorType, BlogPostType, BlogPutType, BlogType } from "../types/blog-types"
+import { BlogFilter, BlogOutput, BlogPaginatorType, BlogPostType, BlogPutType } from "../types/blog-types"
 
 
 

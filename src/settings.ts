@@ -5,6 +5,7 @@ import { blogsRouter } from './routes/blogs-router'
 import { postsRouter } from './routes/posts-router'
 import { usersRouter } from './routes/users-router'
 import { authRouter } from './routes/auth-router'
+import { commentsRouter } from './routes/comments-router'
 
 export const app = express()
 export const HTTP_STATUSES = {
@@ -19,6 +20,7 @@ export const HTTP_STATUSES = {
 }
 
 export const RouterPaths = {
+  comments: '/comments',
   users: '/users',
   auth: '/auth',
   testing: '/testing',
@@ -26,7 +28,7 @@ export const RouterPaths = {
   blogs: '/blogs',
   posts: '/posts',
   api: '/api',
-  hometask: /*'/hometask_01','/ht_02''/hometask_03''/hometask_04'*/'/hometask_05',
+  hometask: /*'/hometask_01','/ht_02''/hometask_03''/hometask_04''/hometask_05'*/'/hometask_06',
 }
 
 app.use(express.json())
@@ -44,6 +46,14 @@ app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.blogs, blogsRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.posts, postsRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.users, usersRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.auth, authRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.comments, commentsRouter)
 
+if (!process.env.JWT_SECRET) {
+  throw new Error('! JWT doesn`t found')
+}
+
+export const settings = {
+  JWT_SECRET: process.env.JWT_SECRET
+}
 
 

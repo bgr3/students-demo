@@ -1,8 +1,9 @@
-import {Request, Response, NextFunction } from "express";
+import {Request, Response, NextFunction} from "express";
 import { ValidationChain, validationResult } from "express-validator";
 import { postBlogIdValidation, postContentValidation, postTitleValidation, postShortDescriptionValidation } from "../validation/post-validation";
 import { blogDescriptionValidation, blogTitleValidation, blogWebsiteUrlValidation } from "../validation/blog-validation";
 import { userEmailValidation, userLoginValidation, userPasswordValidation } from "../validation/user-validation";
+import { commentContentValidation } from "../validation/comment-validation";
 
 class Messages {
     message: string | undefined;
@@ -61,4 +62,8 @@ export const userInputValidationMiddleware = (): ValidationChain[] => [
     userLoginValidation,
     userPasswordValidation,
     userEmailValidation,
+]
+
+export const commentInputValidationMiddleware = (): ValidationChain[] => [
+    commentContentValidation,
 ]

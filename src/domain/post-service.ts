@@ -1,4 +1,4 @@
-import { PostDb, PostFilter, PostOutput, PostPaginatorType, PostPostType, PostPutType, PostType } from "../types/post-types";
+import { PostFilter, PostOutput, PostPaginatorType, PostPostType, PostPutType } from "../types/post-types";
 import { blogsService } from "./blog-service";
 import { postsRepository } from "../repositories/posts-db-repository";
 import { blogsRepository } from "../repositories/blogs-db-repository";

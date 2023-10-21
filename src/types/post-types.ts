@@ -48,3 +48,9 @@ export type PostPaginatorType = {
     totalCount: number,
     items: PostOutput[],
 }
+
+export type PostBlogPostType = {
+    title:	string,
+    shortDescription: string,
+    content: string,
+}

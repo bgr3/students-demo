@@ -7,11 +7,12 @@ export const userLoginValidation =
     .trim()
     .isLength({min:3, max: 10})
     .matches(/^[a-zA-Z0-9_-]*$/).withMessage('login does not exist')
-    .custom(value => {
-        return usersRepository.findUserByLoginOrEmail(value).then(user => {
+    .custom(async value => {
+        return await usersRepository.findUserByLoginOrEmail(value).then(user => {
           if (user) {
             return Promise.reject('Login already in use');
           }
+          return value
         })
     })
 
@@ -29,10 +30,11 @@ export const userEmailValidation =
     .exists()
     .isLength({min:1, max: 100}).withMessage('Email length does not exist')
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage('Email does not exist')
-    .custom(value => {
-        return usersRepository.findUserByLoginOrEmail(value).then(user => {
+    .custom(async value => {
+        return await usersRepository.findUserByLoginOrEmail(value).then(user => {
           if (user) {
             return Promise.reject('E-mail already in use');
           }
+          return value  //true проверить
         })
     })

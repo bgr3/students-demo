@@ -1,5 +1,5 @@
 import { usersRepository } from "../repositories/users-db-repository"
-import { UserOutput, UserPaginatorType } from "../types/user-types"
+import { UserDb, UserOutput, UserPaginatorType } from "../types/user-types"
 import  bcrypt  from 'bcrypt'
 
 
@@ -21,20 +21,19 @@ export const usersService = {
         return user
     },
 
-    async checkCredentials(loginOrEmail: string, password: string): Promise<boolean> {
+    async checkCredentials(loginOrEmail: string, password: string): Promise<UserDb | null> {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
         
-        if (!user) return false
+        if (!user) return null
         
         const passwordSalt = await this._getSalt(user.password)
         const passwordHash = await this._generateHash(password, passwordSalt)
-        console.log(passwordHash, user.password)
         
         if (passwordHash !== user.password) {
-            return false
+            return null
         }
 
-        return true
+        return user
     },
 
     async createUser (login: string, email: string, password: string): Promise<string | null> {     
@@ -47,8 +46,6 @@ export const usersService = {
             email: email,
             createdAt: new Date().toISOString(),
         };
-
-        console.log('hash: ', passwordHash, 'salt: ', passwordSalt)
         
         return await usersRepository.createUser(newUser)
     },
