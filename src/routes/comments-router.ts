@@ -21,7 +21,6 @@ commentsRouter.get('/:id', async (req: Request, res: Response) => {
 commentsRouter.put('/:id',
 authenticationJWTMiddleware,
 authorizationMiddleware,
-postValidationMiddleware,
 commentInputValidationMiddleware(),
 inputValidationMiddleware,
 async (req: Request, res: Response) => {
