@@ -91,9 +91,6 @@ export const postsRepository = {
     }
 }
 
-function findBlogById(arg0: string) {
-    throw new Error("Function not implemented.");
-}
 
 const postMapper = (post: PostDb): PostOutput => {
     return {

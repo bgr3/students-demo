@@ -28,8 +28,10 @@ export const authorizationMiddleware = async (req: Request, res: Response, next:
     if (comment) {
         if (comment.commentatorInfo.userId === req.user!.id) {
             next()
+            return
         } else {
             res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
+            return
         }
     }
 
