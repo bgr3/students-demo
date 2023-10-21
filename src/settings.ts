@@ -33,7 +33,7 @@ export const RouterPaths = {
 
 app.use(express.json())
 
-//app.use(authGuardMiddleware)
+//app.use(authGuardMiddleware) 
 
 app.get('/', (req: Request, res: Response) => {
   let hello = `Hello!`;
