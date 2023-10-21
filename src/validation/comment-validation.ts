@@ -9,12 +9,12 @@ export const commentContentValidation =
 
 export const commentPostPostIdValidation =
     
-    param('id')
+    param('postId')
     .trim()
     .isLength({min:1})
     .custom(async value => {
         return await postsService.findPostById(value).then(user => {
-          if (user) {
+          if (!user) {
             return Promise.reject('Post does not exist');
           }
           return value
