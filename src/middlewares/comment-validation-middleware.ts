@@ -7,5 +7,8 @@ export const postValidationMiddleware = async (req: Request, res: Response, next
 
     if (!post) {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+      return
     }
+
+    next()
 }
