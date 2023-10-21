@@ -68,3 +68,7 @@ export const commentInputValidationMiddleware = (): ValidationChain[] => [
     commentContentValidation,
     commentPostPostIdValidation,
 ]
+
+export const commentUpdateValidationMiddleware = (): ValidationChain[] => [
+    commentContentValidation,
+]

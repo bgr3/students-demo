@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { HTTP_STATUSES } from "../settings";
 import { authenticationJWTMiddleware, authorizationMiddleware } from "../middlewares/authorization-middleware";
 import { commentsService } from "../domain/comment-service";
-import { commentInputValidationMiddleware, inputValidationMiddleware } from "../middlewares/input-validation-middleware";
+import { commentInputValidationMiddleware, commentUpdateValidationMiddleware, inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 
 export const commentsRouter = Router({});
 
@@ -20,7 +20,7 @@ commentsRouter.get('/:id', async (req: Request, res: Response) => {
 commentsRouter.put('/:id',
 authenticationJWTMiddleware,
 authorizationMiddleware,
-commentInputValidationMiddleware(),
+commentUpdateValidationMiddleware(),
 inputValidationMiddleware,
 async (req: Request, res: Response) => {
 
