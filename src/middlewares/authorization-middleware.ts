@@ -17,6 +17,7 @@ export const authenticationJWTMiddleware = async (req: Request, res: Response, n
     if (user){
         req.user = user
         next()
+        return
     } else {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
     }

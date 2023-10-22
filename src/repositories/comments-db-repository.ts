@@ -1,6 +1,6 @@
 import { commentsCollection } from "../db/db";
 import { ObjectId } from "mongodb";
-import { CommentDb, CommentOutput, CommentPaginatorType, CommentPostType, CommentPutType, CommentsFilter } from "../types/comment-types";
+import { CommentDb, CommentOutput, CommentPaginatorType, CommentPostType, CommentPutType, CommentType, CommentsCollection, CommentsFilter } from "../types/comment-types";
 
 export const commentFilter = {
     pageNumber: 1,
@@ -52,7 +52,7 @@ export const commentsRepository = {
         return null
     },
 
-    async createComment (newComment: CommentPostType): Promise<string | null> {
+    async createComment (newComment: CommentsCollection): Promise<string | null> {
         const result = await commentsCollection.insertOne(newComment);
         console.log(result.insertedId)
         

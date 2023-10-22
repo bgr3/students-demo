@@ -16,13 +16,7 @@ export type CommentDb = WithId <CommentsCollection>
 export type CommentOutput = CommentType & {id: string}
 
 export type CommentPostType = {
-    postId: string
     content: string,
-    commentatorInfo: {
-        userId: string,
-        userLogin: string
-    },
-    createdAt: string
 }
 
 export type CommentPutType = {

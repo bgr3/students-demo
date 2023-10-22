@@ -3,6 +3,7 @@ import { HTTP_STATUSES } from "../settings";
 import { usersService } from "../domain/user-service";
 import { jwtService } from "../application/jwt-service";
 import { authenticationJWTMiddleware } from "../middlewares/authorization-middleware";
+import { UserMe } from "../types/user-types";
 
 export const authRouter = Router({});
 
@@ -21,5 +22,10 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 authRouter.get('/me',
 authenticationJWTMiddleware,
 async (req: Request, res: Response) => {
-  res.status(HTTP_STATUSES.OK_200).send(req.user)
+  let user: UserMe = {
+    "email": req.user!.email,
+    "login": req.user!.email,
+    "userId": req.user!.id
+  } 
+  res.status(HTTP_STATUSES.OK_200).send(user)
 })

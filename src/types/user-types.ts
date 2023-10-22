@@ -38,3 +38,9 @@ export type UserPaginatorType = {
     totalCount: number,
     items: UserOutput[],
 }
+
+export type UserMe = {
+    email: string,
+    login: string,
+    userId: string,
+}
