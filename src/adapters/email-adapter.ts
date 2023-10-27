@@ -8,8 +8,8 @@ export const emailAdapter = {
             port: 465,
             secure: true,
             auth: {
-                user: 'bgr666@gmail.com',
-                pass: 'psui qcye ljzl emak'
+                user: process.env.USERSMTP,
+                pass: process.env.PASSSMTP
             }
         });
     
