@@ -4,6 +4,7 @@ import { postBlogIdValidation, postContentValidation, postTitleValidation, postS
 import { blogDescriptionValidation, blogTitleValidation, blogWebsiteUrlValidation } from "../validation/blog-validation";
 import { userEmailValidation, userLoginValidation, userPasswordValidation } from "../validation/user-validation";
 import { commentContentValidation } from "../validation/comment-validation";
+import { authEmailConfirmValidation, authReSendEmailConfirmValidation } from "../validation/auth-validation";
 
 class Messages {
     message: string | undefined;
@@ -66,4 +67,12 @@ export const userInputValidationMiddleware = (): ValidationChain[] => [
 
 export const commentInputValidationMiddleware = (): ValidationChain[] => [
     commentContentValidation,
+]
+
+export const authInputValidationMiddleware = (): ValidationChain[] => [
+    authEmailConfirmValidation
+]
+
+export const authReSendValidationMiddleware = (): ValidationChain[] => [
+    authReSendEmailConfirmValidation
 ]

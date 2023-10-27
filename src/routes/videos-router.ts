@@ -5,14 +5,6 @@ import { videosRepository } from '../repositories/videos-repository';
 
 export const videosRouter = Router({});
 
-// export const authGuardMiddleware = (req: Request, res: Response, next: NextFunction) => {
-//   if (req.query.token === '123') {
-//     next();
-//   } else {
-//     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED);
-//   }
-// }
-
 videosRouter.post('/', (req: Request, res: Response) => {
   
   let checkRequest = videosRepository.createVideo(req.body)

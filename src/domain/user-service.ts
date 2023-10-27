@@ -1,6 +1,8 @@
 import { usersRepository } from "../repositories/users-db-repository"
 import { UserDb, UserOutput, UserPaginatorType } from "../types/user-types"
 import  bcrypt  from 'bcrypt'
+import { v4 as uuidv4 } from 'uuid'
+import add from 'date-fns/add'
 
 
 
@@ -36,7 +38,7 @@ export const usersService = {
         return user
     },
 
-    async createUser (login: string, email: string, password: string): Promise<string | null> {     
+    async createUser (login: string, email: string, password: string, isSuperAdmin: boolean = false): Promise<string | null> {     
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(password, passwordSalt)
 
@@ -45,6 +47,16 @@ export const usersService = {
             password: passwordHash,
             email: email,
             createdAt: new Date().toISOString(),
+            emailConfirmation : {
+                confirmationCode: uuidv4(),
+                expirationDate: add(new Date(), {
+                    minutes: 5
+                }),
+                isConfirmed: isSuperAdmin,
+                nextSend: add(new Date(), {
+                    minutes: 5
+                }),
+            }
         };
         
         return await usersRepository.createUser(newUser)

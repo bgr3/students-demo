@@ -12,7 +12,7 @@ export const postFilter = {
 export const postsRepository = {
     async testAllData (): Promise<void> {
         const result = await postsCollection.deleteMany({})
-        console.log('post delete: ', result.deletedCount)
+        //console.log('post delete: ', result.deletedCount)
     },
 
     async findPosts (blogId: string | null = null, filter: PostFilter = postFilter): Promise<PostPaginatorType> {
@@ -54,7 +54,7 @@ export const postsRepository = {
 
     async createPost (newPost: PostType): Promise<string | null> {
         const result = await postsCollection.insertOne(newPost);
-        console.log(result.insertedId)
+        //console.log(result.insertedId)
         
         if (result.insertedId){
             return result.insertedId.toString()

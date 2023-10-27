@@ -12,7 +12,7 @@ export const commentFilter = {
 export const commentsRepository = {
     async testAllData (): Promise<void> {
         const result = await commentsCollection.deleteMany({})
-        console.log('comments delete: ', result.deletedCount)
+        //console.log('comments delete: ', result.deletedCount)
     },
 
     async findComments (postId: string | null = null, filter: CommentsFilter = commentFilter): Promise<CommentPaginatorType> {
@@ -54,7 +54,7 @@ export const commentsRepository = {
 
     async createComment (newComment: CommentsCollection): Promise<string | null> {
         const result = await commentsCollection.insertOne(newComment);
-        console.log(result.insertedId)
+        //console.log(result.insertedId)
         
         if (result.insertedId){
             return result.insertedId.toString()

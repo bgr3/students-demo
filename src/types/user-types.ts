@@ -5,6 +5,12 @@ export type UserType = {
     email: string,
     password: string
     createdAt: string,
+    emailConfirmation : {
+        confirmationCode: string,
+        expirationDate: object,
+        isConfirmed: boolean,
+        nextSend: object
+    }
 }
 
 export type UserDb = WithId <UserType>

@@ -1,5 +1,4 @@
-import { body, param} from "express-validator"
-import { postsService } from "../domain/post-service"
+import { body } from "express-validator"
 
 export const commentContentValidation = 
     

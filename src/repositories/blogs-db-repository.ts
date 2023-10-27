@@ -13,7 +13,7 @@ export const blogFilter = {
 export const blogsRepository = {
     async testAllData (): Promise<void> {
         const result = await blogsCollection.deleteMany({})
-        console.log('blogs delete: ', result.deletedCount)
+        //console.log('blogs delete: ', result.deletedCount)
     },
 
     async findBlogs (filter: BlogFilter = blogFilter): Promise<BlogPaginatorType> {
@@ -47,7 +47,7 @@ export const blogsRepository = {
 
     async createBlog (newBlog: BlogType): Promise<string | null> {
         const result = await blogsCollection.insertOne(newBlog);
-        console.log(result.insertedId)
+        //console.log(result.insertedId)
         if (result.insertedId) {
             return result.insertedId.toString()
         } else {

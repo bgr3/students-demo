@@ -15,7 +15,7 @@ export const userFilter = {
 export const usersRepository = {
     async testAllData (): Promise<void> {
         const result = await usersCollection.deleteMany({})
-        console.log('users delete: ', result.deletedCount)
+        //console.log('users delete: ', result.deletedCount)
     },
 
     async findUsers (filter: UserFilter = userFilter): Promise<UserPaginatorType> {
@@ -42,6 +42,24 @@ export const usersRepository = {
         return dbResult
     },
 
+    async findUserDbByID (id: string): Promise<UserDb | null> {
+        if (ObjectId.isValid(id)) {
+            const user = await usersCollection.findOne({_id: new ObjectId(id) });
+            if (user) {
+                return user           
+            }
+            return user
+        }
+
+        return null
+    },
+
+    async findUserByConfirmationCode (code: string): Promise<UserDb | null> {
+        const dbResult = await usersCollection.findOne({'emailConfirmation.confirmationCode': code})
+        
+        return dbResult
+    },
+
     async findUserByID (id: string): Promise<UserOutput | null> {
         if (ObjectId.isValid(id)) {
             const user = await usersCollection.findOne({_id: new ObjectId(id) });
@@ -57,12 +75,26 @@ export const usersRepository = {
     async createUser (newUser: UserType): Promise<string | null> {
 
         const result = await usersCollection.insertOne(newUser);
-        console.log(result.insertedId)
+        //console.log(result.insertedId)
         if (result.insertedId) {
             return result.insertedId.toString()
         } else {
             return null
         }
+    },
+
+    async updateConfirmation (userId: ObjectId): Promise<boolean> {
+        if (ObjectId.isValid(userId)) {
+            const result = await usersCollection.updateOne({userId}, { $set: {'emailConfirmation.isConfirmed': true}})
+
+            if (result.matchedCount) {
+                return true
+            }
+
+        
+        }
+
+        return false
     },
 
     async deleteUser (id: string): Promise<Boolean> {
