@@ -44,7 +44,7 @@ export const usersRepository = {
 
     async findUserDbByID (id: string): Promise<UserDb | null> {
         if (ObjectId.isValid(id)) {
-            const user = await usersCollection.findOne({_id: new ObjectId(id) });
+            const user = await usersCollection.findOne({_id: new ObjectId(id)});
             if (user) {
                 return user           
             }
@@ -84,15 +84,18 @@ export const usersRepository = {
     },
 
     async updateConfirmation (userId: ObjectId): Promise<boolean> {
-        if (ObjectId.isValid(userId)) {
-            const result = await usersCollection.updateOne({userId}, { $set: {'emailConfirmation.isConfirmed': true}})
+        const result = await usersCollection.updateOne({_id: userId}, { $set: {'emailConfirmation.isConfirmed': true}})
 
-            if (result.matchedCount) {
-                return true
-            }
+        if (result.matchedCount) return true
 
-        
-        }
+        return false
+    },
+
+    async resendConfirmationCode (userId: ObjectId, code: string): Promise<boolean> {
+        const result = await usersCollection.updateOne({_id: userId}, { $set: {'emailConfirmation.confirmationCode': code}})
+
+        if (result.matchedCount) return true
+
 
         return false
     },

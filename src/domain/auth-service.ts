@@ -1,5 +1,6 @@
 import { emailManager } from "../managers/email-manager"
 import { usersRepository } from "../repositories/users-db-repository"
+import { v4 as uuidv4 } from 'uuid'
 
 export const authService = {
     async sendEmail (email: string, subject?: string, message?: string, html?: string) {
@@ -24,11 +25,17 @@ export const authService = {
     },
 
     async ReSendEmail(email: string): Promise<boolean> {
-        let user = await usersRepository.findUserByLoginOrEmail(email)
+        const user = await usersRepository.findUserByLoginOrEmail(email)
 
         if (!user) return false
 
-        await emailManager.sendRegistrationEmail(user.emailConfirmation.confirmationCode, user.email)
+        const code = uuidv4()
+
+        let result = await usersRepository.resendConfirmationCode(user._id, code)
+
+        if (!result) return false        
+
+        await emailManager.sendRegistrationEmail(code, user.email)
 
         return true
     }

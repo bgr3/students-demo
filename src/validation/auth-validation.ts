@@ -24,7 +24,7 @@ export const authReSendEmailConfirmValidation =
         return  await usersRepository.findUserByLoginOrEmail(value).then(user => {
             if (!user) return Promise.reject('User doesn`t exist');
             if (user.emailConfirmation.isConfirmed) return Promise.reject('User already confirmed');
-            if (user.emailConfirmation.nextSend < new Date()) return Promise.reject('too often');
+            if (user.emailConfirmation.nextSend > new Date()) return Promise.reject('too often');
           return value
         })
     })

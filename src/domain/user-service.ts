@@ -54,7 +54,7 @@ export const usersService = {
                 }),
                 isConfirmed: isSuperAdmin,
                 nextSend: add(new Date(), {
-                    minutes: 5
+                    seconds: 0
                 }),
             }
         };

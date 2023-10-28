@@ -14,12 +14,13 @@ authRouter.post('/login', async (req: Request, res: Response) => {
     
     let user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
-    if (user?.emailConfirmation.isConfirmed) {}  //what there?
-    
     if (!user) {
       res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
       return
     } 
+
+    //if (!user.emailConfirmation.isConfirmed) {}  //what there?
+
     const token = await jwtService.createJWT(user)  
     res.status(HTTP_STATUSES.OK_200).send(token); 
 })
