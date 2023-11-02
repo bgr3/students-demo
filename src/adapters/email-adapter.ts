@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer'
-import { RouterPaths } from '../settings';
 
 export const emailAdapter = {
     async sendEmail (email: string, subject?: string, message?: string, html?: string) {

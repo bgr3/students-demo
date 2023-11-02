@@ -17,8 +17,14 @@ export const usersService = {
         return blogs
     },
 
-    async findUserByID (id: string): Promise<UserOutput| null> {
+    async findUserByID (id: string): Promise<UserOutput|null> {
         const user = await usersRepository.findUserByID(id)
+
+        return user
+    },
+
+    async findUserDbByID (id: string): Promise<UserDb|null> {
+        let user = await usersRepository.findUserDbByID(id)
 
         return user
     },
@@ -56,7 +62,8 @@ export const usersService = {
                 nextSend: add(new Date(), {
                     seconds: 0
                 }),
-            }
+            },
+            JWTTokens: []
         };
         
         return await usersRepository.createUser(newUser)

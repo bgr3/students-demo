@@ -1,7 +1,7 @@
 import { commentsRepository } from "../repositories/comments-db-repository";
 import { postsRepository } from "../repositories/posts-db-repository";
 import { CommentOutput, CommentPaginatorType, CommentPostType, CommentPutType, CommentsFilter } from "../types/comment-types";
-import { UserOutput } from "../types/user-types";
+import { UserDb, UserOutput } from "../types/user-types";
 
 export const commentsService = {
     async testAllData (): Promise<void> {
@@ -21,7 +21,7 @@ export const commentsService = {
 
     },
 
-    async createComment (body: CommentPostType, user: UserOutput, postId: string): Promise<string | null> {
+    async createComment (body: CommentPostType, user: UserDb, postId: string): Promise<string | null> {
         
         const post = await postsRepository.findPostByID(postId)
         
@@ -30,7 +30,7 @@ export const commentsService = {
                 postId: post.id,
                 content: body.content,
                 commentatorInfo: {
-                    userId: user.id,
+                    userId: user._id.toString(),
                     userLogin: user.login
             },
             createdAt: new Date().toISOString(),

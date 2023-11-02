@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUSES } from "../settings";
 import { checkAuthorization, checkJWTAuthorization } from "../validation/authorization-validation";
 import { commentsService } from "../domain/comment-service";
+import { jwtService } from "../application/jwt-service";
+import { usersService } from "../domain/user-service";
 
 export const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     
@@ -14,10 +16,32 @@ export const authenticationMiddleware = async (req: Request, res: Response, next
 
 export const authenticationJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const user = await checkJWTAuthorization(req.headers.authorization)
-    if (user){
-        req.user = user
-        next()
-        return
+    if (user) {
+        for (let i = 0; i < user.JWTTokens.length; i ++){
+            if (user.JWTTokens[i].acsessToken === req.headers.authorization?.split(' ')[1]) {
+                req.user = user
+                next()
+                return
+            }
+        }
+    } else {
+        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+    }
+}
+
+export const authenticationRefreshJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refresh_token
+    const userId = await jwtService.validateRefreshToken(refreshToken)
+    const user = await usersService.findUserDbByID(userId)
+
+    if (user) {
+        for (let i = 0; i < user.JWTTokens.length; i ++){
+            if (user.JWTTokens[i].refreshToken === refreshToken) {
+                req.user = user
+                next()
+                return
+            }
+        }
     } else {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
     }
@@ -27,7 +51,7 @@ export const authorizationMiddleware = async (req: Request, res: Response, next:
     const comment = await commentsService.findCommentById(req.params.id)
     
     if (comment) {
-        if (comment.commentatorInfo.userId === req.user!.id) {
+        if (comment.commentatorInfo.userId === req.user!._id.toString()) {
             next()
             return
         } else {

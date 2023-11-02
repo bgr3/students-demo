@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { HTTP_STATUSES } from "../settings";
 import { usersService } from "../domain/user-service";
 import { jwtService } from "../application/jwt-service";
-import { authenticationJWTMiddleware } from "../middlewares/authorization-middleware";
+import { authenticationJWTMiddleware, authenticationRefreshJWTMiddleware } from "../middlewares/authorization-middleware";
 import { UserMe } from "../types/user-types";
 import { authService } from "../domain/auth-service";
 import { authInputValidationMiddleware, authReSendValidationMiddleware, inputValidationMiddleware, userInputValidationMiddleware } from "../middlewares/input-validation-middleware";
@@ -21,9 +21,45 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 
     //if (!user.emailConfirmation.isConfirmed) {}  //what there?
 
-    const token = await jwtService.createJWT(user)  
-    res.status(HTTP_STATUSES.OK_200).send(token); 
+    const accessToken = await jwtService.createJWT(user)
+    const refreshToken = await jwtService.createRefreshJWT(user);
+
+    await authService.saveTokens(user, accessToken.accessToken, refreshToken)
+
+    res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true,})  
+    res.status(HTTP_STATUSES.OK_200).send(accessToken); 
 })
+
+authRouter.post('/refresh-token', 
+authenticationRefreshJWTMiddleware,
+async (req: Request, res: Response) => {
+  const oldRefreshToken = req.cookies.refresh_token
+  const user = req.user
+
+  const token = await jwtService.createJWT(user!)
+  const refreshToken = await jwtService.createRefreshJWT(user!);
+
+  await authService.updateTokens(req.user!, oldRefreshToken, token.accessToken, refreshToken)
+
+  res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true,})  
+  res.status(HTTP_STATUSES.OK_200).send(token); 
+})
+
+
+
+authRouter.post('/logout', 
+authenticationRefreshJWTMiddleware,
+async (req: Request, res: Response) => {
+  const oldRefreshToken = req.cookies.refresh_token
+  
+  const user = await usersService.findUserDbByID(req.user!._id.toString())
+
+  await authService.deleteTokens(req.user!, oldRefreshToken)
+
+  res.sendStatus(HTTP_STATUSES.NO_CONTENT_204); 
+})
+
+
 
 authRouter.get('/me',
 authenticationJWTMiddleware,
@@ -31,7 +67,7 @@ async (req: Request, res: Response) => {
   let user: UserMe = {
     "email": req.user!.email,
     "login": req.user!.login,
-    "userId": req.user!.id
+    "userId": req.user!._id.toString()
   } 
   res.status(HTTP_STATUSES.OK_200).send(user)
 })

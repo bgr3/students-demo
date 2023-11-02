@@ -29,7 +29,7 @@ export const checkJWTAuthorization = async (token: string | undefined) => {
 
     if (userId && tokenType === 'Bearer') {
         
-        return await usersService.findUserByID(userId)
+        return await usersService.findUserDbByID(userId)
     }
 
     return null  

@@ -6,6 +6,7 @@ import { postsRouter } from './routes/posts-router'
 import { usersRouter } from './routes/users-router'
 import { authRouter } from './routes/auth-router'
 import { commentsRouter } from './routes/comments-router'
+import cookieParser from 'cookie-parser'
 
 export const app = express()
 export const HTTP_STATUSES = {
@@ -32,6 +33,7 @@ export const RouterPaths = {
 }
 
 app.use(express.json())
+app.use(cookieParser())
 
 
 app.get('/', (req: Request, res: Response) => {

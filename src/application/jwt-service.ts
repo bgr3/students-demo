@@ -15,5 +15,19 @@ export const jwtService = {
         } catch (error) {
             return null
         }
-    }
+    },
+
+    async createRefreshJWT (user: UserDb) {
+        const token = jwt.sign({userId: user._id.toString()}, settings.JWT_SECRET, {expiresIn: '1h'})
+        return token
+    },
+
+    async validateRefreshToken (token: string) {
+        try {
+            const result: any = jwt.verify(token, settings.JWT_SECRET)
+            return result.userId
+        } catch (error) {
+            return false
+        }
+    },
 }

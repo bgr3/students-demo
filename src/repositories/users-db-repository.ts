@@ -1,7 +1,7 @@
-import { BlogDb, BlogFilter, BlogOutput, BlogPaginatorType, BlogPutType, BlogType } from "../types/blog-types";
 import { usersCollection } from "../db/db";
 import { ObjectId } from "mongodb";
 import { UserDb, UserFilter, UserOutput, UserPaginatorType, UserType } from "../types/user-types";
+import { Tokens } from "../types/auth-types";
 
 export const userFilter = {
     pageNumber: 1,
@@ -45,10 +45,7 @@ export const usersRepository = {
     async findUserDbByID (id: string): Promise<UserDb | null> {
         if (ObjectId.isValid(id)) {
             const user = await usersCollection.findOne({_id: new ObjectId(id)});
-            if (user) {
-                return user           
-            }
-            return user
+            return user           
         }
 
         return null
@@ -109,6 +106,30 @@ export const usersRepository = {
                 return true
             }
         }
+        return false
+    },
+
+    async createTokens (userId: ObjectId, tokens: Tokens[]): Promise<boolean> {
+        const result = await usersCollection.updateOne({userId: userId}, { $set: {'JWTTokens': tokens}})
+
+        if (!result.matchedCount) return false
+
+        return true
+    },
+
+    async updateTokens (userId: ObjectId, oldTokens: Tokens, newTokens: Tokens): Promise<boolean> {
+        const result = await usersCollection.updateOne({userId: userId}, { $pull: {'JWTTokens': oldTokens}, $push: {'JWTTokens': newTokens}})
+
+        if (!result.matchedCount) return false
+
+        return true
+    },
+
+    async deleteTokens (userId: ObjectId, tokens: Tokens): Promise<boolean> {
+        const result = await usersCollection.updateOne({userId: userId}, { $pull: {'JWTTokens': tokens}})
+
+        if (result.matchedCount) return true
+
         return false
     }
 }

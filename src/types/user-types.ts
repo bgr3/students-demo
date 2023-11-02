@@ -1,4 +1,5 @@
 import { WithId } from "mongodb"
+import { Tokens } from "./auth-types"
 
 export type UserType = {
     login: string,
@@ -10,13 +11,14 @@ export type UserType = {
         expirationDate: object,
         isConfirmed: boolean,
         nextSend: object
-    }
+    },
+    JWTTokens: Tokens[]
 }
 
 export type UserDb = WithId <UserType>
 
 export type UserOutput = {
-    id:string,
+    id: string,
     login: string,
     email: string,
     createdAt: string,
