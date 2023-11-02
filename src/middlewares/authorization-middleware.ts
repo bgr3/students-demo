@@ -24,9 +24,9 @@ export const authenticationJWTMiddleware = async (req: Request, res: Response, n
                 return
             }
         }
-    } else {
-        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
     }
+
+    res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
 }
 
 export const authenticationRefreshJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -37,14 +37,16 @@ export const authenticationRefreshJWTMiddleware = async (req: Request, res: Resp
     if (user) {
         for (let i = 0; i < user.JWTTokens.length; i ++){
             if (user.JWTTokens[i].refreshToken === refreshToken) {
+                console.log(user.JWTTokens[i].refreshToken, refreshToken)
                 req.user = user
                 next()
                 return
             }
         }
-    } else {
-        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+
     }
+    
+    res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
 }
 
 export const authorizationMiddleware = async (req: Request, res: Response, next: NextFunction) => {

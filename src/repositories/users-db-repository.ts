@@ -110,7 +110,8 @@ export const usersRepository = {
     },
 
     async createTokens (userId: ObjectId, tokens: Tokens[]): Promise<boolean> {
-        const result = await usersCollection.updateOne({userId: userId}, { $set: {'JWTTokens': tokens}})
+        
+        const result = await usersCollection.updateOne({_id: userId}, { $set: {'JWTTokens': tokens}})
 
         if (!result.matchedCount) return false
 
@@ -118,15 +119,17 @@ export const usersRepository = {
     },
 
     async updateTokens (userId: ObjectId, oldTokens: Tokens, newTokens: Tokens): Promise<boolean> {
-        const result = await usersCollection.updateOne({userId: userId}, { $pull: {'JWTTokens': oldTokens}, $push: {'JWTTokens': newTokens}})
+        console.log(oldTokens)
+        const resultPull = await usersCollection.updateOne({_id: userId}, {$pull: {'JWTTokens': oldTokens}})
+        const resultPush = await usersCollection.updateOne({_id: userId}, {$push: {'JWTTokens': newTokens}})
 
-        if (!result.matchedCount) return false
+        if (!resultPull.matchedCount || !resultPush) return false
 
         return true
     },
 
     async deleteTokens (userId: ObjectId, tokens: Tokens): Promise<boolean> {
-        const result = await usersCollection.updateOne({userId: userId}, { $pull: {'JWTTokens': tokens}})
+        const result = await usersCollection.updateOne({_id: userId}, { $pull: {'JWTTokens': tokens}})
 
         if (result.matchedCount) return true
 

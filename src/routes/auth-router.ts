@@ -32,16 +32,17 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 authRouter.post('/refresh-token', 
 authenticationRefreshJWTMiddleware,
 async (req: Request, res: Response) => {
+
   const oldRefreshToken = req.cookies.refresh_token
   const user = req.user
 
-  const token = await jwtService.createJWT(user!)
+  const accessToken = await jwtService.createJWT(user!)
   const refreshToken = await jwtService.createRefreshJWT(user!);
 
-  await authService.updateTokens(req.user!, oldRefreshToken, token.accessToken, refreshToken)
+  await authService.updateTokens(req.user!, oldRefreshToken, accessToken.accessToken, refreshToken)
 
-  res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true,})  
-  res.status(HTTP_STATUSES.OK_200).send(token); 
+  res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true})  
+  res.status(HTTP_STATUSES.OK_200).send(accessToken); 
 })
 
 
