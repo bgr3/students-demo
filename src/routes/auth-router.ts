@@ -11,7 +11,6 @@ import { authInputValidationMiddleware, authReSendValidationMiddleware, inputVal
 export const authRouter = Router({});
 
 authRouter.post('/login', async (req: Request, res: Response) => {
-    
     let user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
     if (!user) {
@@ -26,7 +25,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 
     await authService.saveTokens(user, accessToken.accessToken, refreshToken)
 
-    res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true,})  
+    res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true})  
     res.status(HTTP_STATUSES.OK_200).send(accessToken); 
 })
 
