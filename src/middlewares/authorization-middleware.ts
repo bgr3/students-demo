@@ -18,7 +18,7 @@ export const authenticationJWTMiddleware = async (req: Request, res: Response, n
     const user = await checkJWTAuthorization(req.headers.authorization)
     if (user) {
         for (let i = 0; i < user.JWTTokens.length; i ++){
-            if (user.JWTTokens[i].acsessToken === req.headers.authorization?.split(' ')[1]) {
+            if (user.JWTTokens[i].accessToken === req.headers.authorization?.split(' ')[1]) {
                 req.user = user
                 next()
                 return

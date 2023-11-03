@@ -1,7 +1,7 @@
 import { WithId } from "mongodb"
 
 export type Tokens = {
-    acsessToken: string,
+    accessToken: string,
     refreshToken: string,
 }
 

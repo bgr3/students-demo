@@ -45,7 +45,7 @@ export const authService = {
     async saveTokens (user: UserDb, acsessToken: string, refreshToken: string): Promise<boolean> {
         const verifyedTokens = user.JWTTokens.filter(async i => await jwtService.validateRefreshToken(i.refreshToken))
         const newTokens = {
-            acsessToken: acsessToken,
+            accessToken: acsessToken,
             refreshToken: refreshToken
         }
 
@@ -58,14 +58,14 @@ export const authService = {
         return true
     },
 
-    async updateTokens (user: UserDb, oldRefreshToken: string, newAcsessToken: string, newRefreshToken: string): Promise<Boolean> {
+    async updateTokens (user: UserDb, oldRefreshToken: string, newAccessToken: string, newRefreshToken: string): Promise<Boolean> {
         const oldTokens = {
-            acsessToken: user.JWTTokens.find(i => i.refreshToken == oldRefreshToken)!.acsessToken,
+            accessToken: user.JWTTokens.find(i => i.refreshToken == oldRefreshToken)!.accessToken,
             refreshToken: oldRefreshToken            
         }
 
         const newTokens = {
-            acsessToken: newAcsessToken,
+            accessToken: newAccessToken,
             refreshToken: newRefreshToken            
         }
         const result = await usersRepository.updateTokens(user._id, oldTokens, newTokens)
@@ -77,7 +77,7 @@ export const authService = {
 
     async deleteTokens (user: UserDb, oldRefreshToken: string): Promise<Boolean> {
         const oldTokens = {
-            acsessToken: user.JWTTokens.find(i => i.refreshToken == oldRefreshToken)!.acsessToken,
+            accessToken: user.JWTTokens.find(i => i.refreshToken == oldRefreshToken)!.accessToken,
             refreshToken: oldRefreshToken            
         }
 
