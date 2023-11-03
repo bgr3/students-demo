@@ -30,14 +30,13 @@ export const authenticationJWTMiddleware = async (req: Request, res: Response, n
 }
 
 export const authenticationRefreshJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.refresh_token
+    const refreshToken = req.cookies.refreshToken
     const userId = await jwtService.validateRefreshToken(refreshToken)
     const user = await usersService.findUserDbByID(userId)
 
     if (user) {
         for (let i = 0; i < user.JWTTokens.length; i ++){
             if (user.JWTTokens[i].refreshToken === refreshToken) {
-                console.log(user.JWTTokens[i].refreshToken, refreshToken)
                 req.user = user
                 next()
                 return

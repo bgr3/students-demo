@@ -25,7 +25,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 
     await authService.saveTokens(user, accessToken.accessToken, refreshToken)
 
-    res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true})  
+    res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})  
     res.status(HTTP_STATUSES.OK_200).send(accessToken); 
 })
 
@@ -33,7 +33,7 @@ authRouter.post('/refresh-token',
 authenticationRefreshJWTMiddleware,
 async (req: Request, res: Response) => {
 
-  const oldRefreshToken = req.cookies.refresh_token
+  const oldRefreshToken = req.cookies.refreshToken
   const user = req.user
 
   const accessToken = await jwtService.createJWT(user!)
@@ -41,7 +41,7 @@ async (req: Request, res: Response) => {
 
   await authService.updateTokens(req.user!, oldRefreshToken, accessToken.accessToken, refreshToken)
 
-  res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true})  
+  res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})  
   res.status(HTTP_STATUSES.OK_200).send(accessToken); 
 })
 
@@ -50,9 +50,7 @@ async (req: Request, res: Response) => {
 authRouter.post('/logout', 
 authenticationRefreshJWTMiddleware,
 async (req: Request, res: Response) => {
-  const oldRefreshToken = req.cookies.refresh_token
-  
-  const user = await usersService.findUserDbByID(req.user!._id.toString())
+  const oldRefreshToken = req.cookies.refreshToken
 
   await authService.deleteTokens(req.user!, oldRefreshToken)
 

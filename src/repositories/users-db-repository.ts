@@ -119,7 +119,6 @@ export const usersRepository = {
     },
 
     async updateTokens (userId: ObjectId, oldTokens: Tokens, newTokens: Tokens): Promise<boolean> {
-        console.log(oldTokens)
         const resultPull = await usersCollection.updateOne({_id: userId}, {$pull: {'JWTTokens': oldTokens}})
         const resultPush = await usersCollection.updateOne({_id: userId}, {$push: {'JWTTokens': newTokens}})
 
