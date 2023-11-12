@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUSES } from "../settings";
-import { checkAuthorization, checkJWTAuthorization } from "../validation/authorization-validation";
+import { checkAuthorization, checkJWTAuthorization, getUserByJWTAccessToken } from "../validation/authorization-validation";
 import { commentsService } from "../domain/comment-service";
 import { jwtService } from "../application/jwt-service";
-import { usersService } from "../domain/user-service";
+import { authRepository } from "../repositories/auth-db-repository";
+import { authService } from "../domain/auth-service";
 
 export const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     
@@ -15,44 +16,43 @@ export const authenticationMiddleware = async (req: Request, res: Response, next
 }
 
 export const authenticationJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const user = await checkJWTAuthorization(req.headers.authorization)
-    if (user) {
-        for (let i = 0; i < user.JWTTokens.length; i ++){
-            if (user.JWTTokens[i].accessToken === req.headers.authorization?.split(' ')[1]) {
-                req.user = user
-                next()
-                return
-            }
+    const token = await checkJWTAuthorization(req.headers.authorization)
+    
+    if (token) {
+        const validation = await authRepository.findAuthSessionByAccessToken(token)
+        
+        if (validation) {
+            next()          
+            return
         }
-    }
+    } 
 
     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
 }
 
 export const authenticationRefreshJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken
-    const userId = await jwtService.validateRefreshToken(refreshToken)
-    const user = await usersService.findUserDbByID(userId)
+    
+    if (refreshToken) {
+        const deviceId = await jwtService.validateRefreshToken(refreshToken)
+        const validation = await authRepository.findAuthSessionByDeviceId(deviceId)
 
-    if (user) {
-        for (let i = 0; i < user.JWTTokens.length; i ++){
-            if (user.JWTTokens[i].refreshToken === refreshToken) {
-                req.user = user
-                next()
-                return
-            }
+        if (validation?.tokens.refreshToken === refreshToken) {
+            next()
+            return
         }
-
     }
+
     
     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
 }
 
-export const authorizationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authorizationCommentMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const comment = await commentsService.findCommentById(req.params.id)
+    const user = await getUserByJWTAccessToken(req.headers.authorization)
     
-    if (comment) {
-        if (comment.commentatorInfo.userId === req.user!._id.toString()) {
+    if (comment && user) {
+        if (comment.commentatorInfo.userId === user._id.toString()) {
             next()
             return
         } else {
@@ -62,4 +62,23 @@ export const authorizationMiddleware = async (req: Request, res: Response, next:
     }
 
     next()    
+}
+
+export const authorizatioDeviceMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken
+    const deviceId = req.params.deviceId
+    const authSesionByToken = await authService.getSingleAuthSessionByToken(refreshToken)
+    const authSessionByParams = await authService.getAuthSessionByDeviceId(deviceId)
+
+    if (!authSessionByParams) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+
+    if (authSesionByToken && authSessionByParams) {
+        if (authSesionByToken?.userId === authSessionByParams?.userId) {
+            next()
+            return
+        }
+    }
+
+    res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
+    return
 }

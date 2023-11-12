@@ -5,6 +5,8 @@ import { postsService } from '../domain/post-service'
 import { videosRepository } from '../repositories/videos-repository'
 import { usersService } from '../domain/user-service'
 import { commentsService } from '../domain/comment-service'
+import { accessService } from '../domain/access-service'
+import { authRepository } from '../repositories/auth-db-repository'
 
 export const testingRouter = Router()
 
@@ -14,5 +16,7 @@ testingRouter.delete('/all-data', async (req: Request, res: Response) => {
     await postsService.testAllData()
     await usersService.testAllData()
     await commentsService.testAllData()
+    await accessService.testAllData()
+    await authRepository.testAllData()
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 })

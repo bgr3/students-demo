@@ -33,10 +33,9 @@ postsRouter.post('/:postId/comments',                     //create new comment
   commentInputValidationMiddleware(),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
-
-    let result = await commentsService.createComment(req.body, req.user!, req.params.postId)
-    
-    if (!result) {
+    const token = req.headers.authorization!
+    const result = await commentsService.createComment(req.body, token, req.params.postId)
+      if (!result) {
       res.status(HTTP_STATUSES.BAD_REQUEST_400);
       return
     } 
@@ -47,7 +46,7 @@ postsRouter.post('/:postId/comments',                     //create new comment
 })
 
 
-postsRouter.get('/', async (req: Request, res: Response) => {
+postsRouter.get('/', async (req: Request, res: Response) => {  
   const queryFilter = postCheckQuery(req.query)
   
   res.status(HTTP_STATUSES.OK_200).send(await postsService.findPosts(null, queryFilter));

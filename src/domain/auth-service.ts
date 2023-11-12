@@ -3,6 +3,9 @@ import { usersRepository } from "../repositories/users-db-repository"
 import { v4 as uuidv4 } from 'uuid'
 import { UserDb } from "../types/user-types"
 import { jwtService } from "../application/jwt-service"
+import { authRepository } from "../repositories/auth-db-repository"
+import { AuthTypeOutput, DbAuthType, MeType, Tokens } from "../types/auth-types"
+
 
 export const authService = {
     async sendEmail (email: string, subject?: string, message?: string, html?: string) {
@@ -42,48 +45,114 @@ export const authService = {
         return true
     },
 
-    async saveTokens (user: UserDb, acsessToken: string, refreshToken: string): Promise<boolean> {
-        const verifyedTokens = user.JWTTokens.filter(async i => await jwtService.validateRefreshToken(i.refreshToken))
-        const newTokens = {
-            accessToken: acsessToken,
-            refreshToken: refreshToken
+    async getMeByToken(token: string): Promise<MeType | null> {
+        const userId = await jwtService.getUserByToken(token)
+        const user = await usersRepository.findUserDbByID(userId)        
+
+        if (!user) return null
+
+        const me = {
+            "email": user.email,
+            "login": user.login,
+            "userId": user._id.toString()
+          }       
+
+        return me
+    },
+
+    async createAuthSession(userId: string, deviceIP: string, deviceName: string): Promise<Tokens | null> {
+        const accessToken = await jwtService.createJWT(userId)
+        const deviceId = uuidv4()
+        const refreshToken = await jwtService.createRefreshJWT(deviceId)
+        const authSession = {
+            issuedAt: refreshToken.tokenTiming.issueAt,
+            expiredAt: refreshToken.tokenTiming.expirationTime,
+            deviceId: deviceId,
+            deviceIP: deviceIP,
+            deviceName: deviceName,
+            userId: userId,
+            tokens: {
+                accessToken: accessToken,
+                refreshToken: refreshToken.token,
+            }
         }
 
-        verifyedTokens.push(newTokens)
+        const result = await authRepository.createAuthSession(authSession)
 
-        const result = await usersRepository.createTokens(user._id, verifyedTokens)
+        if(!result) return null
+
+        return {
+            accessToken: accessToken,
+            refreshToken: refreshToken.token,
+        }
+    },
+
+    async updateTokens (oldRefreshToken: string): Promise<Tokens | null> {
+        const deviceId = await jwtService.validateRefreshToken(oldRefreshToken)
+        const oldSession = await authRepository.findAuthSessionByDeviceId(deviceId)
+        const user = await usersRepository.findUserDbByID(oldSession!.userId)
+        const accessToken = await jwtService.createJWT(user!._id.toString())
+        const refreshToken = await jwtService.createRefreshJWT(deviceId)
+        const putAuthSession = {
+            issuedAt: refreshToken.tokenTiming.issueAt,
+            expiredAt: refreshToken.tokenTiming.expirationTime,
+            tokens: {
+                accessToken: accessToken,
+                refreshToken: refreshToken.token,
+            }
+        }
+
+        const result = await authRepository.updateAuthSession(oldSession!.deviceId, putAuthSession)
+
+        if(!result) return null
+
+        return {
+            accessToken: accessToken,
+            refreshToken: refreshToken.token,
+        }
+    },
+
+    async getAuthSessionsByToken(token: string): Promise<AuthTypeOutput[] | null> {
+        const deviceId = await jwtService.validateRefreshToken(token)
+        const userSession = await authRepository.findAuthSessionByDeviceId(deviceId)
+
+        return await authRepository.findAuthSessionsByUserId(userSession!.userId)
+    },
+
+    async getSingleAuthSessionByToken(token: string): Promise<DbAuthType | null> {
+        const deviceId = await jwtService.validateRefreshToken(token)
+        const userSession = await authRepository.findAuthSessionByDeviceId(deviceId)
+
+        return userSession
+    },
+
+        async getAuthSessionByDeviceId(deviceId: string): Promise<DbAuthType | null> {
+        const userSession = await authRepository.findAuthSessionByDeviceId(deviceId)
+
+        return userSession
+    },
+
+    async deleteAuthSessionsExcludeCurent(token: string): Promise<boolean> {
+        const deviceId = await jwtService.validateRefreshToken(token)
+        const userSessions = await authRepository.findAuthSessionByDeviceId(deviceId)
+        const result = await authRepository.deleteAuthSessionsByUserId(userSessions!.userId, deviceId)
 
         if (!result) return false
 
         return true
     },
 
-    async updateTokens (user: UserDb, oldRefreshToken: string, newAccessToken: string, newRefreshToken: string): Promise<Boolean> {
-        const oldTokens = {
-            accessToken: user.JWTTokens.find(i => i.refreshToken == oldRefreshToken)!.accessToken,
-            refreshToken: oldRefreshToken            
-        }
-
-        const newTokens = {
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken            
-        }
-        const result = await usersRepository.updateTokens(user._id, oldTokens, newTokens)
-
-        if(!result) return false
+    async deleteSpecifiedAuthSessionByDeviceId(deviceId: string): Promise<boolean> {
+        const result = await authRepository.deleteAuthSessionByDeviceId(deviceId)
+        if (!result) return false
 
         return true
     },
 
-    async deleteTokens (user: UserDb, oldRefreshToken: string): Promise<Boolean> {
-        const oldTokens = {
-            accessToken: user.JWTTokens.find(i => i.refreshToken == oldRefreshToken)!.accessToken,
-            refreshToken: oldRefreshToken            
-        }
-
-        const result = await usersRepository.deleteTokens(user._id, oldTokens)
-
-        if(!result) return false
+    async deleteAuthSessionByToken(token: string): Promise<boolean> {
+        const deviceId = await jwtService.validateRefreshToken(token)
+        const result = await authRepository.deleteAuthSessionByDeviceId(deviceId)
+        if (!result) return false
 
         return true
     }

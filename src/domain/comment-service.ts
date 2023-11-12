@@ -1,7 +1,8 @@
 import { commentsRepository } from "../repositories/comments-db-repository";
 import { postsRepository } from "../repositories/posts-db-repository";
 import { CommentOutput, CommentPaginatorType, CommentPostType, CommentPutType, CommentsFilter } from "../types/comment-types";
-import { UserDb, UserOutput } from "../types/user-types";
+import { UserDb } from "../types/user-types";
+import { getUserByJWTAccessToken } from "../validation/authorization-validation";
 
 export const commentsService = {
     async testAllData (): Promise<void> {
@@ -21,7 +22,10 @@ export const commentsService = {
 
     },
 
-    async createComment (body: CommentPostType, user: UserDb, postId: string): Promise<string | null> {
+    async createComment (body: CommentPostType, token: string, postId: string): Promise<string | null> {
+        const user = await getUserByJWTAccessToken(token)
+
+        if (!user) return null
         
         const post = await postsRepository.findPostByID(postId)
         

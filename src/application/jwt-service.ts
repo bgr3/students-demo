@@ -1,11 +1,12 @@
 import { settings } from "../settings";
-import { UserDb } from "../types/user-types";
 import jwt from 'jsonwebtoken'
+import add from 'date-fns/add'
+import { JWTRefreshTokenType } from "../types/JWT-types";
 
 export const jwtService = {
-    async createJWT (user: UserDb) {
-        const token = jwt.sign({userId: user._id.toString()}, settings.JWT_SECRET, {expiresIn: '10s'})
-        return {accessToken: token}
+    async createJWT (userId: string, expirationTimeSeconds: number = 10) {
+        const token = jwt.sign({userId: userId}, settings.JWT_SECRET, {expiresIn: `${expirationTimeSeconds}s`})
+        return token
     },
 
     async getUserByToken (token: string) {
@@ -17,15 +18,21 @@ export const jwtService = {
         }
     },
 
-    async createRefreshJWT (user: UserDb) {
-        const token = jwt.sign({userId: user._id.toString()}, settings.JWT_SECRET, {expiresIn: '20s'})
-        return token
+    async createRefreshJWT (deviceId: string, expirationTimeSeconds: number = 20): Promise<JWTRefreshTokenType> {
+        const token = jwt.sign({deviceId: deviceId}, settings.JWT_SECRET, {expiresIn: `${expirationTimeSeconds}s`})
+        const tokenTiming = {
+            issueAt: new Date(),
+            expirationTime: add(new Date(), {
+                seconds: expirationTimeSeconds
+            })
+        }
+        return {token: token, tokenTiming: tokenTiming}
     },
 
     async validateRefreshToken (token: string) {
-        try {
+        try {            
             const result: any = jwt.verify(token, settings.JWT_SECRET)
-            return result.userId
+            return result.deviceId
         } catch (error) {
             return false
         }

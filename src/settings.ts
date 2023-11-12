@@ -7,6 +7,7 @@ import { usersRouter } from './routes/users-router'
 import { authRouter } from './routes/auth-router'
 import { commentsRouter } from './routes/comments-router'
 import cookieParser from 'cookie-parser'
+import { securityRouter } from './routes/security-router'
 
 export const app = express()
 export const HTTP_STATUSES = {
@@ -18,9 +19,11 @@ export const HTTP_STATUSES = {
   UNAUTHORIZED_401: 401,
   FORBIDDEN_403: 403,
   NOT_FOUND_404: 404,
+  TOO_MANY_REQUESTS_429: 429,
 }
 
 export const RouterPaths = {
+  security: '/security',
   comments: '/comments',
   users: '/users',
   auth: '/auth',
@@ -29,11 +32,12 @@ export const RouterPaths = {
   blogs: '/blogs',
   posts: '/posts',
   api: '/api',
-  hometask: '/hometask_08',
+  hometask: '/hometask_09',
 }
 
 app.use(express.json())
 app.use(cookieParser())
+app.set('trust proxy', true)
 
 
 app.get('/', (req: Request, res: Response) => {
@@ -48,6 +52,7 @@ app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.posts, postsRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.users, usersRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.auth, authRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.comments, commentsRouter)
+app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.security, securityRouter)
 
 if (!process.env.JWT_SECRET) {
   throw new Error('! JWT doesn`t found')

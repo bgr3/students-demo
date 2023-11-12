@@ -11,18 +11,18 @@ export const blogsRouter = Router({});
 
 blogsRouter.post('/',
 authenticationMiddleware,
-  blogInputValidationMiddleware(),
-  inputValidationMiddleware,  
-  async (req: Request, res: Response) => {
-    
-    let result = await blogsService.createBlog(req.body)
-    
-    if (result) {
-      const newBlog = await blogsService.findBlogByID(result)
-      res.status(HTTP_STATUSES.CREATED_201).send(newBlog);
-    } else {
-      res.status(HTTP_STATUSES.BAD_REQUEST_400)
-    }
+blogInputValidationMiddleware(),
+inputValidationMiddleware,  
+async (req: Request, res: Response) => {
+  
+  let result = await blogsService.createBlog(req.body)
+  
+  if (result) {
+    const newBlog = await blogsService.findBlogByID(result)
+    res.status(HTTP_STATUSES.CREATED_201).send(newBlog);
+  } else {
+    res.status(HTTP_STATUSES.BAD_REQUEST_400)
+  }
 })
 
 blogsRouter.post('/:id/posts',

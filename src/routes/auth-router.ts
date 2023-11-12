@@ -1,16 +1,17 @@
 import { Request, Response, Router } from "express";
 import { HTTP_STATUSES } from "../settings";
 import { usersService } from "../domain/user-service";
-import { jwtService } from "../application/jwt-service";
 import { authenticationJWTMiddleware, authenticationRefreshJWTMiddleware } from "../middlewares/authorization-middleware";
-import { UserMe } from "../types/user-types";
 import { authService } from "../domain/auth-service";
 import { authInputValidationMiddleware, authReSendValidationMiddleware, inputValidationMiddleware, userInputValidationMiddleware } from "../middlewares/input-validation-middleware";
+import { accessFrequencyMiddleware } from "../middlewares/access-middleware";
 
 
 export const authRouter = Router({});
 
-authRouter.post('/login', async (req: Request, res: Response) => {
+authRouter.post('/login',
+accessFrequencyMiddleware,
+async (req: Request, res: Response) => {
     let user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
     if (!user) {
@@ -20,13 +21,12 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 
     //if (!user.emailConfirmation.isConfirmed) {}  //what there?
 
-    const accessToken = await jwtService.createJWT(user)
-    const refreshToken = await jwtService.createRefreshJWT(user);
+    const deviceName: string = req.header("User-Agent") ? req.header("User-Agent")! : 'unknown device'
 
-    await authService.saveTokens(user, accessToken.accessToken, refreshToken)
+    const tokens = await authService.createAuthSession(user._id.toString(), req.ip, deviceName)
 
-    res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})  
-    res.status(HTTP_STATUSES.OK_200).send(accessToken); 
+    res.cookie('refreshToken', tokens!.refreshToken, {httpOnly: true, secure: true})  
+    res.status(HTTP_STATUSES.OK_200).send({accessToken: tokens!.accessToken}); 
 })
 
 authRouter.post('/refresh-token', 
@@ -34,27 +34,30 @@ authenticationRefreshJWTMiddleware,
 async (req: Request, res: Response) => {
 
   const oldRefreshToken = req.cookies.refreshToken
-  const user = req.user
 
-  const accessToken = await jwtService.createJWT(user!)
-  const refreshToken = await jwtService.createRefreshJWT(user!);
+  const tokens = await authService.updateTokens(oldRefreshToken)
 
-  await authService.updateTokens(req.user!, oldRefreshToken, accessToken.accessToken, refreshToken)
-
-  res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})  
-  res.status(HTTP_STATUSES.OK_200).send(accessToken); 
+  if (tokens) {
+    res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true, secure: true})  
+    res.status(HTTP_STATUSES.OK_200).send({accessToken: tokens!.accessToken}); 
+    return 
+  } else {
+    return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+  }  
 })
-
-
 
 authRouter.post('/logout', 
 authenticationRefreshJWTMiddleware,
 async (req: Request, res: Response) => {
   const oldRefreshToken = req.cookies.refreshToken
 
-  await authService.deleteTokens(req.user!, oldRefreshToken)
+  const result = await authService.deleteAuthSessionByToken(oldRefreshToken)
 
-  res.sendStatus(HTTP_STATUSES.NO_CONTENT_204); 
+  if (result) {
+    return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204); 
+  } else {
+    return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+  }
 })
 
 
@@ -62,15 +65,13 @@ async (req: Request, res: Response) => {
 authRouter.get('/me',
 authenticationJWTMiddleware,
 async (req: Request, res: Response) => {
-  let user: UserMe = {
-    "email": req.user!.email,
-    "login": req.user!.login,
-    "userId": req.user!._id.toString()
-  } 
-  res.status(HTTP_STATUSES.OK_200).send(user)
+  const accessToken = req.headers.authorization!.split(' ')[1]
+  let me = await authService.getMeByToken(accessToken)
+  res.status(HTTP_STATUSES.OK_200).send(me)
 })
 
 authRouter.post('/registration',
+  accessFrequencyMiddleware,
   userInputValidationMiddleware(),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
@@ -91,7 +92,8 @@ authRouter.post('/registration',
 })
 
 authRouter.post('/registration-confirmation',
-  authInputValidationMiddleware(),
+  accessFrequencyMiddleware,
+  authInputValidationMiddleware(),  
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
     const result = await authService.confirmEmail(req.body.code)
@@ -104,6 +106,7 @@ authRouter.post('/registration-confirmation',
 })
 
 authRouter.post('/registration-email-resending',
+  accessFrequencyMiddleware,
   authReSendValidationMiddleware(),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
