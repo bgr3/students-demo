@@ -32,7 +32,7 @@ export const authService = {
     },
 
     async changePasswordEmail(id: string): Promise<boolean> {
-        let user = await usersRepository.findUserDbByID(id)
+        let user = await usersRepository.findUserDbByID(id);
 
         if (!user) return false
 
