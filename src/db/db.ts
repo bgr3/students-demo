@@ -17,15 +17,15 @@ import { authSchema } from "../schemas/auth-schema";
 dotenv.config()
 
 const url = process.env.MONGO_URL;
-const dbName = 'mongoose-example'
+const dbName = 'mongoose-homework'
 
 if (!url) {
     throw new Error('! URL doesn`t found')
 }
 
+/*
 export const client = new MongoClient(url);
 
-/*
 export const db = client.db('test')
 export const blogsCollection = db.collection<BlogType>('blogs')
 export const postsCollection = db.collection<PostType>('posts')
@@ -46,12 +46,12 @@ export const AuthModel = mongoose.model('auth', authSchema)
 
 export const runDb = async () => {
     try {
-        await client.connect();
+        /*await client.connect();*/
         await mongoose.connect(url + '/' + dbName)
         console.log('Connect successfully to server');
     } catch (e) {
         console.log('! Don`t connect successfully to server')
-        await client.close()
+        /*await client.close()*/
         await mongoose.disconnect()
     }
 };
