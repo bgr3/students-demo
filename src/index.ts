@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const port = process.env.PORT1 || 3000
+const port = process.env.PORT || 3000
 
 const startApp = async () => {
   await runDb()
