@@ -4,7 +4,7 @@ import { postBlogIdValidation, postContentValidation, postTitleValidation, postS
 import { blogDescriptionValidation, blogTitleValidation, blogWebsiteUrlValidation } from "../validation/blog-validation";
 import { userEmailValidation, userLoginValidation, userPasswordValidation } from "../validation/user-validation";
 import { commentContentValidation } from "../validation/comment-validation";
-import { authEmailConfirmValidation, authEmailValidation, authPasswordRecoveryCodeValidation, authReSendEmailConfirmValidation } from "../validation/auth-validation";
+import { authEmailConfirmValidation, authEmailValidation, authPasswordRecoveryCodeValidation, authReSendEmailConfirmValidation, userNewPasswordValidation } from "../validation/auth-validation";
 
 class Messages {
     message: string | undefined;
@@ -82,6 +82,6 @@ export const authRecoveryPasswordSendMiddleware = (): ValidationChain[] => [
 ]
 
 export const authRecoveryPasswordMiddleware = (): ValidationChain[] => [
-    userPasswordValidation,
+    userNewPasswordValidation,
     authPasswordRecoveryCodeValidation
 ]

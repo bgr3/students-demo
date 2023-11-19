@@ -39,7 +39,7 @@ export const authEmailValidation =
 
 export const authPasswordRecoveryCodeValidation = 
 
-    body('code')
+    body('recoveryCode')
     .trim()
     .custom(async value => {
         return  await usersRepository.findUserByConfirmationCode(value).then(user => {
@@ -49,3 +49,9 @@ export const authPasswordRecoveryCodeValidation =
           return value
         })
     })
+
+export const userNewPasswordValidation =
+    
+    body('newPassword')
+    .trim()
+    .isLength({min:6, max: 20}).withMessage('Password not exist')

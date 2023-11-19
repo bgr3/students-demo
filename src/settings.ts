@@ -34,8 +34,6 @@ export const RouterPaths = {
   hometask: '/hometask_10',
 }
 
-const asyncHandler = (fn: any) => (req: Request, res: Response, next: NextFunction) => Promise.resolve(fn(req, res, next)).catch(next);
-
 export const app = express()
 
 app.use(express.json())

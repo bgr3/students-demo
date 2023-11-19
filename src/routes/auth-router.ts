@@ -34,12 +34,14 @@ accessFrequencyMiddleware,
 authRecoveryPasswordSendMiddleware(),
 inputValidationMiddleware,
 async (req: Request, res: Response) => {
+  
   const userId = await usersService.updateCodeForRecoveryPassword(req.body.email)
+  
 
   if(userId) {
-    await authService.registerUserSendEmail(userId)  
+    const result = await authService.changePasswordEmail(userId)  
   }
-
+  
   res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
@@ -48,7 +50,7 @@ accessFrequencyMiddleware,
 authRecoveryPasswordMiddleware(),  
 inputValidationMiddleware,
 async (req: Request, res: Response) => {
-    const result = await authService.confirmEmail(req.body.code)
+    const result = await usersService.changePassword(req.body.recoveryCode, req.body.newPassword)
 
     if (result) {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)

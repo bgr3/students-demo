@@ -58,8 +58,8 @@ export const usersRepository = {
         return false
     },
 
-    async updateConfirmationCode (email: string, code: string, expirationDate: Date): Promise<boolean> {
-        const result = await UserModel.updateOne({email: email}, { $set: {$and: [{'emailConfirmation.confirmationCode': code}, {'emailConfirmation.expirationDate': expirationDate}]}})
+    async updateConfirmationCode (email: string, code: string, expirationDate: object): Promise<boolean> {
+        const result = await UserModel.updateOne({email: email}, { $set: {'emailConfirmation.confirmationCode': code}}, {$set: {'emailConfirmation.expirationDate': expirationDate}})
 
         if (result.matchedCount) return true
 

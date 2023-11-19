@@ -31,6 +31,19 @@ export const authService = {
         return true
     },
 
+    async changePasswordEmail(id: string): Promise<boolean> {
+        let user = await usersRepository.findUserDbByID(id)
+
+        if (!user) return false
+
+        console.log(user.emailConfirmation.confirmationCode);
+        
+
+        await emailManager.sendRecoveryPasswordEmail(user.emailConfirmation.confirmationCode, user.email)
+
+        return true
+    },
+
     async ReSendEmail (email: string): Promise<boolean> {
         const user = await usersRepository.findUserByLoginOrEmail(email)
 
