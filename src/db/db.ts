@@ -25,6 +25,7 @@ if (!url) {
 
 export const client = new MongoClient(url);
 
+/*
 export const db = client.db('test')
 export const blogsCollection = db.collection<BlogType>('blogs')
 export const postsCollection = db.collection<PostType>('posts')
@@ -32,7 +33,7 @@ export const usersCollection = db.collection<UserType>('users')
 export const commentsCollection = db.collection<CommentsCollection>('comments')
 export const accessLogCollection = db.collection<AccessLogType>('accessLog')
 export const authCollection = db.collection<AuthType>('auth')
-
+*/
 
 
 export const BlogModel = mongoose.model('blogs', blogSchema)
