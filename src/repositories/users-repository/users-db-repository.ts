@@ -1,4 +1,3 @@
-import { usersCollection } from "../../db/db";
 import { ObjectId } from "mongodb";
 import { UserDb, UserType } from "../../types/user-types";
 import { Tokens } from "../../types/auth-types";

@@ -1,4 +1,4 @@
-import { CommentModel, commentsCollection } from "../../db/db";
+import { CommentModel } from "../../db/db";
 import { ObjectId } from "mongodb";
 import { CommentDb, CommentOutput, CommentPaginatorType, CommentsFilter } from "../../types/comment-types";
 

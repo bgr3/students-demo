@@ -1,9 +1,9 @@
-import { AccessLogModel, accessLogCollection } from "../../db/db"
+import { AccessLogModel } from "../../db/db"
 import { AccessLogType } from "../../types/access-log-types";
 
 export const logRepository = {
     async testAllData (): Promise<void> {
-        const result = await accessLogCollection.deleteMany({})
+        const result = await AccessLogModel.deleteMany({})
         //console.log('accessLog delete: ', result.deletedCount)
     },
 

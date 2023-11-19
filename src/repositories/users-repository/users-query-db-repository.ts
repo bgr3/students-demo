@@ -1,4 +1,3 @@
-import { usersCollection } from "../../db/db";
 import { ObjectId } from "mongodb";
 import { UserDb, UserFilterType, UserOutput, UserPaginatorType } from "../../types/user-types";
 import { UserModel } from "../../db/db";
