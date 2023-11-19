@@ -1,7 +1,7 @@
-import { userFilter } from "../repositories/users-db-repository"
-import { UserFilter } from "../types/user-types"
+import { userFilter } from "../repositories/users-repository/users-query-db-repository"
+import { UserFilterType } from "../types/user-types"
 
-export const userCheckQuery = (query: any): UserFilter => {
+export const userCheckQuery = (query: any): UserFilterType => {
     const queryFilter = {...userFilter}
 
     if (query.pageNumber) {

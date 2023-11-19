@@ -4,6 +4,7 @@ import { usersService } from '../domain/user-service';
 import { authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { inputValidationMiddleware, userInputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { userCheckQuery } from '../features/user-features';
+import { usersQueryRepository } from '../repositories/users-repository/users-query-db-repository';
 
 
 export const usersRouter = Router({});
@@ -21,7 +22,7 @@ usersRouter.post('/',
       return
     } 
 
-    const newUser = await usersService.findUserByID(result)
+    const newUser = await usersQueryRepository.findUserByID(result)
       
     res.status(HTTP_STATUSES.CREATED_201).send(newUser);
 })
@@ -31,7 +32,7 @@ usersRouter.get('/',
   async (req: Request, res: Response) => {
     const queryFilter = userCheckQuery(req.query)
     
-    res.status(HTTP_STATUSES.OK_200).send(await usersService.findUsers(queryFilter));
+    res.status(HTTP_STATUSES.OK_200).send(await usersQueryRepository.findUsers(queryFilter));
 })
 
 

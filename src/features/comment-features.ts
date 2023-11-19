@@ -1,4 +1,4 @@
-import { commentFilter } from "../repositories/comments-db-repository" 
+import { commentFilter } from "../repositories/comments-repository/comments-query-db-repository" 
 import { CommentsFilter } from "../types/comment-types"
 
 export const commentCheckQuery = (query: any): CommentsFilter => {

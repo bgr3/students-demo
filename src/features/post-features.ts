@@ -1,7 +1,7 @@
-import { postFilter } from "../repositories/posts-db-repository" 
-import { PostFilter } from "../types/post-types"
+import { postFilter } from "../repositories/posts-repository/posts-query-db-repository" 
+import { PostFilterType } from "../types/post-types"
 
-export const postCheckQuery = (query: any): PostFilter => {
+export const postCheckQuery = (query: any): PostFilterType => {
     const queryFilter = {...postFilter}
 
     if (query.pageNumber) {

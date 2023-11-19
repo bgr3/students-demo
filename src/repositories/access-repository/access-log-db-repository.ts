@@ -1,5 +1,5 @@
-import { accessLogCollection } from "../db/db"
-import { AccessLogOutput, AccessLogType } from "../types/access-log-types";
+import { AccessLogModel, accessLogCollection } from "../../db/db"
+import { AccessLogType } from "../../types/access-log-types";
 
 export const logRepository = {
     async testAllData (): Promise<void> {
@@ -9,17 +9,17 @@ export const logRepository = {
 
     async createAccessLog (accessNote: AccessLogType): Promise<string | null> {
 
-        const result = await accessLogCollection.insertOne(accessNote);
+        const result = await AccessLogModel.insertMany([accessNote]);
         //console.log(result.insertedId)
-        if (result.insertedId) {
-            return result.insertedId.toString()
+        if (result[0]._id) {
+            return result[0]._id.toString()
         } else {
             return null
         }
     },
 
     async findAccessLogByURLAndIp (URL: string, IP: string): Promise<Date[]> {
-        const result = (await accessLogCollection.find({$and: [{URL: URL}, {IP: IP}]}).sort({date: -1}).limit(5).toArray()).map(i => i.date);
+        const result = (await AccessLogModel.find({$and: [{URL: URL}, {IP: IP}]}).sort({date: -1}).limit(5).lean()).map(i => i.date);
         return result
     },
 

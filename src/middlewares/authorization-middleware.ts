@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUSES } from "../settings";
 import { checkAuthorization, checkJWTAuthorization, getUserByJWTAccessToken } from "../validation/authorization-validation";
-import { commentsService } from "../domain/comment-service";
 import { jwtService } from "../application/jwt-service";
-import { authRepository } from "../repositories/auth-db-repository";
+import { authRepository } from "../repositories/auth-repository/auth-db-repository";
 import { authService } from "../domain/auth-service";
+import { commentsQueryRepository } from "../repositories/comments-repository/comments-query-db-repository";
 
 export const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     
@@ -48,7 +48,7 @@ export const authenticationRefreshJWTMiddleware = async (req: Request, res: Resp
 }
 
 export const authorizationCommentMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const comment = await commentsService.findCommentById(req.params.id)
+    const comment = await commentsQueryRepository.findCommentByID(req.params.id)
     const user = await getUserByJWTAccessToken(req.headers.authorization)
     
     if (comment && user) {

@@ -1,5 +1,5 @@
-import { PostPostType, PostPutType, PostType } from "../types/post-types";
-import { blogsRepository } from "./blogs-in-memory-repository";
+import { PostPostType, PostPutType, PostType } from "../../types/post-types";
+import { blogsRepository } from "../blogs-repository/blogs-in-memory-repository";
 
 
 const posts: any = [];

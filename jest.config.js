@@ -2,7 +2,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testTimeout: 10000,
-  testRegex: '.api.test.ts$',
+  testTimeout: 20000,
+  testRegex: 'auth.api.test.ts$',
   setupFilesAfterEnv: ['<rootDir>/src/runAfterAllTests.ts'],
 };

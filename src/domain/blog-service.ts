@@ -1,23 +1,11 @@
-import { blogsRepository } from "../repositories/blogs-db-repository"
-import { BlogFilter, BlogOutput, BlogPaginatorType, BlogPostType, BlogPutType } from "../types/blog-types"
+import { blogsRepository } from "../repositories/blogs-repository/blogs-db-repository"
+import { BlogPostType, BlogPutType } from "../types/blog-types"
 
 
 
 export const blogsService = {
     async testAllData (): Promise<void> {
         return blogsRepository.testAllData()
-    },
-
-    async findBlogs (filterService?: BlogFilter): Promise<BlogPaginatorType> {
-        const blogs = await blogsRepository.findBlogs(filterService)
-
-        return blogs
-    },
-
-    async findBlogByID (id: string): Promise<BlogOutput | null> {
-        const blog = await blogsRepository.findBlogByID(id)
-
-        return blog
     },
 
     async createBlog (body: BlogPostType): Promise<string | null> {     

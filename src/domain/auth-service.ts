@@ -1,10 +1,12 @@
 import { emailManager } from "../managers/email-manager"
-import { usersRepository } from "../repositories/users-db-repository"
+import { usersRepository } from "../repositories/users-repository/users-db-repository"
 import { v4 as uuidv4 } from 'uuid'
-import { UserDb } from "../types/user-types"
 import { jwtService } from "../application/jwt-service"
-import { authRepository } from "../repositories/auth-db-repository"
+import { authRepository } from "../repositories/auth-repository/auth-db-repository"
 import { AuthTypeOutput, DbAuthType, MeType, Tokens } from "../types/auth-types"
+import { authQueryRepository } from "../repositories/auth-repository/auth-query-db-repository"
+
+
 
 
 export const authService = {
@@ -116,7 +118,7 @@ export const authService = {
         const deviceId = await jwtService.validateRefreshToken(token)
         const userSession = await authRepository.findAuthSessionByDeviceId(deviceId)
 
-        return await authRepository.findAuthSessionsByUserId(userSession!.userId)
+        return await authQueryRepository.findAuthSessionsByUserId(userSession!.userId)
     },
 
     async getSingleAuthSessionByToken(token: string): Promise<DbAuthType | null> {

@@ -6,6 +6,8 @@ import { blogInputValidationMiddleware, blogPostInputValidationMiddleware, input
 import { postsService } from '../domain/post-service';
 import { blogCheckQuery } from '../features/blog-features';
 import { postCheckQuery } from '../features/post-features';
+import { blogsQueryRepository } from '../repositories/blogs-repository/blogs-query-db-repository';
+import { postsQueryRepository } from '../repositories/posts-repository/posts-query-db-repository';
 
 export const blogsRouter = Router({});
 
@@ -18,7 +20,7 @@ async (req: Request, res: Response) => {
   let result = await blogsService.createBlog(req.body)
   
   if (result) {
-    const newBlog = await blogsService.findBlogByID(result)
+    const newBlog = await blogsQueryRepository.findBlogByID(result)
     res.status(HTTP_STATUSES.CREATED_201).send(newBlog);
   } else {
     res.status(HTTP_STATUSES.BAD_REQUEST_400)
@@ -39,7 +41,7 @@ async (req: Request, res: Response) => {
     return
   } 
   
-  const newPost = await postsService.findPostById(result)
+  const newPost = await postsQueryRepository.findPostByID(result)
     
   res.status(HTTP_STATUSES.CREATED_201).send(newPost);
 })
@@ -47,12 +49,12 @@ async (req: Request, res: Response) => {
 blogsRouter.get('/', async (req: Request, res: Response) => {
   const queryFilter = blogCheckQuery(req.query)
   
-  res.status(HTTP_STATUSES.OK_200).send(await blogsService.findBlogs(queryFilter));
+  res.status(HTTP_STATUSES.OK_200).send(await blogsQueryRepository.findBlogs(queryFilter));
 })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
   
-  const foundBlog = await blogsService.findBlogByID(req.params.id)
+  const foundBlog = await blogsQueryRepository.findBlogByID(req.params.id)
 
   if (foundBlog) {      
     res.status(HTTP_STATUSES.OK_200).send(foundBlog);
@@ -62,10 +64,10 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
-  const foundBlog = await blogsService.findBlogByID(req.params.id)
+  const foundBlog = await blogsQueryRepository.findBlogByID(req.params.id)
   const queryFilter = postCheckQuery(req.query)
   
-  const posts = await postsService.findPosts(req.params.id, queryFilter)
+  const posts = await postsQueryRepository.findPosts(req.params.id, queryFilter)
 
   if (!foundBlog) {
     res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -80,8 +82,7 @@ blogsRouter.put('/:id',
   inputValidationMiddleware, 
   async (req: Request, res: Response) => {
   
-    const foundBlog = await blogsService.findBlogByID(req.params.id)
-    
+    const foundBlog = await blogsQueryRepository.findBlogByID(req.params.id)
     if (foundBlog) {
       const updatedBlog = await blogsService.updateBlog(req.params.id, req.body) 
       

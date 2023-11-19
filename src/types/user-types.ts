@@ -30,7 +30,7 @@ export type UserPostType = {
     email: string,
 }
 
-export type UserFilter = {
+export type UserFilterType = {
     pageNumber: number,
     pageSize: number,
     sortBy: string,

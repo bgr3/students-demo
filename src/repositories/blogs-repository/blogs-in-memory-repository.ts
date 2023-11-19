@@ -1,4 +1,4 @@
-import { BlogPostType, BlogPutType, BlogType } from "../types/blog-types";
+import { BlogPostType, BlogPutType, BlogType } from "../../types/blog-types";
 
 
 const blogs: any = [];

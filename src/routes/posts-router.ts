@@ -6,6 +6,8 @@ import { authenticationJWTMiddleware, authenticationMiddleware } from '../middle
 import { postCheckQuery } from '../features/post-features';
 import { commentsService } from '../domain/comment-service';
 import { postValidationMiddleware } from '../middlewares/comment-validation-middleware';
+import { commentsQueryRepository } from '../repositories/comments-repository/comments-query-db-repository';
+import { postsQueryRepository } from '../repositories/posts-repository/posts-query-db-repository';
 
 export const postsRouter = Router({});
 
@@ -22,7 +24,7 @@ postsRouter.post('/',                                    //create new post
       return
     } 
 
-    const newPost = await postsService.findPostById(result)
+    const newPost = await postsQueryRepository.findPostByID(result)
       
     res.status(HTTP_STATUSES.CREATED_201).send(newPost);
 })
@@ -40,7 +42,7 @@ postsRouter.post('/:postId/comments',                     //create new comment
       return
     } 
 
-    const newPost = await commentsService.findCommentById(result)
+    const newPost = await commentsQueryRepository.findCommentByID(result)
       
     res.status(HTTP_STATUSES.CREATED_201).send(newPost);
 })
@@ -49,13 +51,13 @@ postsRouter.post('/:postId/comments',                     //create new comment
 postsRouter.get('/', async (req: Request, res: Response) => {  
   const queryFilter = postCheckQuery(req.query)
   
-  res.status(HTTP_STATUSES.OK_200).send(await postsService.findPosts(null, queryFilter));
+  res.status(HTTP_STATUSES.OK_200).send(await postsQueryRepository.findPosts(null, queryFilter));
 })
 
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
   
-  const foundPost = await postsService.findPostById(req.params.id)
+  const foundPost = await postsQueryRepository.findPostByID(req.params.id)
   
   if (foundPost) {      
     res.status(HTTP_STATUSES.OK_200).send(foundPost);
@@ -66,9 +68,9 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 
 postsRouter.get('/:id/comments', async (req: Request, res: Response) => {      //returns comments for specified post
   const queryFilter = postCheckQuery(req.query)
-  const post = await postsService.findPostById(req.params.id)
+  const post = await postsQueryRepository.findPostByID(req.params.id)
 
-  const foundcomments = await commentsService.findComments(req.params.id, queryFilter)
+  const foundcomments = await commentsQueryRepository.findComments(req.params.id, queryFilter)
   
   if (post) {      
     res.status(HTTP_STATUSES.OK_200).send(foundcomments);

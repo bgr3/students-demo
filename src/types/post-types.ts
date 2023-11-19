@@ -34,7 +34,7 @@ export type PostPutServiceType = {
     blogId: string,
 }
 
-export type PostFilter = {
+export type PostFilterType = {
     pageNumber: number,
     pageSize: number,
     sortBy: string,

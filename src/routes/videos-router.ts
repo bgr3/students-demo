@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express'
 import {checkVideos} from '../validation/check-videos'
 import { HTTP_STATUSES } from '../settings';
-import { videosRepository } from '../repositories/videos-repository';
+import { videosRepository } from '../repositories/video-repository/videos-repository';
 
 export const videosRouter = Router({});
 

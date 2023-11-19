@@ -1,5 +1,5 @@
 import { body } from "express-validator"
-import { usersRepository } from "../repositories/users-db-repository";
+import { usersRepository } from "../repositories/users-repository/users-db-repository";
 import add from 'date-fns/add'
 
 export const authEmailConfirmValidation = 
@@ -29,3 +29,23 @@ export const authReSendEmailConfirmValidation =
         })
     })
 
+export const authEmailValidation =
+    
+    body('email')
+    .trim()
+    .exists()
+    .isLength({min:1, max: 100}).withMessage('Email length does not exist')
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage('Email does not exist')
+
+export const authPasswordRecoveryCodeValidation = 
+
+    body('code')
+    .trim()
+    .custom(async value => {
+        return  await usersRepository.findUserByConfirmationCode(value).then(user => {
+            if (!user) return Promise.reject('User doesn`t exist');
+            if (user.emailConfirmation.confirmationCode !== value) return Promise.reject('Confirmation code doesn`t match');
+            if (user.emailConfirmation.expirationDate < new Date()) return Promise.reject('Code already expired');
+          return value
+        })
+    })

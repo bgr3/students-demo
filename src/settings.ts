@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import { videosRouter } from './routes/videos-router'
 import { testingRouter } from './routes/testing-router'
 import { blogsRouter } from './routes/blogs-router'
@@ -9,7 +9,6 @@ import { commentsRouter } from './routes/comments-router'
 import cookieParser from 'cookie-parser'
 import { securityRouter } from './routes/security-router'
 
-export const app = express()
 export const HTTP_STATUSES = {
   OK_200: 200,
   CREATED_201: 201,
@@ -32,8 +31,12 @@ export const RouterPaths = {
   blogs: '/blogs',
   posts: '/posts',
   api: '/api',
-  hometask: '/hometask_09',
+  hometask: '/hometask_10',
 }
+
+const asyncHandler = (fn: any) => (req: Request, res: Response, next: NextFunction) => Promise.resolve(fn(req, res, next)).catch(next);
+
+export const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
@@ -53,6 +56,10 @@ app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.users, usersRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.auth, authRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.comments, commentsRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.security, securityRouter)
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  console.log('ошибка: ', error);
+  res.status(500).send('Что-то пошло не так!'); 
+})
 
 if (!process.env.JWT_SECRET) {
   throw new Error('! JWT doesn`t found')

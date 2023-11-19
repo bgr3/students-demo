@@ -3,7 +3,7 @@ import { HTTP_STATUSES } from "../settings";
 import { usersService } from "../domain/user-service";
 import { authenticationJWTMiddleware, authenticationRefreshJWTMiddleware } from "../middlewares/authorization-middleware";
 import { authService } from "../domain/auth-service";
-import { authInputValidationMiddleware, authReSendValidationMiddleware, inputValidationMiddleware, userInputValidationMiddleware } from "../middlewares/input-validation-middleware";
+import { authInputValidationMiddleware, authReSendValidationMiddleware, authRecoveryPasswordMiddleware, authRecoveryPasswordSendMiddleware, inputValidationMiddleware, userInputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { accessFrequencyMiddleware } from "../middlewares/access-middleware";
 
 
@@ -12,7 +12,7 @@ export const authRouter = Router({});
 authRouter.post('/login',
 accessFrequencyMiddleware,
 async (req: Request, res: Response) => {
-    let user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
+    const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
     if (!user) {
       res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
@@ -27,6 +27,34 @@ async (req: Request, res: Response) => {
 
     res.cookie('refreshToken', tokens!.refreshToken, {httpOnly: true, secure: true})  
     res.status(HTTP_STATUSES.OK_200).send({accessToken: tokens!.accessToken}); 
+})
+
+authRouter.post('/password-recovery', 
+accessFrequencyMiddleware,
+authRecoveryPasswordSendMiddleware(),
+inputValidationMiddleware,
+async (req: Request, res: Response) => {
+  const userId = await usersService.updateCodeForRecoveryPassword(req.body.email)
+
+  if(userId) {
+    await authService.registerUserSendEmail(userId)  
+  }
+
+  res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+})
+
+authRouter.post('/new-password',
+accessFrequencyMiddleware,
+authRecoveryPasswordMiddleware(),  
+inputValidationMiddleware,
+async (req: Request, res: Response) => {
+    const result = await authService.confirmEmail(req.body.code)
+
+    if (result) {
+      res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    } else {
+      res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+    }
 })
 
 authRouter.post('/refresh-token', 

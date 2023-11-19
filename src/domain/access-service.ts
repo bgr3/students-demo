@@ -1,4 +1,4 @@
-import { logRepository } from "../repositories/access-log-db-repository"
+import { logRepository } from "../repositories/access-repository/access-log-db-repository"
 import add from 'date-fns/add'
 
 export const accessService = {
@@ -16,9 +16,7 @@ export const accessService = {
                 }
             }
         }
-        
-        
-        
+    
         const log = {
             URL: url,
             IP: ip,

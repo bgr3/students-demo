@@ -3,12 +3,13 @@ import { HTTP_STATUSES } from "../settings";
 import { authenticationJWTMiddleware, authorizationCommentMiddleware } from "../middlewares/authorization-middleware";
 import { commentsService } from "../domain/comment-service";
 import { commentInputValidationMiddleware, inputValidationMiddleware } from "../middlewares/input-validation-middleware";
+import { commentsQueryRepository } from "../repositories/comments-repository/comments-query-db-repository";
 
 export const commentsRouter = Router({});
 
 commentsRouter.get('/:id', async (req: Request, res: Response) => {
   
-  const foundComment = await commentsService.findCommentById(req.params.id)
+  const foundComment = await commentsQueryRepository.findCommentByID(req.params.id)
   
   if (foundComment) {      
     res.status(HTTP_STATUSES.OK_200).send(foundComment);

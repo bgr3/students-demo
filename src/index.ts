@@ -9,8 +9,10 @@ const port = process.env.PORT1 || 3000
 const startApp = async () => {
   await runDb()
   app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+    console.log(`Example app listening on port ${port}`)
+  })
+
+  
 }
 
 startApp()

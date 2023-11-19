@@ -2,11 +2,11 @@ import {Request, Response, Router} from 'express'
 import { HTTP_STATUSES } from '../settings'
 import { blogsService } from '../domain/blog-service'
 import { postsService } from '../domain/post-service'
-import { videosRepository } from '../repositories/videos-repository'
+import { videosRepository } from '../repositories/video-repository/videos-repository'
 import { usersService } from '../domain/user-service'
 import { commentsService } from '../domain/comment-service'
 import { accessService } from '../domain/access-service'
-import { authRepository } from '../repositories/auth-db-repository'
+import { authRepository } from '../repositories/auth-repository/auth-db-repository'
 
 export const testingRouter = Router()
 

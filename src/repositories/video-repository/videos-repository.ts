@@ -1,5 +1,5 @@
-import { checkVideos } from "../validation/check-videos";
-import { VideoPostType, VideoPutType } from "../types/video-types";
+import { checkVideos } from "../../validation/check-videos";
+import { VideoPostType, VideoPutType } from "../../types/video-types";
 
 
 const videos: any = [];

@@ -1,4 +1,4 @@
-import { blogFilter } from "../repositories/blogs-db-repository"
+import { blogFilter } from "../repositories/blogs-repository/blogs-db-repository"
 import { BlogFilter } from "../types/blog-types"
 
 export const blogCheckQuery = (query: any): BlogFilter => {

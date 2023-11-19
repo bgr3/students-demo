@@ -1,5 +1,5 @@
 import { body, param } from "express-validator"
-import { blogsService } from "../domain/blog-service" 
+import { blogsQueryRepository } from "../repositories/blogs-repository/blogs-query-db-repository"
 
 export const postTitleValidation = 
     
@@ -22,7 +22,7 @@ export const postBlogIdValidation =
     .trim()
     .isLength({min:1})
     .customSanitizer(async (value) => {
-        const checkBlog = await blogsService.findBlogByID(value)
+        const checkBlog = await blogsQueryRepository.findBlogByID(value)
         if (!checkBlog){
             return null
         } else {
@@ -43,7 +43,7 @@ export const blogPostBlogIdValidation =
     .trim()
     .isLength({min:1})
     .customSanitizer(async (value) => {
-        const checkBlog = await blogsService.findBlogByID(value)
+        const checkBlog = await blogsQueryRepository.findBlogByID(value)
         if (!checkBlog){
             return null
         } else {

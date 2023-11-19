@@ -1,33 +1,36 @@
-import { commentsRepository } from "../repositories/comments-db-repository";
-import { postsRepository } from "../repositories/posts-db-repository";
-import { CommentOutput, CommentPaginatorType, CommentPostType, CommentPutType, CommentsFilter } from "../types/comment-types";
-import { UserDb } from "../types/user-types";
+import { commentsRepository } from "../repositories/comments-repository/comments-db-repository";
+import { postsRepository } from "../repositories/posts-repository/posts-db-repository";
+import { postsQueryRepository } from "../repositories/posts-repository/posts-query-db-repository";
+import { CommentPostType, CommentPutType } from "../types/comment-types";
 import { getUserByJWTAccessToken } from "../validation/authorization-validation";
+enum  StatusCode {
+    Success = 0,
+    BadRequest = 1,
+    Forbidden = 2,
+} 
+
+type Result<T> = {
+    statusCode: StatusCode
+    errorMessage?: string
+    data: T
+}
 
 export const commentsService = {
     async testAllData (): Promise<void> {
         return await postsRepository.testAllData()
     },
 
-    async findComments (postId?: string | null, filterService?: CommentsFilter): Promise<CommentPaginatorType> {
-        const comments = await commentsRepository.findComments(postId, filterService)
-
-        return comments
-    },
-
-    async findCommentById (id: string): Promise<CommentOutput | null> {
-        const comment = await commentsRepository.findCommentByID(id);
-
-        return comment
-
-    },
-
-    async createComment (body: CommentPostType, token: string, postId: string): Promise<string | null> {
+    async createComment (body: CommentPostType, token: string, postId: string): Promise</*Result<string | null>*/string | null> {
         const user = await getUserByJWTAccessToken(token)
 
         if (!user) return null
+        // {
+        // data: null,
+        // errorMessage: 'user not found',
+        // statusCode: StatusCode.BadRequest
+        // }
         
-        const post = await postsRepository.findPostByID(postId)
+        const post = await postsQueryRepository.findPostByID(postId)
         
         if (post){
             const newComment = {    
