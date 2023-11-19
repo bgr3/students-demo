@@ -54,10 +54,7 @@ app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.users, usersRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.auth, authRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.comments, commentsRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.security, securityRouter)
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-  console.log('ошибка: ', error);
-  res.status(500).send('Что-то пошло не так!'); 
-})
+
 
 if (!process.env.JWT_SECRET) {
   throw new Error('! JWT doesn`t found')
