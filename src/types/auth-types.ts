@@ -1,51 +1,71 @@
-import { WithId } from "mongodb"
+import { ObjectId, WithId } from "mongodb"
 import { type } from "os"
 
-export type Tokens = {
-    accessToken: string,
-    refreshToken: string,
+export class Tokens {
+    constructor(public accessToken: string,
+                public refreshToken: string){}
 }
 
-export type DbTokens = WithId <Tokens>
-
-export type AuthType = {
-    issuedAt: Date,
-    expiredAt: Date,
-    deviceId: string,
-    deviceIP: string,
-    deviceName: string,
-    userId: string,
-    tokens: {
-        accessToken: string,
-        refreshToken: string,
-    }
+export class DbTokens extends Tokens {
+    constructor(public _id: ObjectId,
+                public accessToken: string,
+                public refreshToken: string){
+                    super(accessToken, refreshToken)
+                }
 }
 
-export type DbAuthType = WithId <AuthType>
-
-export type AuthTypeOutput = {    
-    ip: string,
-    title: string,
-    lastActiveDate: string,
-    deviceId: string
+export class AuthType {
+    constructor(public issuedAt: Date,
+                public expiredAt: Date,
+                public deviceId: string,
+                public deviceIP: string,
+                public deviceName: string,
+                public userId: string,
+                public tokens: {
+                    accessToken: string,
+                    refreshToken: string,
+                }){}
 }
 
-export type AuthPutType = {
-    issuedAt: Date,
-    expiredAt: Date,
-    tokens: {
-        accessToken: string,
-        refreshToken: string,
-    }
+export class DbAuthType extends AuthType {
+    constructor(public _id: ObjectId,
+                public issuedAt: Date,
+                public expiredAt: Date,
+                public deviceId: string,
+                public deviceIP: string,
+                public deviceName: string,
+                public userId: string,
+                public tokens: {
+                    accessToken: string,
+                    refreshToken: string,
+                }){
+                    super(issuedAt, expiredAt, deviceId, deviceIP, deviceName, userId, tokens)
+                }
 }
 
-export type MeType = {
-    "email": string,
-    "login": string,
-    "userId": string
+export class AuthTypeOutput {    
+    constructor(public ip: string,
+                public title: string,
+                public lastActiveDate: string,
+                public deviceId: string){}
+}
+
+export class AuthPutType {
+    constructor(public issuedAt: Date,
+                public expiredAt: Date,
+                public tokens: {
+                accessToken: string,
+                refreshToken: string,
+                }){}
+}
+
+export class MeType {
+    constructor(public email: string,
+                public login: string,
+                public userId: string){}
   } 
 
-export type LoginResponseType = {
-    accessToken: string
+export class LoginResponseType {
+    constructor(public accessToken: string){}
 }
 

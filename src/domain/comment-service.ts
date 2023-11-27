@@ -1,6 +1,6 @@
-import { commentsRepository } from "../repositories/comments-repository/comments-db-repository";
-import { postsRepository } from "../repositories/posts-repository/posts-db-repository";
-import { postsQueryRepository } from "../repositories/posts-repository/posts-query-db-repository";
+import { CommentsRepository } from "../repositories/comments-repository/comments-db-repository";
+import { PostsRepository } from "../repositories/posts-repository/posts-db-repository";
+import { PostsQueryRepository } from "../repositories/posts-repository/posts-query-db-repository";
 import { CommentPostType, CommentPutType } from "../types/comment-types";
 import { getUserByJWTAccessToken } from "../validation/authorization-validation";
 enum  StatusCode {
@@ -15,10 +15,14 @@ type Result<T> = {
     data: T
 }
 
-export const commentsService = {
+export class CommentsService {
+    constructor(
+        protected commentsRepository: CommentsRepository,
+        protected postsRepository: PostsRepository,
+        protected postsQueryRepository: PostsQueryRepository){}
     async testAllData (): Promise<void> {
-        return await postsRepository.testAllData()
-    },
+        return await this.postsRepository.testAllData()
+    }
 
     async createComment (body: CommentPostType, token: string, postId: string): Promise</*Result<string | null>*/string | null> {
         const user = await getUserByJWTAccessToken(token)
@@ -30,7 +34,7 @@ export const commentsService = {
         // statusCode: StatusCode.BadRequest
         // }
         
-        const post = await postsQueryRepository.findPostByID(postId)
+        const post = await this.postsQueryRepository.findPostByID(postId)
         
         if (post){
             const newComment = {    
@@ -43,24 +47,25 @@ export const commentsService = {
             createdAt: new Date().toISOString(),
             };
         
-            const result = await commentsRepository.createComment(newComment);
+            const result = await this.commentsRepository.createComment(newComment);
         
             return result
         }
 
         return null  
 
-    },
+    }
 
     async updateComment (id: string, body: CommentPutType): Promise<boolean> {
        const updateComment = {             
             content: body.content
         }
 
-        return commentsRepository.updateComment(id, updateComment)
-    },
+        return this.commentsRepository.updateComment(id, updateComment)
+    }
 
     async deleteComment (id: string): Promise<boolean> {
-        return commentsRepository.deleteComment(id)
+        return this.commentsRepository.deleteComment(id)
     }
 }
+

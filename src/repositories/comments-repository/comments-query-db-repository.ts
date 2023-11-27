@@ -9,7 +9,7 @@ export const commentFilter = {
     sortDirection: 'desc',
   }
 
-export const commentsQueryRepository = {
+export class CommentsQueryRepository {
     async findComments (postId: string | null = null, filter: CommentsFilter = commentFilter): Promise<CommentPaginatorType> {
         let find:any = {}
         
@@ -31,7 +31,7 @@ export const commentsQueryRepository = {
         }
 
         return paginator
-    },
+    }
 
     async findCommentByID (id: string): Promise<CommentOutput | null> {
         if (ObjectId.isValid(id)){
@@ -45,7 +45,7 @@ export const commentsQueryRepository = {
         }
         
         return null
-    },
+    }
 }
 
 const commentMapper = (comment: CommentDb): CommentOutput => {

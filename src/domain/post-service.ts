@@ -1,15 +1,18 @@
 import { PostPostType, PostPutType } from "../types/post-types";
-import { postsRepository } from "../repositories/posts-repository/posts-db-repository";
-import { blogsQueryRepository } from "../repositories/blogs-repository/blogs-query-db-repository";
+import { PostsRepository } from "../repositories/posts-repository/posts-db-repository";
+import { BlogsQueryRepository } from "../repositories/blogs-repository/blogs-query-db-repository";
 
-export const postsService = {
+export class PostsService {
+    constructor(
+        protected postsRepository: PostsRepository,
+        protected blogsQueryRepository: BlogsQueryRepository){}
     async testAllData (): Promise<void> {
-        return await postsRepository.testAllData()
-    },
+        return await this.postsRepository.testAllData()
+    }
 
     async createPost (body: PostPostType): Promise<string | null> {
         
-        const blogName = await blogsQueryRepository.findBlogByID(body.blogId.trim())
+        const blogName = await this.blogsQueryRepository.findBlogByID(body.blogId.trim())
         
         if (blogName){
             const newPost = {    
@@ -21,18 +24,18 @@ export const postsService = {
             createdAt: new Date().toISOString(),
             };
         
-            const result = await postsRepository.createPost(newPost);
+            const result = await this.postsRepository.createPost(newPost);
         
             return result
         }
 
         return null  
 
-    },
+    }
 
     async updatePost (id: string, body: PostPutType): Promise<boolean> {
         
-        const blogName = await blogsQueryRepository.findBlogByID(body.blogId.trim())
+        const blogName = await this.blogsQueryRepository.findBlogByID(body.blogId.trim())
         
         const updatePost = {             
             title: body.title,
@@ -42,11 +45,11 @@ export const postsService = {
             blogName:  blogName?.name,
         }
 
-        return postsRepository.updatePost(id, updatePost)
-    },
+        return this.postsRepository.updatePost(id, updatePost)
+    }
 
     async deletePost (id: string): Promise<boolean> {
-        return postsRepository.deletePost(id)
+        return this.postsRepository.deletePost(id)
     }
 }
 

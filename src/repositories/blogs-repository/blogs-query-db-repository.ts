@@ -10,7 +10,7 @@ export const blogFilter = {
     searchNameTerm: '',
   }
 
-  export const blogsQueryRepository = {
+  export class BlogsQueryRepository {
     async findBlogs (filter: BlogFilter = blogFilter): Promise<BlogPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize
         const regex = new RegExp(filter.searchNameTerm, 'i')
@@ -26,7 +26,7 @@ export const blogFilter = {
         }
 
         return paginator
-    },
+    }
 
     async findBlogByID (id: string): Promise<BlogOutput | null> {
         if (ObjectId.isValid(id)) {
@@ -39,7 +39,7 @@ export const blogFilter = {
         }
 
         return null
-    },
+    }
   }
 
   const blogMapper = (blog: BlogDb): BlogOutput => {

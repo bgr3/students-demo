@@ -2,9 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUSES } from "../settings";
 import { checkAuthorization, checkJWTAuthorization, getUserByJWTAccessToken } from "../validation/authorization-validation";
 import { jwtService } from "../application/jwt-service";
-import { authRepository } from "../repositories/auth-repository/auth-db-repository";
-import { authService } from "../domain/auth-service";
-import { commentsQueryRepository } from "../repositories/comments-repository/comments-query-db-repository";
+import { AuthRepository } from "../repositories/auth-repository/auth-db-repository";
+import { CommentsQueryRepository } from "../repositories/comments-repository/comments-query-db-repository";
+import { authService } from "../compositions-roots/auth-composition-root";
+
+const authRepository = new AuthRepository()
+const commentsQueryRepository = new CommentsQueryRepository()
 
 export const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     

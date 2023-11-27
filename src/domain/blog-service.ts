@@ -1,12 +1,11 @@
-import { blogsRepository } from "../repositories/blogs-repository/blogs-db-repository"
+import { BlogsRepository } from "../repositories/blogs-repository/blogs-db-repository"
 import { BlogPostType, BlogPutType } from "../types/blog-types"
 
-
-
-export const blogsService = {
+export class BlogsService {
+    constructor(protected blogsRepository: BlogsRepository){}
     async testAllData (): Promise<void> {
-        return blogsRepository.testAllData()
-    },
+        return this.blogsRepository.testAllData()
+    }
 
     async createBlog (body: BlogPostType): Promise<string | null> {     
         const newblog = {
@@ -17,8 +16,8 @@ export const blogsService = {
             isMembership: false,
         };
         
-        return await blogsRepository.createBlog(newblog)
-    },
+        return await this.blogsRepository.createBlog(newblog)
+    }
 
     async updateBlog (id: string, body: BlogPutType): Promise<Boolean> {
         
@@ -28,10 +27,10 @@ export const blogsService = {
             websiteUrl: body.websiteUrl,
         };
         
-        return await blogsRepository.updateBlog(id, updateBlog)
-    },
+        return await this.blogsRepository.updateBlog(id, updateBlog)
+    }
 
     async deleteBlog (id: string): Promise<Boolean> {
-        return blogsRepository.deleteBlog(id)
+        return this.blogsRepository.deleteBlog(id)
     }
 }

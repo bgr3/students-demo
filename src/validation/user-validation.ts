@@ -1,5 +1,7 @@
 import { body } from "express-validator"
-import { usersRepository } from "../repositories/users-repository/users-db-repository";
+import { UsersRepository } from "../repositories/users-repository/users-db-repository";
+
+const usersRepository = new UsersRepository()
 
 export const userLoginValidation = 
     

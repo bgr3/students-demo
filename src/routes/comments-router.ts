@@ -1,52 +1,26 @@
-import { Request, Response, Router } from "express";
-import { HTTP_STATUSES } from "../settings";
+import { Router } from "express";
 import { authenticationJWTMiddleware, authorizationCommentMiddleware } from "../middlewares/authorization-middleware";
-import { commentsService } from "../domain/comment-service";
 import { commentInputValidationMiddleware, inputValidationMiddleware } from "../middlewares/input-validation-middleware";
-import { commentsQueryRepository } from "../repositories/comments-repository/comments-query-db-repository";
+import { commentsController } from "../compositions-roots/comments-composition-root";
 
 export const commentsRouter = Router({});
 
-commentsRouter.get('/:id', async (req: Request, res: Response) => {
-  
-  const foundComment = await commentsQueryRepository.findCommentByID(req.params.id)
-  
-  if (foundComment) {      
-    res.status(HTTP_STATUSES.OK_200).send(foundComment);
-  } else {
-    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-  }
-})
+commentsRouter.put('/:id/like-status',)
+
+commentsRouter.get('/:id', commentsController.getComment.bind(commentsController))
 
 commentsRouter.put('/:id',
-authenticationJWTMiddleware,
-authorizationCommentMiddleware,
-commentInputValidationMiddleware(),
-inputValidationMiddleware,
-async (req: Request, res: Response) => {
-
-  const updatedComment = await commentsService.updateComment(req.params.id, req.body) 
-  
-  if (!updatedComment) {
-    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-    return
-  }
-
-  res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-})  
+  authenticationJWTMiddleware,
+  authorizationCommentMiddleware,
+  commentInputValidationMiddleware(),
+  inputValidationMiddleware,
+  commentsController.updateComment.bind(commentsController)
+)  
   
 
 commentsRouter.delete('/:id',
-authenticationJWTMiddleware,
-authorizationCommentMiddleware,
-async (req: Request, res: Response) => {
-
-  const foundComment = await commentsService.deleteComment(req.params.id)
-
-  if (foundComment) {
-    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-  } else {
-    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-  }
-})
+  authenticationJWTMiddleware,
+  authorizationCommentMiddleware,
+  commentsController.deleteComment.bind(commentsController)
+)
 

@@ -1,54 +1,69 @@
-import { WithId } from "mongodb"
+import { ObjectId} from "mongodb"
 import { Tokens } from "./auth-types"
 
-export type UserType = {
-    login: string,
-    email: string,
-    password: string
-    createdAt: string,
-    emailConfirmation : {
-        confirmationCode: string,
-        expirationDate: object,
-        isConfirmed: boolean,
-        nextSend: object
-    },
-    JWTTokens: Tokens[]
+export class UserType {
+    constructor(public login: string,
+                public email: string,
+                public password: string,
+                public createdAt: string,
+                public emailConfirmation : {
+                    confirmationCode: string,
+                    expirationDate: object,
+                    isConfirmed: boolean,
+                    nextSend: object
+                },
+                public JWTTokens: Tokens[]){}
 }
 
-export type UserDb = WithId <UserType>
-
-export type UserOutput = {
-    id: string,
-    login: string,
-    email: string,
-    createdAt: string,
+export class UserDb extends UserType{
+    constructor(public _id: ObjectId, 
+                public login: string,
+                public email: string,
+                public password: string,
+                public createdAt: string,
+                public emailConfirmation : {
+                    confirmationCode: string,
+                    expirationDate: object,
+                    isConfirmed: boolean,
+                    nextSend: object
+                },
+                public JWTTokens: Tokens[]){
+        super(login, email, password, createdAt, emailConfirmation, JWTTokens)
+    }
 }
 
-export type UserPostType = {
-    login: string,
-    password: string,
-    email: string,
+export class UserOutput {
+    constructor(public id: string,
+                public login: string,
+                public email: string,
+                public createdAt: string,){}
 }
 
-export type UserFilterType = {
-    pageNumber: number,
-    pageSize: number,
-    sortBy: string,
-    sortDirection: string,
-    searchLoginTerm: string,
-    searchEmailTerm: string,
+export class UserPostType {
+    constructor(public login: string,
+                public password: string,
+                public email: string){}
 }
 
-export type UserPaginatorType = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: UserOutput[],
+export class UserFilterType {
+    constructor(public pageNumber: number,
+                public pageSize: number,
+                public sortBy: string,
+                public sortDirection: string,
+                public searchLoginTerm: string,
+                public searchEmailTerm: string){}
 }
 
-export type UserMe = {
-    email: string,
-    login: string,
-    userId: string,
+export class UserPaginatorType {
+    constructor(public pagesCount: number,
+                public page: number,
+                public pageSize: number,
+                public totalCount: number,
+                public items: UserOutput[]){}
+}
+
+export class UserMe {
+    constructor(public email: string,
+                public login: string,
+                public userId: string){}
 }

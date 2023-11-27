@@ -1,5 +1,7 @@
 import { body, param } from "express-validator"
-import { blogsQueryRepository } from "../repositories/blogs-repository/blogs-query-db-repository"
+import { BlogsQueryRepository } from "../repositories/blogs-repository/blogs-query-db-repository"
+
+const blogsQueryRepository = new BlogsQueryRepository()
 
 export const postTitleValidation = 
     

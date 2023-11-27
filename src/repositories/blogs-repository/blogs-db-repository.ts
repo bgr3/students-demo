@@ -10,11 +10,11 @@ export const blogFilter = {
     searchNameTerm: '',
   }
 
-export const blogsRepository = {
+export class BlogsRepository {
     async testAllData (): Promise<void> {
         const result = await BlogModel.deleteMany({})
         //console.log('blogs delete: ', result.deletedCount)
-    },
+    }
 
     async createBlog (newBlog: BlogType): Promise<string | null> {
         const result = await BlogModel.insertMany([newBlog]);
@@ -24,7 +24,7 @@ export const blogsRepository = {
         } else {
             return null
         }
-    },
+    }
 
     async updateBlog (id: string, updateBlog: BlogPutType): Promise<Boolean> {
         if (ObjectId.isValid(id)) {
@@ -36,7 +36,7 @@ export const blogsRepository = {
         }
 
         return false
-    },
+    }
 
     async deleteBlog (id: string): Promise<Boolean> {
         if (ObjectId.isValid(id)) {
@@ -51,8 +51,9 @@ export const blogsRepository = {
     }
 }
 
-const idValidation = (id: string): ObjectId => {
-    return ObjectId.isValid(id) ? new ObjectId(id) : new ObjectId ('123456789012')
-}
+
+// const idValidation = (id: string): ObjectId => {
+//     return ObjectId.isValid(id) ? new ObjectId(id) : new ObjectId ('123456789012')
+// }
 
 

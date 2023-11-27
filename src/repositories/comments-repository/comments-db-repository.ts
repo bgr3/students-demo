@@ -2,11 +2,11 @@ import { CommentModel } from "../../db/db";
 import { ObjectId } from "mongodb";
 import { CommentPutType, CommentsCollection } from "../../types/comment-types";
 
-export const commentsRepository = {
+export class CommentsRepository {
     async testAllData (): Promise<void> {
         const result = await CommentModel.deleteMany({})
         //console.log('comments delete: ', result.deletedCount)
-    },
+    }
 
     async createComment (newComment: CommentsCollection): Promise<string | null> {
         const result = await CommentModel.insertMany([newComment]);
@@ -18,7 +18,7 @@ export const commentsRepository = {
             return null
         }
         
-    },
+    }
 
     async updateComment (id: string, updateComment: CommentPutType): Promise<boolean> {
         if (ObjectId.isValid(id)) {
@@ -32,7 +32,7 @@ export const commentsRepository = {
         }
 
         return false
-    },
+    }
 
     async deleteComment (id: string): Promise<boolean> {
         if (ObjectId.isValid(id)) {
@@ -46,4 +46,5 @@ export const commentsRepository = {
         return false
     }
 }
+
 

@@ -7,18 +7,18 @@ export const postFilter = {
     pageSize: 10,
     sortBy: 'createdAt',
     sortDirection: 'desc',
-  }
+}
 
-  export const postsQueryRepository = {
+export class PostsQueryRepository {
     async findPosts (blogId: string | null = null, filter: PostFilterType = postFilter): Promise<PostPaginatorType> {
         let find:any = {}
         
         if (blogId){
             find.blogId = blogId;
         }
-
+    
         const skip = (filter.pageNumber - 1) * filter.pageSize
-
+    
         const dbCount = await PostModel.countDocuments(find)
         const dbResult = await PostModel.find(find).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).lean()
         
@@ -29,10 +29,10 @@ export const postFilter = {
             totalCount: dbCount,
             items: dbResult.map((p: PostDb) => postMapper(p))
         }
-
+    
         return paginator
-    },
-
+    }
+    
     async findPostByID (id: string): Promise<PostOutput | null> {
         if (ObjectId.isValid(id)){
             const post = await PostModel.findOne({_id: new ObjectId(id)}).lean();
@@ -45,8 +45,8 @@ export const postFilter = {
         }
         
         return null
-    },
-  }
+    }
+}
   
 const postMapper = (post: PostDb): PostOutput => {
     return {

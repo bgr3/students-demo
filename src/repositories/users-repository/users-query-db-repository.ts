@@ -11,7 +11,7 @@ export const userFilter = {
     searchEmailTerm: '',
   }
 
-export const usersQueryRepository = {
+export class UsersQueryRepository {
     async findUsers (filter: UserFilterType = userFilter): Promise<UserPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize
         const regexLogin = new RegExp(filter.searchLoginTerm, 'i')
@@ -29,7 +29,7 @@ export const usersQueryRepository = {
         }
 
         return paginator
-    },
+    }
     
     async findUserByID (id: string): Promise<UserOutput | null> {
         if (ObjectId.isValid(id)) {
@@ -42,7 +42,7 @@ export const usersQueryRepository = {
         }
 
         return null
-    },
+    }
 }
 
 const userMapper = (user: UserDb): UserOutput => {

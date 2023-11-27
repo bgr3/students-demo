@@ -4,16 +4,14 @@ import { usersService } from '../domain/user-service';
 import { authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { inputValidationMiddleware, userInputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { userCheckQuery } from '../features/user-features';
-import { usersQueryRepository } from '../repositories/users-repository/users-query-db-repository';
+import { UsersQueryRepository } from '../repositories/users-repository/users-query-db-repository';
 
-
-export const usersRouter = Router({});
-
-usersRouter.post('/',
-  authenticationMiddleware,
-  userInputValidationMiddleware(),
-  inputValidationMiddleware,  
-  async (req: Request, res: Response) => {
+class UsersController {
+  usersQueryRepository: UsersQueryRepository
+  constructor(){
+    this.usersQueryRepository = new UsersQueryRepository()
+  }
+  async createUser (req: Request, res: Response)  {
     
     let result = await usersService.createUser(req.body.login, req.body.email, req.body.password, true)
     
@@ -22,23 +20,16 @@ usersRouter.post('/',
       return
     } 
 
-    const newUser = await usersQueryRepository.findUserByID(result)
+    const newUser = await this.usersQueryRepository.findUserByID(result)
       
     res.status(HTTP_STATUSES.CREATED_201).send(newUser);
-})
-
-usersRouter.get('/',
-  authenticationMiddleware,
-  async (req: Request, res: Response) => {
+  }
+  async getUsers(req: Request, res: Response)  {
     const queryFilter = userCheckQuery(req.query)
     
-    res.status(HTTP_STATUSES.OK_200).send(await usersQueryRepository.findUsers(queryFilter));
-})
-
-
-usersRouter.delete('/:id',
-  authenticationMiddleware,
-  async (req: Request, res: Response) => {
+    res.status(HTTP_STATUSES.OK_200).send(await this.usersQueryRepository.findUsers(queryFilter));
+  }
+  async deleteUser(req: Request, res: Response)  {
   
     const foundBlog = await usersService.deleteUser(req.params.id)
   
@@ -47,4 +38,27 @@ usersRouter.delete('/:id',
     } else {
     res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
-})
+  }
+}
+
+const usersController = new UsersController()
+
+export const usersRouter = Router({});
+
+usersRouter.post('/',  
+authenticationMiddleware,
+userInputValidationMiddleware(),
+inputValidationMiddleware,  
+usersController.createUser.bind(usersController)
+)
+
+usersRouter.get('/',
+  authenticationMiddleware,
+  usersController.getUsers.bind(usersController)
+  
+)
+
+usersRouter.delete('/:id',
+  authenticationMiddleware,
+  usersController.deleteUser.bind(usersController)
+  )

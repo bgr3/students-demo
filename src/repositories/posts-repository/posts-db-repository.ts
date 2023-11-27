@@ -2,11 +2,11 @@ import { PostPutServiceType, PostType } from "../../types/post-types";
 import { PostModel } from "../../db/db";
 import { ObjectId } from "mongodb";
 
-export const postsRepository = {
+export class PostsRepository {
     async testAllData (): Promise<void> {
         const result = await PostModel.deleteMany({})
         //console.log('post delete: ', result.deletedCount)
-    },
+    }
 
     async createPost (newPost: PostType): Promise<string | null> {
         const result = await PostModel.insertMany([newPost]);
@@ -18,7 +18,7 @@ export const postsRepository = {
             return null
         }
         
-    },
+    }
 
     async updatePost (id: string, updatePost: PostPutServiceType): Promise<boolean> {
         if (ObjectId.isValid(id)) {
@@ -32,7 +32,7 @@ export const postsRepository = {
         }
 
         return false
-    },
+    }
 
     async deletePost (id: string): Promise<boolean> {
         if (ObjectId.isValid(id)) {

@@ -1,7 +1,7 @@
 import { AuthModel } from "../../db/db"
 import { AuthTypeOutput, DbAuthType } from "../../types/auth-types";
 
-export const   authQueryRepository = {
+export class AuthQueryRepository {
     async findAuthSessionsByUserId (userId: string): Promise<AuthTypeOutput[] | null> {
         const session = await AuthModel.find({userId: userId}).lean();
         return session.map(i => authMapper(i))
