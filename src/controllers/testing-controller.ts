@@ -8,7 +8,7 @@ import { CommentsService } from '../domain/comment-service'
 import { accessService } from '../domain/access-service'
 import { AuthService } from '../domain/auth-service'
 
-export class TestingRouterController {
+export class TestingController {
     constructor(
         protected blogsService: BlogsService,
         protected postsService: PostsService,

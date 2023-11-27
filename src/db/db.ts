@@ -1,11 +1,4 @@
-import { MongoClient } from "mongodb"
-import { BlogType } from "../types/blog-types";
 import dotenv from "dotenv"
-import { PostType } from "../types/post-types";
-import { UserType } from "../types/user-types";
-import { CommentsCollection } from "../types/comment-types";
-import { AccessLogType } from "../types/access-log-types";
-import { AuthType } from "../types/auth-types";
 import mongoose from "mongoose";
 import { userSchema } from "../schemas/user-schema";
 import { blogSchema } from "../schemas/blog-schema";
@@ -47,8 +40,10 @@ export const AuthModel = mongoose.model('auth', authSchema)
 export const runDb = async () => {
     try {
         /*await client.connect();*/
-        await mongoose.connect(url + '/' + dbName)
+        await mongoose.connect(url)
         console.log('Connect successfully to server');
+        console.log('URL mongoDB: ', url);
+        
     } catch (e) {
         console.log('! Don`t connect successfully to server')
         /*await client.close()*/

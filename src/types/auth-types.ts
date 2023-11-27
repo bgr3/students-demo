@@ -1,5 +1,4 @@
-import { ObjectId, WithId } from "mongodb"
-import { type } from "os"
+import { ObjectId } from "mongodb"
 
 export class Tokens {
     constructor(public accessToken: string,

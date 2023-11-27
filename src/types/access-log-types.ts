@@ -1,11 +1,19 @@
-import { WithId } from "mongodb"
+import { ObjectId } from "mongodb"
 
-export type AccessLogType = {
-    IP: string, 
-    URL: string, 
-    date: Date
+export class AccessLogType {
+    constructor(
+        public IP: string, 
+        public URL: string, 
+        public date: Date){}
 }
 
-export type AccessLogDb = WithId <AccessLogType>
-
+export class AccessLogDb extends AccessLogType {
+    constructor(
+        public _id: ObjectId,
+        IP: string, 
+        URL: string, 
+        date: Date){
+            super(IP, URL, date)
+        }
+}
 export type AccessLogOutput = AccessLogType & {id: string}

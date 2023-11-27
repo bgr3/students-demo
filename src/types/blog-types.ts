@@ -1,17 +1,26 @@
-//import { ObjectId } from "mongodb"
+import { ObjectId } from "mongodb"
 
 import { WithId } from "mongodb"
 
-export type BlogType = {
-    //_id?: ObjectId,
-    //id:	string,
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: 	string,
-    isMembership: boolean,
+export class BlogType {
+    constructor(
+        public name: string,
+        public description: string,
+        public websiteUrl: string,
+        public createdAt: 	string,
+        public isMembership: boolean){}
 }
-export type BlogDb = WithId <BlogType>
+export class BlogDb extends BlogType {
+    constructor(
+        public _id: ObjectId,
+        public name: string,
+        public description: string,
+        public websiteUrl: string,
+        public createdAt: 	string,
+        public isMembership: boolean){
+            super(name, description, websiteUrl, createdAt, isMembership)
+        }
+}
 
 export type BlogOutput = BlogType & {id: string}
 
