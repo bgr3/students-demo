@@ -12,7 +12,7 @@ export class CommentsController {
       const token = req.headers.authorization!  
       const id = req.params.id
       const body = req.body
-      const result = this.commentsService.likeStatus(id, token, body)
+      const result = await this.commentsService.likeStatus(id, token, body)     
 
       if (!result) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

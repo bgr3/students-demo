@@ -21,7 +21,7 @@ export class CommentsQueryRepository {
 
         const dbCount = await CommentModel.countDocuments(find)
         const dbResult = await CommentModel.find(find).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).lean()
-        
+
         const paginator = {
             pagesCount: Math.ceil(dbCount / filter.pageSize),
             page: filter.pageNumber,
@@ -36,7 +36,7 @@ export class CommentsQueryRepository {
     async findCommentByID (id: string, userId: string = ''): Promise<CommentOutput | null> {
         if (ObjectId.isValid(id)){
             const comment = await CommentModel.findOne({_id: new ObjectId(id)}).lean();
-            
+
             if (comment){
                 return commentMapper(comment, userId)
             }
@@ -56,7 +56,7 @@ const commentMapper = (comment: CommentDb, userId: string): CommentOutput => {
         myStatus = 'Dislike'
     } else {
         myStatus = 'None'
-    }
+    }    
 
     return {
         id: comment._id.toString(),
@@ -67,8 +67,8 @@ const commentMapper = (comment: CommentDb, userId: string): CommentOutput => {
         },
         createdAt: comment.createdAt,
         likesInfo: {
-            likes: comment.likesInfo.likes.length.toString(),
-            dislikes: comment.likesInfo.dislikes.length.toString(),
+            likesCount: comment.likesInfo.likes.length.toString(),
+            dislikesCount: comment.likesInfo.dislikes.length.toString(),
             myStatus: myStatus 
         }
     }

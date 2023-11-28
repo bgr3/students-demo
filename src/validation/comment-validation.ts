@@ -6,3 +6,13 @@ export const commentContentValidation =
     .trim()
     .isLength({min:20, max: 300}).withMessage('content does not exist')
 
+export const commentLikeStatusValidation = 
+    
+    body('likeStatus')
+    .trim()
+    .custom(async value => {
+          if (!['Like', 'Dislike', 'None'].includes(value)) {
+            return Promise.reject('Login already in use');
+          }
+          return value
+    })

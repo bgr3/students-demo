@@ -8,5 +8,9 @@ export const commentSchema = new mongoose.Schema<CommentsCollection>({
         userLogin: {type: String, required: true},
     },
     createdAt: {type: String, required: true},
+    likesInfo: {
+        likes:{type: [String], required: true},
+        dislikes: {type: [String], required: true},
+    },
     postId: {type: String, required: true}
 })

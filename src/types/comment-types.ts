@@ -59,8 +59,8 @@ export class CommentOutput {
         },
         public createdAt: string,
         public likesInfo: {
-            likes: string,
-            dislikes: string,
+            likesCount: string,
+            dislikesCount: string,
             myStatus: string
         }){}
 }

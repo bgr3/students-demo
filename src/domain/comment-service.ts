@@ -20,8 +20,9 @@ export class CommentsService {
         protected commentsRepository: CommentsRepository,
         protected postsRepository: PostsRepository,
         protected postsQueryRepository: PostsQueryRepository){}
+
     async testAllData (): Promise<void> {
-        return await this.postsRepository.testAllData()
+        return await this.commentsRepository.testAllData()
     }
 
     async createComment (body: CommentPostType, token: string, postId: string): Promise</*Result<string | null>*/string | null> {
@@ -73,8 +74,12 @@ export class CommentsService {
         const userId = user!._id.toString()
         const likeStatus = body.likeStatus
         const myLikeStatus = await this.commentsRepository.myLikeStatus(commentId, userId)
-        
+
         if (!myLikeStatus) return false
+
+        console.log(likeStatus, myLikeStatus);
+        
+        
 
         if (likeStatus !== myLikeStatus) {
             return await this.commentsRepository.setLikeStatus(commentId, userId, myLikeStatus, likeStatus)

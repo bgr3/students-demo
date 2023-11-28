@@ -8,9 +8,8 @@ export class CommentsRepository {
         //console.log('comments delete: ', result.deletedCount)
     }
 
-    async createComment (newComment: CommentsCollection): Promise<string | null> {
+    async createComment (newComment: CommentsCollection): Promise<string | null> {        
         const result = await CommentModel.insertMany([newComment]);
-        //console.log(result.insertedId)
         
         if (result[0]._id){
             return result[0]._id.toString()
@@ -35,12 +34,12 @@ export class CommentsRepository {
     }
 
     async myLikeStatus (commentId: string, userId: string): Promise<string|null> {
-        if (ObjectId.isValid(commentId)) {
+        if (ObjectId.isValid(commentId)) {            
             const comment = await CommentModel.findOne({_id: new ObjectId(commentId)}).lean()
             
             if (!comment) return null
 
-            let myStatus = null
+            let myStatus = null            
 
             if (comment.likesInfo.likes.includes(userId)) {
                 myStatus = 'Like'
@@ -48,10 +47,10 @@ export class CommentsRepository {
                 myStatus = 'Dislike'
             } else {
                 myStatus = 'None'
-            }
+            }            
 
             return myStatus
-        }
+        }        
 
         return null
     }
@@ -59,16 +58,16 @@ export class CommentsRepository {
     async setLikeStatus (commentId: string, userId: string, oldStatus: string, newStatus: string): Promise<boolean> {
         const filter = (status: string, userId: string) => {
             if (status === 'Like') {
-                return {likes: userId}
-            } else if (status === 'Disike') {
-                return {dislikes: userId}
+                return {'likesInfo.likes': userId}
+            } else if (status === 'Dislike') {
+                return {'likesInfo.dislikes': userId}
             } else {
                 return {}
             }
         }
 
         const oldStatusFilter = filter(oldStatus, userId)
-        const newStatusFilter = filter(newStatus, userId)
+        const newStatusFilter = filter(newStatus, userId)       
         
         if (ObjectId.isValid(commentId)) {
             const resultPull = await CommentModel.updateOne({_id: commentId}, {$pull: oldStatusFilter})

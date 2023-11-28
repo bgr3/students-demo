@@ -3,7 +3,7 @@ import { ValidationChain, validationResult } from "express-validator";
 import { postBlogIdValidation, postContentValidation, postTitleValidation, postShortDescriptionValidation } from "../validation/post-validation";
 import { blogDescriptionValidation, blogTitleValidation, blogWebsiteUrlValidation } from "../validation/blog-validation";
 import { userEmailValidation, userLoginValidation, userPasswordValidation } from "../validation/user-validation";
-import { commentContentValidation } from "../validation/comment-validation";
+import { commentContentValidation, commentLikeStatusValidation } from "../validation/comment-validation";
 import { authEmailConfirmValidation, authEmailValidation, authPasswordRecoveryCodeValidation, authReSendEmailConfirmValidation, userNewPasswordValidation } from "../validation/auth-validation";
 
 class Messages {
@@ -67,6 +67,10 @@ export const userInputValidationMiddleware = (): ValidationChain[] => [
 
 export const commentInputValidationMiddleware = (): ValidationChain[] => [
     commentContentValidation,
+]
+
+export const commentLikeStatusValidationMiddleware = (): ValidationChain[] => [
+    commentLikeStatusValidation,
 ]
 
 export const authInputValidationMiddleware = (): ValidationChain[] => [

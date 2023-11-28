@@ -4,7 +4,7 @@ import add from 'date-fns/add'
 import { JWTRefreshTokenType } from "../types/JWT-types";
 
 export const jwtService = {
-    async createJWT (userId: string, expirationTimeSeconds: number = 10) {
+    async createJWT (userId: string, expirationTimeSeconds: number = 300) {
         const token = jwt.sign({userId: userId}, settings.JWT_SECRET, {expiresIn: `${expirationTimeSeconds}s`})
         return token
     },
@@ -18,7 +18,7 @@ export const jwtService = {
         }
     },
 
-    async createRefreshJWT (deviceId: string, expirationTimeSeconds: number = 20): Promise<JWTRefreshTokenType> {
+    async createRefreshJWT (deviceId: string, expirationTimeSeconds: number = 500): Promise<JWTRefreshTokenType> {
         const token = jwt.sign({deviceId: deviceId}, settings.JWT_SECRET, {expiresIn: `${expirationTimeSeconds}s`})
         const tokenTiming = {
             issueAt: new Date(),
