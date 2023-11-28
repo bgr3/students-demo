@@ -31,7 +31,7 @@ export const RouterPaths = {
   blogs: '/blogs',
   posts: '/posts',
   api: '/api',
-  hometask: '/hometask_10',
+  hometask: '/hometask_11',
 }
 
 export const app = express()
