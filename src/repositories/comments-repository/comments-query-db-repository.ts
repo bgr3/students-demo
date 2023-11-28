@@ -67,8 +67,8 @@ const commentMapper = (comment: CommentDb, userId: string): CommentOutput => {
         },
         createdAt: comment.createdAt,
         likesInfo: {
-            likesCount: comment.likesInfo.likes.length.toString(),
-            dislikesCount: comment.likesInfo.dislikes.length.toString(),
+            likesCount: comment.likesInfo.likes.length,
+            dislikesCount: comment.likesInfo.dislikes.length,
             myStatus: myStatus 
         }
     }
