@@ -34,6 +34,54 @@ export class CommentsRepository {
         return false
     }
 
+    async myLikeStatus (commentId: string, userId: string): Promise<string|null> {
+        if (ObjectId.isValid(commentId)) {
+            const comment = await CommentModel.findOne({_id: new ObjectId(commentId)}).lean()
+            
+            if (!comment) return null
+
+            let myStatus = null
+
+            if (comment.likesInfo.likes.includes(userId)) {
+                myStatus = 'Like'
+            } else if (comment.likesInfo.dislikes.includes(userId)) {
+                myStatus = 'Dislike'
+            } else {
+                myStatus = 'None'
+            }
+
+            return myStatus
+        }
+
+        return null
+    }
+
+    async setLikeStatus (commentId: string, userId: string, oldStatus: string, newStatus: string): Promise<boolean> {
+        const filter = (status: string, userId: string) => {
+            if (status === 'Like') {
+                return {likes: userId}
+            } else if (status === 'Disike') {
+                return {dislikes: userId}
+            } else {
+                return {}
+            }
+        }
+
+        const oldStatusFilter = filter(oldStatus, userId)
+        const newStatusFilter = filter(newStatus, userId)
+        
+        if (ObjectId.isValid(commentId)) {
+            const resultPull = await CommentModel.updateOne({_id: commentId}, {$pull: oldStatusFilter})
+            const resultPush = await CommentModel.updateOne({_id: commentId}, {$push: newStatusFilter})
+
+            if (!resultPull.matchedCount || !resultPush) return false
+
+            return true
+        }
+
+        return false
+    }
+
     async deleteComment (id: string): Promise<boolean> {
         if (ObjectId.isValid(id)) {
             const result = await CommentModel.deleteOne({_id: new ObjectId(id)})

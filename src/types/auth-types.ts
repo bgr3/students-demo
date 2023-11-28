@@ -7,8 +7,8 @@ export class Tokens {
 
 export class DbTokens extends Tokens {
     constructor(public _id: ObjectId,
-                public accessToken: string,
-                public refreshToken: string){
+                accessToken: string,
+                refreshToken: string){
                     super(accessToken, refreshToken)
                 }
 }
@@ -28,13 +28,13 @@ export class AuthType {
 
 export class DbAuthType extends AuthType {
     constructor(public _id: ObjectId,
-                public issuedAt: Date,
-                public expiredAt: Date,
-                public deviceId: string,
-                public deviceIP: string,
-                public deviceName: string,
-                public userId: string,
-                public tokens: {
+                issuedAt: Date,
+                expiredAt: Date,
+                deviceId: string,
+                deviceIP: string,
+                deviceName: string,
+                userId: string,
+                tokens: {
                     accessToken: string,
                     refreshToken: string,
                 }){

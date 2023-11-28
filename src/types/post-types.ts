@@ -1,56 +1,85 @@
-import { WithId } from "mongodb"
+import { ObjectId } from "mongodb"
 
-export type PostType = {
-    title:	string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string | null,
-    createdAt: string,
+export class PostType {
+    constructor(
+        public title:	string,
+        public shortDescription: string,
+        public content: string,
+        public  blogId: string,
+        public  blogName: string | null,
+        public   createdAt: string){}
 }
 
-export type PostDb = WithId <PostType>
-
-export type PostOutput = PostType & {id: string}
-
-export type PostPostType = {
-    title:	string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
+export class PostDb extends PostType {
+    constructor(
+        public _id: ObjectId,
+        title:	string,
+        shortDescription: string,
+        content: string,
+        blogId: string,
+        blogName: string | null,
+        createdAt: string){
+            super(title, shortDescription, content, blogId, blogName, createdAt)
+        }
 }
 
-export type PostPutType = {
-    title:	string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
+export class PostOutput extends PostType {
+    constructor(
+        public id: string,
+        title:	string,
+        shortDescription: string,
+        content: string,
+        blogId: string,
+        blogName: string | null,
+        createdAt: string){
+            super(title, shortDescription, content, blogId, blogName, createdAt)
+        }
 }
 
-export type PostPutServiceType = {
-    title:	string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
+export class PostPostType {
+    constructor(
+        public title: string,
+        public shortDescription: string,
+        public content: string,
+        public blogId: string){}
 }
 
-export type PostFilterType = {
-    pageNumber: number,
-    pageSize: number,
-    sortBy: string,
-    sortDirection: string,
+export class PostPutType {
+    constructor(
+        public title: string,
+        public shortDescription: string,
+        public content: string,
+        public blogId: string,){}
 }
 
-export type PostPaginatorType = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: PostOutput[],
+export class PostPutServiceType {
+    constructor(
+        public title: string,
+        public shortDescription: string,
+        public content: string,
+        public blogId: string){}
 }
 
-export type PostBlogPostType = {
-    title:	string,
-    shortDescription: string,
-    content: string,
+export class PostFilterType {
+    constructor(
+        public pageNumber: number,
+        public pageSize: number,
+        public sortBy: string,
+        public sortDirection: string){}
+}
+
+export class PostPaginatorType {
+    constructor(
+        public pagesCount: number,
+        public page: number,
+        public pageSize: number,
+        public totalCount: number,
+        public items: PostOutput[]){}
+}
+
+export class PostBlogPostType {
+    constructor(
+        public title: string,
+        public shortDescription: string,
+        public content: string){}
 }

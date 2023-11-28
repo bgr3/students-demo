@@ -16,4 +16,13 @@ export class AccessLogDb extends AccessLogType {
             super(IP, URL, date)
         }
 }
-export type AccessLogOutput = AccessLogType & {id: string}
+
+export class AccessLogOutput extends AccessLogType {
+    constructor(
+        public id: string,
+        IP: string, 
+        URL: string, 
+        date: Date){
+            super(IP, URL, date)
+        }
+}

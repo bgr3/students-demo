@@ -5,7 +5,9 @@ import { commentsController } from "../compositions-roots/comments-composition-r
 
 export const commentsRouter = Router({});
 
-commentsRouter.put('/:id/like-status',)
+commentsRouter.put('/:id/like-status',
+  authenticationJWTMiddleware,
+  commentsController.likeStatus.bind(commentsController))
 
 commentsRouter.get('/:id', commentsController.getComment.bind(commentsController))
 

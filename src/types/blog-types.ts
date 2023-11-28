@@ -22,32 +22,46 @@ export class BlogDb extends BlogType {
         }
 }
 
-export type BlogOutput = BlogType & {id: string}
-
-export type BlogPostType = {
-    name: string,
-    description: string,
-    websiteUrl: string,
+export class BlogOutput extends BlogType {
+    constructor(
+        public id: string,
+        public name: string,
+        public description: string,
+        public websiteUrl: string,
+        public createdAt: 	string,
+        public isMembership: boolean){
+            super(name, description, websiteUrl, createdAt, isMembership)
+        }
 }
 
-export type BlogPutType = {
-    name: string,
-    description: string,
-    websiteUrl: string,
+export class BlogPostType {
+    constructor(
+        public name: string,
+        public description: string,
+        public websiteUrl: string){}
 }
 
-export type BlogFilter = {
-    pageNumber: number,
-    pageSize: number,
-    sortBy: string,
-    sortDirection: string,
-    searchNameTerm: string,
+export class BlogPutType {
+    constructor(
+        public name: string,
+        public description: string,
+        public websiteUrl: string){}
 }
 
-export type BlogPaginatorType = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: BlogOutput[],
+export class BlogFilter {
+    constructor(
+        public pageNumber: number,
+        public pageSize: number,
+        public sortBy: string,
+        public sortDirection: string,
+        public searchNameTerm: string){}
+}
+
+export class BlogPaginatorType {
+    constructor(
+        public pagesCount: number,
+        public page: number,
+        public pageSize: number,
+        public totalCount: number,
+        public  items: BlogOutput[]){}
 }

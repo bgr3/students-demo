@@ -1,7 +1,8 @@
-export type JWTRefreshTokenType = {
-    token: string,
-    tokenTiming: {
-        issueAt: Date,
-        expirationTime: Date,
-    }
+export class JWTRefreshTokenType {
+    constructor(
+        public token: string,
+        public  tokenTiming: {
+            issueAt: Date,
+            expirationTime: Date,
+        }){}
 }

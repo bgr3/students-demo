@@ -10,7 +10,7 @@ export const commentFilter = {
   }
 
 export class CommentsQueryRepository {
-    async findComments (postId: string | null = null, filter: CommentsFilter = commentFilter): Promise<CommentPaginatorType> {
+    async findComments (postId: string | null = null, filter: CommentsFilter = commentFilter, userId: string = ''): Promise<CommentPaginatorType> {
         let find:any = {}
         
         if (postId){
@@ -27,18 +27,18 @@ export class CommentsQueryRepository {
             page: filter.pageNumber,
             pageSize: filter.pageSize,
             totalCount: dbCount,
-            items: dbResult.map((p: CommentDb) => commentMapper(p))
+            items: dbResult.map((p: CommentDb) => commentMapper(p, userId))
         }
 
         return paginator
     }
 
-    async findCommentByID (id: string): Promise<CommentOutput | null> {
+    async findCommentByID (id: string, userId: string = ''): Promise<CommentOutput | null> {
         if (ObjectId.isValid(id)){
             const comment = await CommentModel.findOne({_id: new ObjectId(id)}).lean();
             
             if (comment){
-                return commentMapper(comment)
+                return commentMapper(comment, userId)
             }
             
             return comment
@@ -48,7 +48,16 @@ export class CommentsQueryRepository {
     }
 }
 
-const commentMapper = (comment: CommentDb): CommentOutput => {
+const commentMapper = (comment: CommentDb, userId: string): CommentOutput => {
+    let myStatus: string
+    if (comment.likesInfo.likes.includes(userId)) {
+        myStatus = 'Like'
+    } else if (comment.likesInfo.dislikes.includes(userId)) {
+        myStatus = 'Dislike'
+    } else {
+        myStatus = 'None'
+    }
+
     return {
         id: comment._id.toString(),
         content: comment.content,
@@ -57,5 +66,10 @@ const commentMapper = (comment: CommentDb): CommentOutput => {
             userLogin: comment.commentatorInfo.userLogin
         },
         createdAt: comment.createdAt,
+        likesInfo: {
+            likes: comment.likesInfo.likes.length.toString(),
+            dislikes: comment.likesInfo.dislikes.length.toString(),
+            myStatus: myStatus 
+        }
     }
 }

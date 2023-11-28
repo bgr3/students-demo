@@ -7,9 +7,21 @@ export class CommentsController {
     constructor(
       protected commentsService: CommentsService,
       protected commentsQueryRepository: CommentsQueryRepository){}
+
     async likeStatus(req: Request, res: Response) {
-  
+      const token = req.headers.authorization!  
+      const id = req.params.id
+      const body = req.body
+      const result = this.commentsService.likeStatus(id, token, body)
+
+      if (!result) {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
+      }
+
+      res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
+
     async getComment(req: Request, res: Response) {
     
       const foundComment = await this.commentsQueryRepository.findCommentByID(req.params.id)
@@ -20,6 +32,7 @@ export class CommentsController {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
       }
     }
+
     async updateComment(req: Request, res: Response) {
   
       const updatedComment = await this.commentsService.updateComment(req.params.id, req.body) 
@@ -31,6 +44,7 @@ export class CommentsController {
     
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
+
     async deleteComment(req: Request, res: Response) {
   
       const foundComment = await this.commentsService.deleteComment(req.params.id)

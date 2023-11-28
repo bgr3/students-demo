@@ -1,7 +1,7 @@
 import { CommentsRepository } from "../repositories/comments-repository/comments-db-repository";
 import { PostsRepository } from "../repositories/posts-repository/posts-db-repository";
 import { PostsQueryRepository } from "../repositories/posts-repository/posts-query-db-repository";
-import { CommentPostType, CommentPutType } from "../types/comment-types";
+import { CommentPostType, CommentPutType, CommentsCollection, LikeStatus } from "../types/comment-types";
 import { getUserByJWTAccessToken } from "../validation/authorization-validation";
 enum  StatusCode {
     Success = 0,
@@ -37,15 +37,19 @@ export class CommentsService {
         const post = await this.postsQueryRepository.findPostByID(postId)
         
         if (post){
-            const newComment = {    
-                postId: post.id,
-                content: body.content,
-                commentatorInfo: {
+            const newComment = new CommentsCollection(
+                post.id, 
+                body.content, 
+                {
                     userId: user._id.toString(),
                     userLogin: user.login
-            },
-            createdAt: new Date().toISOString(),
-            };
+                },
+                new Date().toISOString(),
+                {
+                    likes: [],
+                    dislikes: []
+                }
+            );
         
             const result = await this.commentsRepository.createComment(newComment);
         
@@ -57,15 +61,30 @@ export class CommentsService {
     }
 
     async updateComment (id: string, body: CommentPutType): Promise<boolean> {
-       const updateComment = {             
-            content: body.content
+        const updateComment = new CommentPutType(
+            body.content
+        )             
+
+        return await this.commentsRepository.updateComment(id, updateComment)
+    }
+
+    async likeStatus (commentId: string, accessToken: string, body: LikeStatus): Promise <boolean> {
+        const user = await getUserByJWTAccessToken(accessToken)
+        const userId = user!._id.toString()
+        const likeStatus = body.likeStatus
+        const myLikeStatus = await this.commentsRepository.myLikeStatus(commentId, userId)
+        
+        if (!myLikeStatus) return false
+
+        if (likeStatus !== myLikeStatus) {
+            return await this.commentsRepository.setLikeStatus(commentId, userId, myLikeStatus, likeStatus)
         }
 
-        return this.commentsRepository.updateComment(id, updateComment)
+        return true
     }
 
     async deleteComment (id: string): Promise<boolean> {
-        return this.commentsRepository.deleteComment(id)
+        return await this.commentsRepository.deleteComment(id)
     }
 }
 
