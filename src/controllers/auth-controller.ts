@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import { AuthService } from "../domain/auth-service";
-import { usersService } from "../domain/user-service";
 import { HTTP_STATUSES } from "../settings";
+import { UsersService } from "../domain/user-service";
 
 export class AuthController {
-    constructor(protected authService: AuthService){}
+    constructor(
+      protected authService: AuthService,
+      protected usersService: UsersService){}
     async loginUser(req: Request, res: Response) {
-      const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
+      const user = await this.usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
   
       if (!user) {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
@@ -24,7 +26,7 @@ export class AuthController {
     }
     async passwordRecovery(req: Request, res: Response) {
     
-      const userId = await usersService.updateCodeForRecoveryPassword(req.body.email)
+      const userId = await this.usersService.updateCodeForRecoveryPassword(req.body.email)
       
     
       if(userId) {
@@ -34,7 +36,7 @@ export class AuthController {
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
     async newPassword(req: Request, res: Response) {
-      const result = await usersService.changePassword(req.body.recoveryCode, req.body.newPassword)
+      const result = await this.usersService.changePassword(req.body.recoveryCode, req.body.newPassword)
   
       if (result) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
@@ -73,7 +75,7 @@ export class AuthController {
       res.status(HTTP_STATUSES.OK_200).send(me)
     }
     async registration(req: Request, res: Response)  {
-      const result = await usersService.createUser(req.body.login, req.body.email, req.body.password)
+      const result = await this.usersService.createUser(req.body.login, req.body.email, req.body.password)
       
       if (!result) {
         res.status(HTTP_STATUSES.BAD_REQUEST_400);

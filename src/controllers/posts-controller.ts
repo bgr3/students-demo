@@ -5,6 +5,7 @@ import { PostsService } from '../domain/post-service';
 import { CommentsService } from '../domain/comment-service';
 import { CommentsQueryRepository } from '../repositories/comments-repository/comments-query-db-repository';
 import { PostsQueryRepository } from '../repositories/posts-repository/posts-query-db-repository';
+import { getUserByJWTAccessToken } from '../validation/authorization-validation';
 
 export class PostsController {
     constructor(
@@ -61,8 +62,17 @@ export class PostsController {
     async getCommentsForPost(req: Request, res: Response) {     
       const queryFilter = postCheckQuery(req.query)
       const post = await this.postsQueryRepository.findPostByID(req.params.id)
+
+      const accessToken = req.headers.authorization
+      let userId = ''
+      if(accessToken){
+        const user = await getUserByJWTAccessToken(accessToken)  
+        if(user) {
+          userId = user!._id.toString()
+        }
+      }
     
-      const foundcomments = await this.commentsQueryRepository.findComments(req.params.id, queryFilter)
+      const foundcomments = await this.commentsQueryRepository.findComments(req.params.id, queryFilter, userId)
       
       if (post) {      
         res.status(HTTP_STATUSES.OK_200).send(foundcomments);

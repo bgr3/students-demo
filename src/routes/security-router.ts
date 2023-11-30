@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { authenticationRefreshJWTMiddleware, authorizatioDeviceMiddleware } from "../middlewares/authorization-middleware";
-import { securityController } from "../compositions-roots/security-composition-root";
+import { container } from "../ioc-containers/ioc-container";
+import { SecurityController } from "../controllers/security-controller";
+
+const securityController = container.get<SecurityController>(SecurityController)
 
 export const securityRouter = Router({});
 

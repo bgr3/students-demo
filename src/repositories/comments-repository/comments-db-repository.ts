@@ -37,6 +37,7 @@ export class CommentsRepository {
         if (ObjectId.isValid(commentId)) {            
             const comment = await CommentModel.findOne({_id: new ObjectId(commentId)}).lean()
             
+            
             if (!comment) return null
 
             let myStatus = null            
@@ -73,7 +74,7 @@ export class CommentsRepository {
             const resultPull = await CommentModel.updateOne({_id: commentId}, {$pull: oldStatusFilter})
             const resultPush = await CommentModel.updateOne({_id: commentId}, {$push: newStatusFilter})
 
-            if (!resultPull.matchedCount || !resultPush) return false
+            if (!resultPush) return false
 
             return true
         }

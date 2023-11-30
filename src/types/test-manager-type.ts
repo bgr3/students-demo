@@ -34,3 +34,11 @@ export class AuthManyDevicesType {
         public user1Device4: AuthUserByCredentialsType | null,
         public user2Device1: AuthUserByCredentialsType | null){}
 }
+
+export class CommentLikeInfoModel {
+    constructor(
+        public likesCount: number,
+        public dislikesCount: number,
+        public myStatus: string
+    ){}
+}

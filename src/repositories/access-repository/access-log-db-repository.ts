@@ -1,11 +1,11 @@
 import { AccessLogModel } from "../../db/db"
 import { AccessLogType } from "../../types/access-log-types";
 
-export const logRepository = {
+export class LogRepository {
     async testAllData (): Promise<void> {
         const result = await AccessLogModel.deleteMany({})
         //console.log('accessLog delete: ', result.deletedCount)
-    },
+    }
 
     async createAccessLog (accessNote: AccessLogType): Promise<string | null> {
 
@@ -16,12 +16,12 @@ export const logRepository = {
         } else {
             return null
         }
-    },
+    }
 
     async findAccessLogByURLAndIp (URL: string, IP: string): Promise<Date[]> {
         const result = (await AccessLogModel.find({$and: [{URL: URL}, {IP: IP}]}).sort({date: -1}).limit(5).lean()).map(i => i.date);
         return result
-    },
+    }
 
 
 }

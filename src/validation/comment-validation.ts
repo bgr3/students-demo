@@ -12,7 +12,7 @@ export const commentLikeStatusValidation =
     .trim()
     .custom(async value => {
           if (!['Like', 'Dislike', 'None'].includes(value)) {
-            return Promise.reject('Login already in use');
+            return Promise.reject('likeStatus does not exist');
           }
           return value
     })

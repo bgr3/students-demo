@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CommentsService } from "../domain/comment-service";
 import { CommentsQueryRepository } from "../repositories/comments-repository/comments-query-db-repository";
 import { HTTP_STATUSES } from "../settings";
+import { getUserByJWTAccessToken } from "../validation/authorization-validation";
 
 export class CommentsController {
     constructor(
@@ -13,7 +14,7 @@ export class CommentsController {
       const id = req.params.id
       const body = req.body
       const result = await this.commentsService.likeStatus(id, token, body)     
-
+      
       if (!result) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
@@ -23,8 +24,16 @@ export class CommentsController {
     }
 
     async getComment(req: Request, res: Response) {
-    
-      const foundComment = await this.commentsQueryRepository.findCommentByID(req.params.id)
+      const accessToken = req.headers.authorization
+      let userId = ''
+      if(accessToken){
+        const user = await getUserByJWTAccessToken(accessToken)  
+        if(user) {
+          userId = user!._id.toString()
+        }
+      }
+      
+      const foundComment = await this.commentsQueryRepository.findCommentByID(req.params.id, userId)
       
       if (foundComment) {      
         res.status(HTTP_STATUSES.OK_200).send(foundComment);

@@ -1,5 +1,8 @@
 import { Router } from 'express'
-import { testingController } from '../compositions-roots/testing-composition-root'
+import { container } from '../ioc-containers/ioc-container'
+import { TestingController } from '../controllers/testing-controller'
+
+const testingController = container.get<TestingController>(TestingController)
 
 export const testingRouter = Router()
 

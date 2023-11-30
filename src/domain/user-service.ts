@@ -4,11 +4,8 @@ import  bcrypt  from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid'
 import add from 'date-fns/add'
 
-class UsersService {
-    usersRepository: UsersRepository
-    constructor(){
-        this.usersRepository = new UsersRepository()
-    }
+export class UsersService {
+    constructor(protected usersRepository: UsersRepository){}
     async testAllData (): Promise<void> {
         return this.usersRepository.testAllData()
     }
@@ -102,5 +99,3 @@ class UsersService {
     }
 
 }
-
-export const usersService = new UsersService()

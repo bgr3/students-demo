@@ -2,7 +2,10 @@ import { Router } from "express";
 import { authenticationJWTMiddleware, authenticationRefreshJWTMiddleware } from "../middlewares/authorization-middleware";
 import { authInputValidationMiddleware, authReSendValidationMiddleware, authRecoveryPasswordMiddleware, authRecoveryPasswordSendMiddleware, inputValidationMiddleware, userInputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { accessFrequencyMiddleware } from "../middlewares/access-middleware";
-import { authController } from "../compositions-roots/auth-composition-root";
+import { AuthController } from "../controllers/auth-controller";
+import { container } from "../ioc-containers/ioc-container";
+
+const authController = container.get<AuthController>(AuthController)
 
 export const authRouter = Router({});
 

@@ -74,12 +74,8 @@ export class CommentsService {
         const userId = user!._id.toString()
         const likeStatus = body.likeStatus
         const myLikeStatus = await this.commentsRepository.myLikeStatus(commentId, userId)
-
-        if (!myLikeStatus) return false
-
-        console.log(likeStatus, myLikeStatus);
         
-        
+        if (!myLikeStatus) return false        
 
         if (likeStatus !== myLikeStatus) {
             return await this.commentsRepository.setLikeStatus(commentId, userId, myLikeStatus, likeStatus)

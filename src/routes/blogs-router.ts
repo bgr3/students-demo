@@ -1,7 +1,10 @@
 import {Router} from 'express'
 import { authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { blogInputValidationMiddleware, blogPostInputValidationMiddleware, inputValidationMiddleware } from '../middlewares/input-validation-middleware';
-import { blogsController } from '../compositions-roots/blogs-composition-root';
+import { container } from '../ioc-containers/ioc-container';
+import { BlogsController } from '../controllers/blogs-controller';
+
+const blogsController = container.get<BlogsController>(BlogsController)
 
 export const blogsRouter = Router({});
 

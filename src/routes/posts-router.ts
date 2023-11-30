@@ -2,8 +2,10 @@ import { Router } from 'express'
 import { commentInputValidationMiddleware, inputValidationMiddleware, postInputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { authenticationJWTMiddleware, authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { postValidationMiddleware } from '../middlewares/comment-validation-middleware';
-import { postsController } from '../compositions-roots/posts-composition-root';
+import { container } from '../ioc-containers/ioc-container';
+import { PostsController } from '../controllers/posts-controller';
 
+const postsController = container.get<PostsController>(PostsController)
 
 export const postsRouter = Router({});
 

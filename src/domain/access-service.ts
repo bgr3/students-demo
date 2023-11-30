@@ -1,13 +1,14 @@
-import { logRepository } from "../repositories/access-repository/access-log-db-repository"
+import { LogRepository } from "../repositories/access-repository/access-log-db-repository"
 import add from 'date-fns/add'
 
-export const accessService = {
+export class AccessService {
+    constructor(protected logRepository: LogRepository){}
     async testAllData (): Promise<void> {
-        return logRepository.testAllData()
-    },
+        return this.logRepository.testAllData()
+    }
 
     async checkaccessFrequency (url: string, ip: string): Promise<boolean> {
-        const lastDate = await logRepository.findAccessLogByURLAndIp(url, ip)
+        const lastDate = await this.logRepository.findAccessLogByURLAndIp(url, ip)
         
         if(lastDate[0]){
             if(new Date() < add(lastDate[0], {seconds: 10})){
@@ -23,8 +24,8 @@ export const accessService = {
             date: new Date()
         }
 
-        await logRepository.createAccessLog(log)
+        await this.logRepository.createAccessLog(log)
 
         return true
-    },
+    }
 }
