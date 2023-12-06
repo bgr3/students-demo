@@ -1,7 +1,10 @@
 import { CommentModel } from "../../db/db";
 import { ObjectId } from "mongodb";
 import { CommentPutType, CommentsCollection } from "../../types/comment-types";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
+@injectable()
 export class CommentsRepository {
     async testAllData (): Promise<void> {
         const result = await CommentModel.deleteMany({})

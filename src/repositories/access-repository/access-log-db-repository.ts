@@ -1,6 +1,9 @@
 import { AccessLogModel } from "../../db/db"
 import { AccessLogType } from "../../types/access-log-types";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
+@injectable()
 export class LogRepository {
     async testAllData (): Promise<void> {
         const result = await AccessLogModel.deleteMany({})

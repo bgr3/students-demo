@@ -92,7 +92,7 @@ export class CommentPaginatorType {
         public items: CommentOutput[]){}
 }
 
-export class LikeStatus {
+export class CommentLikeStatus {
     constructor(
         public likeStatus: string
     ){}

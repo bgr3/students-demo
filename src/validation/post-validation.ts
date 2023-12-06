@@ -1,7 +1,8 @@
 import { body, param } from "express-validator"
 import { BlogsQueryRepository } from "../repositories/blogs-repository/blogs-query-db-repository"
+import { container } from "../ioc-containers/ioc-container";
 
-const blogsQueryRepository = new BlogsQueryRepository()
+const blogsQueryRepository = container.get(BlogsQueryRepository)
 
 export const postTitleValidation = 
     

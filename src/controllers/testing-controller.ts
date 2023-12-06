@@ -7,7 +7,10 @@ import { CommentsService } from '../domain/comment-service'
 import { AccessService } from '../domain/access-service'
 import { AuthService } from '../domain/auth-service'
 import { UsersService } from '../domain/user-service'
+import "reflect-metadata";
+import { injectable } from 'inversify'
 
+@injectable()
 export class TestingController {
     constructor(
         protected blogsService: BlogsService,

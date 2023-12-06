@@ -3,7 +3,10 @@ import { UserDb, UserType } from "../types/user-types"
 import  bcrypt  from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid'
 import add from 'date-fns/add'
+import { injectable } from "inversify"
+import "reflect-metadata";
 
+@injectable()
 export class UsersService {
     constructor(protected usersRepository: UsersRepository){}
     async testAllData (): Promise<void> {
@@ -99,3 +102,5 @@ export class UsersService {
     }
 
 }
+
+

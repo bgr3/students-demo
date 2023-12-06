@@ -2,10 +2,16 @@ import { Request, Response } from "express";
 import { CommentsService } from "../domain/comment-service";
 import { CommentsQueryRepository } from "../repositories/comments-repository/comments-query-db-repository";
 import { HTTP_STATUSES } from "../settings";
-import { getUserByJWTAccessToken } from "../validation/authorization-validation";
+import { AuthorizationValidation } from "../validation/authorization-validation";
+import { injectable } from "inversify";
+import "reflect-metadata";
+import { UsersService } from "../domain/user-service";
 
+
+@injectable()
 export class CommentsController {
     constructor(
+      protected authorizationValidation: AuthorizationValidation,
       protected commentsService: CommentsService,
       protected commentsQueryRepository: CommentsQueryRepository){}
 
@@ -27,7 +33,7 @@ export class CommentsController {
       const accessToken = req.headers.authorization
       let userId = ''
       if(accessToken){
-        const user = await getUserByJWTAccessToken(accessToken)  
+        const user = await this.authorizationValidation.getUserByJWTAccessToken(accessToken)  
         if(user) {
           userId = user!._id.toString()
         }

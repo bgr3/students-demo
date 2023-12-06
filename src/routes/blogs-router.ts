@@ -4,7 +4,7 @@ import { blogInputValidationMiddleware, blogPostInputValidationMiddleware, input
 import { container } from '../ioc-containers/ioc-container';
 import { BlogsController } from '../controllers/blogs-controller';
 
-const blogsController = container.get<BlogsController>(BlogsController)
+const blogsController = container.get(BlogsController)
 
 export const blogsRouter = Router({});
 

@@ -8,6 +8,8 @@ import { authRouter } from './routes/auth-router'
 import { commentsRouter } from './routes/comments-router'
 import cookieParser from 'cookie-parser'
 import { securityRouter } from './routes/security-router'
+import { Container, injectable } from 'inversify'
+import "reflect-metadata";
 
 export const HTTP_STATUSES = {
   OK_200: 200,
@@ -54,7 +56,6 @@ app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.users, usersRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.auth, authRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.comments, commentsRouter)
 app.use(RouterPaths.hometask + RouterPaths.api + RouterPaths.security, securityRouter)
-
 
 if (!process.env.JWT_SECRET) {
   throw new Error('! JWT doesn`t found')

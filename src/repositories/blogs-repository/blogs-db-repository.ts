@@ -1,6 +1,8 @@
 import { BlogPutType, BlogType } from "../../types/blog-types";
 import { BlogModel } from "../../db/db";
 import { ObjectId } from "mongodb";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
 export const blogFilter = {
     pageNumber: 1,
@@ -10,6 +12,7 @@ export const blogFilter = {
     searchNameTerm: '',
   }
 
+@injectable()
 export class BlogsRepository {
     async testAllData (): Promise<void> {
         const result = await BlogModel.deleteMany({})

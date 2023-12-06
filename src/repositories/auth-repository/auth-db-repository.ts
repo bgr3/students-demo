@@ -1,6 +1,9 @@
 import { AuthModel } from "../../db/db"
 import { AuthPutType, AuthType, DbAuthType } from "../../types/auth-types";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
+@injectable()
 export class AuthRepository {
     async testAllData (): Promise<void> {
         const result = await AuthModel.deleteMany({})

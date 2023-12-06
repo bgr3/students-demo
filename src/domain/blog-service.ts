@@ -1,6 +1,9 @@
+import { injectable } from "inversify";
 import { BlogsRepository } from "../repositories/blogs-repository/blogs-db-repository"
 import { BlogPostType, BlogPutType } from "../types/blog-types"
+import "reflect-metadata";
 
+@injectable()
 export class BlogsService {
     constructor(protected blogsRepository: BlogsRepository){}
     async testAllData (): Promise<void> {

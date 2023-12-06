@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { AuthService } from "../domain/auth-service"
 import { HTTP_STATUSES } from "../settings";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
+@injectable()
 export class SecurityController {
     constructor(protected authService: AuthService){}
     async getDevices(req: Request, res: Response) {

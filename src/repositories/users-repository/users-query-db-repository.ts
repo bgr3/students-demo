@@ -1,6 +1,8 @@
 import { ObjectId } from "mongodb";
 import { UserDb, UserFilterType, UserOutput, UserPaginatorType } from "../../types/user-types";
 import { UserModel } from "../../db/db";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
 export const userFilter = {
     pageNumber: 1,
@@ -11,6 +13,7 @@ export const userFilter = {
     searchEmailTerm: '',
   }
 
+@injectable()
 export class UsersQueryRepository {
     async findUsers (filter: UserFilterType = userFilter): Promise<UserPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize

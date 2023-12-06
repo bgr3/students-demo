@@ -5,8 +5,10 @@ import { jwtService } from "../application/jwt-service"
 import { AuthRepository } from "../repositories/auth-repository/auth-db-repository"
 import { AuthPutType, AuthType, AuthTypeOutput, DbAuthType, MeType, Tokens } from "../types/auth-types"
 import { AuthQueryRepository } from "../repositories/auth-repository/auth-query-db-repository"
+import "reflect-metadata";
+import { injectable } from "inversify";
 
-
+@injectable()
 export class AuthService {
     constructor(
         protected authRepository: AuthRepository,

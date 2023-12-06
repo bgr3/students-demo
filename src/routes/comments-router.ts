@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticationJWTMiddleware, authorizationCommentMiddleware } from "../middlewares/authorization-middleware";
-import { commentInputValidationMiddleware, commentLikeStatusValidationMiddleware, inputValidationMiddleware } from "../middlewares/input-validation-middleware";
+import { commentInputValidationMiddleware, LikeStatusValidationMiddleware, inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { commentExistMiddleware } from "../middlewares/comment-validation-middleware";
 import { container } from "../ioc-containers/ioc-container";
 import { CommentsController } from "../controllers/comments-controller";
@@ -12,7 +12,7 @@ export const commentsRouter = Router({});
 commentsRouter.put('/:id/like-status',                                              //like status update
   authenticationJWTMiddleware,
   commentExistMiddleware,
-  commentLikeStatusValidationMiddleware(),
+  LikeStatusValidationMiddleware(),
   inputValidationMiddleware,
   commentsController.likeStatus.bind(commentsController))
 

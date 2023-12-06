@@ -5,9 +5,10 @@ export class PostType {
         public title:	string,
         public shortDescription: string,
         public content: string,
-        public  blogId: string,
-        public  blogName: string | null,
-        public   createdAt: string){}
+        public blogId: string,
+        public blogName: string | null,
+        public createdAt: string,
+        public likesInfo: LikesInfo[]){}
 }
 
 export class PostDb extends PostType {
@@ -18,22 +19,26 @@ export class PostDb extends PostType {
         content: string,
         blogId: string,
         blogName: string | null,
-        createdAt: string){
-            super(title, shortDescription, content, blogId, blogName, createdAt)
+        createdAt: string,
+        likesInfo: LikesInfo[]){
+            super(title, shortDescription, content, blogId, blogName, createdAt, likesInfo)
         }
 }
 
-export class PostOutput extends PostType {
+export class PostOutput {
     constructor(
         public id: string,
-        title:	string,
-        shortDescription: string,
-        content: string,
-        blogId: string,
-        blogName: string | null,
-        createdAt: string){
-            super(title, shortDescription, content, blogId, blogName, createdAt)
-        }
+        public title:	string,
+        public shortDescription: string,
+        public content: string,
+        public blogId: string,
+        public blogName: string | null,
+        public createdAt: string,
+        public extendedLikesInfo: {
+            likesCount: number,
+            dislikesCount: number,
+            myStatus: string,
+            newestLikes: LikesInfoOutput[]}){}
 }
 
 export class PostPostType {
@@ -82,4 +87,27 @@ export class PostBlogPostType {
         public title: string,
         public shortDescription: string,
         public content: string){}
+}
+
+export class PostLikeStatus {
+    constructor(
+        public likeStatus: string
+    ){}
+}
+
+export class LikesInfo {
+    constructor(
+        public userId: string,
+        public login: string,
+        public addedAt: string,
+        public likeStatus: string
+    ){}
+}
+
+export class LikesInfoOutput {
+    constructor(
+        public userId: string,
+        public login: string,
+        public addedAt: string,
+    ){}
 }

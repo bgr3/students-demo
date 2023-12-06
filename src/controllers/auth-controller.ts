@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import { AuthService } from "../domain/auth-service";
 import { HTTP_STATUSES } from "../settings";
 import { UsersService } from "../domain/user-service";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
+@injectable()
 export class AuthController {
     constructor(
       protected authService: AuthService,

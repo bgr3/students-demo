@@ -2,7 +2,10 @@ import { ObjectId } from "mongodb";
 import { UserDb, UserType } from "../../types/user-types";
 import { Tokens } from "../../types/auth-types";
 import { UserModel } from "../../db/db";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
+@injectable()
 export class UsersRepository {
     async testAllData (): Promise<void> {
         const result = await UserModel.deleteMany({})

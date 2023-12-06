@@ -4,7 +4,7 @@ import { inputValidationMiddleware, userInputValidationMiddleware } from '../mid
 import { container } from '../ioc-containers/ioc-container';
 import { UsersController } from '../controllers/users-controller';
 
-const usersController = container.get<UsersController>(UsersController)
+const usersController = container.get(UsersController)
 
 export const usersRouter = Router({});
 
@@ -18,7 +18,6 @@ usersController.createUser.bind(usersController)
 usersRouter.get('/',
   authenticationMiddleware,
   usersController.getUsers.bind(usersController)
-  
 )
 
 usersRouter.delete('/:id',

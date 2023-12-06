@@ -24,8 +24,13 @@ import { UsersController } from "../controllers/users-controller";
 import { UsersService } from "../domain/user-service";
 import { UsersQueryRepository } from "../repositories/users-repository/users-query-db-repository";
 import "reflect-metadata";
+import { BlogsQueryRepository2 } from "../controllers/new-class-test3";
+import { AuthorizationValidation } from "../validation/authorization-validation";
 
 export const container = new Container();
+
+
+
 //auth
 container.bind(AuthController).to(AuthController)
 container.bind(AuthService).to(AuthService)
@@ -35,23 +40,25 @@ container.bind(AuthRepository).to(AuthRepository)
 //blogs
 container.bind(BlogsController).to(BlogsController)
 container.bind(PostsQueryRepository).to(PostsQueryRepository)
-container.bind(BlogsService).to(BlogsService)
 container.bind(BlogsQueryRepository).to(BlogsQueryRepository)
+container.bind(BlogsService).to(BlogsService)
 container.bind(BlogsRepository).to(BlogsRepository)
+
+container.bind(BlogsQueryRepository2).to(BlogsQueryRepository2)
 //comments
 container.bind(CommentsController).to(CommentsController)
 container.bind(CommentsQueryRepository).to(CommentsQueryRepository)
 container.bind(CommentsService).to(CommentsService)
-container.bind(PostsQueryRepository).to(PostsQueryRepository) //twice
+//container.bind(PostsQueryRepository).to(PostsQueryRepository) //twice
 container.bind(PostsRepository).to(PostsRepository)
 container.bind(CommentsRepository).to(CommentsRepository)
 //posts
 container.bind(PostsController).to(PostsController)
-container.bind(CommentsQueryRepository).to(CommentsQueryRepository) //twice
-container.bind(PostsQueryRepository).to(PostsQueryRepository) //twice
+//container.bind(CommentsQueryRepository).to(CommentsQueryRepository) //twice
+//container.bind(PostsQueryRepository).to(PostsQueryRepository) //twice
 container.bind(PostsService).to(PostsService)
-container.bind(BlogsQueryRepository).to(BlogsQueryRepository) //twicce
-container.bind(PostsRepository).to(PostsRepository) //twice
+//container.bind(BlogsQueryRepository).to(BlogsQueryRepository) //twicce
+//container.bind(PostsRepository).to(PostsRepository) //twice
 //security
 container.bind(SecurityController).to(SecurityController)
 //testing
@@ -60,6 +67,7 @@ container.bind(AccessService).to(AccessService)
 container.bind(LogRepository).to(LogRepository)
 //users
 container.bind(UsersController).to(UsersController)
-container.bind(UsersQueryRepository).to(UsersQueryRepository)
 container.bind(UsersService).to(UsersService)
-container.bind(UsersRepository).to(UsersRepository) //twice
+container.bind(UsersQueryRepository).to(UsersQueryRepository)
+//container.bind(UsersRepository).to(UsersRepository) //twice
+container.bind(AuthorizationValidation).to(AuthorizationValidation)

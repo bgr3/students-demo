@@ -1,7 +1,10 @@
 import { PostPutServiceType, PostType } from "../../types/post-types";
 import { PostModel } from "../../db/db";
 import { ObjectId } from "mongodb";
+import "reflect-metadata";
+import { injectable } from "inversify";
 
+@injectable()
 export class PostsRepository {
     async testAllData (): Promise<void> {
         const result = await PostModel.deleteMany({})
@@ -33,6 +36,48 @@ export class PostsRepository {
 
         return false
     }
+
+    async myLikeStatus (commentId: string, userId: string): Promise<string|null> {
+        if (ObjectId.isValid(commentId)) {            
+            const post = await PostModel.findOne({_id: new ObjectId(commentId)})
+                        
+            if (!post) return null
+
+            for (let elem of post.likesInfo) {
+                if (elem.userId === userId) {
+                    return elem.likeStatus
+                }
+            }
+        }        
+
+        return null
+    }
+
+    async setLikeStatus (commentId: string, userId: string, login: string, likeStatus: string): Promise<boolean> {
+        if (ObjectId.isValid(commentId)) {
+            const post = await PostModel.findOne({_id: new ObjectId(commentId)})
+
+            if (!post) return false
+
+            const likeStatus = post.likesInfo.filter(i => i.userId === userId)
+
+            const filter = {
+                userId: userId,
+                login: login,
+                addetAt: likeStatus[0] ? likeStatus[0].addedAt : new Date().toISOString(),
+                likeStatus: likeStatus
+            }
+            const resultPull = await PostModel.updateOne({_id: commentId}, {likesInfo: {$pull: filter}})
+            const resultPush = await PostModel.updateOne({_id: commentId}, {likesInfo: {$push: filter}})
+
+            if (!resultPush) return false
+
+            return true
+        }
+
+        return false
+    }
+    
 
     async deletePost (id: string): Promise<boolean> {
         if (ObjectId.isValid(id)) {

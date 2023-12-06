@@ -1,6 +1,9 @@
 import { LogRepository } from "../repositories/access-repository/access-log-db-repository"
 import add from 'date-fns/add'
+import { injectable } from "inversify";
+import "reflect-metadata";
 
+@injectable()
 export class AccessService {
     constructor(protected logRepository: LogRepository){}
     async testAllData (): Promise<void> {

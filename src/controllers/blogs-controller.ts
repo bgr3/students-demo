@@ -6,7 +6,11 @@ import { BlogsQueryRepository } from '../repositories/blogs-repository/blogs-que
 import { PostsQueryRepository } from '../repositories/posts-repository/posts-query-db-repository';
 import { HTTP_STATUSES } from '../settings';
 import { PostsService } from '../domain/post-service';
+import { injectable } from 'inversify';
+import "reflect-metadata";
+import { BlogsQueryRepository2 } from "../controllers/new-class-test3";
 
+@injectable()
 export class BlogsController {
     constructor(
         protected blogsService: BlogsService,
@@ -43,6 +47,7 @@ export class BlogsController {
       const queryFilter = blogCheckQuery(req.query)
       
       res.status(HTTP_STATUSES.OK_200).send(await this.blogsQueryRepository.findBlogs(queryFilter));
+      //res.status(HTTP_STATUSES.OK_200).send(await this.BlogsQueryRepository.findBlogs(queryFilter))
     }
     async getBlog(req: Request, res: Response) {
     

@@ -1,14 +1,17 @@
 import { CommentModel } from "../../db/db";
 import { ObjectId } from "mongodb";
 import { CommentDb, CommentOutput, CommentPaginatorType, CommentsFilter } from "../../types/comment-types";
+import { injectable } from "inversify";
+import "reflect-metadata";
 
 export const commentFilter = {
     pageNumber: 1,
     pageSize: 10,
     sortBy: 'createdAt',
     sortDirection: 'desc',
-  }
+}
 
+@injectable()
 export class CommentsQueryRepository {
     async findComments (postId: string | null = null, filter: CommentsFilter = commentFilter, userId: string = ''): Promise<CommentPaginatorType> {
         let find:any = {}

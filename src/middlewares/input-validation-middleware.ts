@@ -69,7 +69,7 @@ export const commentInputValidationMiddleware = (): ValidationChain[] => [
     commentContentValidation,
 ]
 
-export const commentLikeStatusValidationMiddleware = (): ValidationChain[] => [
+export const LikeStatusValidationMiddleware = (): ValidationChain[] => [
     commentLikeStatusValidation,
 ]
 

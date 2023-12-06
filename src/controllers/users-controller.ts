@@ -3,7 +3,9 @@ import { UsersService } from "../domain/user-service";
 import { userCheckQuery } from "../features/user-features";
 import { UsersQueryRepository } from "../repositories/users-repository/users-query-db-repository";
 import { HTTP_STATUSES } from "../settings";
+import { injectable } from 'inversify';
 
+@injectable()
 export class UsersController {
     constructor(
         protected usersQueryRepository: UsersQueryRepository,

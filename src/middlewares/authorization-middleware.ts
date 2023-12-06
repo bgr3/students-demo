@@ -1,10 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUSES } from "../settings";
-import { checkAuthorization, checkJWTAuthorization, getUserByJWTAccessToken } from "../validation/authorization-validation";
+import { checkAuthorization, checkJWTAuthorization, AuthorizationValidation } from "../validation/authorization-validation";
 import { jwtService } from "../application/jwt-service";
 import { AuthRepository } from "../repositories/auth-repository/auth-db-repository";
 import { CommentsQueryRepository } from "../repositories/comments-repository/comments-query-db-repository";
-import { authService } from "../compositions-roots/auth-composition-root";
+import { AuthService } from "../domain/auth-service";
+import { container } from "../ioc-containers/ioc-container";
+
+
+const authService = container.get(AuthService)
+const getUserByJWTAccessToken = container.get(AuthorizationValidation).getUserByJWTAccessToken
 
 const authRepository = new AuthRepository()
 const commentsQueryRepository = new CommentsQueryRepository()

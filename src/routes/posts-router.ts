@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { commentInputValidationMiddleware, inputValidationMiddleware, postInputValidationMiddleware } from '../middlewares/input-validation-middleware';
+import { commentInputValidationMiddleware, LikeStatusValidationMiddleware, inputValidationMiddleware, postInputValidationMiddleware } from '../middlewares/input-validation-middleware';
 import { authenticationJWTMiddleware, authenticationMiddleware } from '../middlewares/authorization-middleware';
 import { postValidationMiddleware } from '../middlewares/comment-validation-middleware';
 import { container } from '../ioc-containers/ioc-container';
@@ -36,6 +36,14 @@ postsRouter.put('/:id',
   inputValidationMiddleware,
   postsController.updatePost.bind(postsController)
 )  
+
+postsRouter.put('/:id/like-status',
+  authenticationJWTMiddleware,
+  //commentExistMiddleware,
+  LikeStatusValidationMiddleware(),
+  inputValidationMiddleware,
+  postsController.likeStatus.bind(postsController)
+) 
   
 
 postsRouter.delete('/:id',

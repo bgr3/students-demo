@@ -1,8 +1,8 @@
-import { BlogModel } from "../../db/db";
+import { BlogModel } from '../db/db';
 import { ObjectId } from "mongodb";
 import "reflect-metadata";
-import { BlogDb, BlogFilter, BlogOutput, BlogPaginatorType } from "../../types/blog-types";
-import { injectable } from "inversify";
+import { BlogFilter, BlogPaginatorType, BlogDb, BlogOutput } from '../types/blog-types';
+import { injectable } from 'inversify';
 
 export const blogFilter = {
     pageNumber: 1,
@@ -12,8 +12,8 @@ export const blogFilter = {
     searchNameTerm: '',
   }
 
-  @injectable()
-  export class BlogsQueryRepository {
+@injectable()
+export class BlogsQueryRepository2 {
     async findBlogs (filter: BlogFilter = blogFilter): Promise<BlogPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize
         const regex = new RegExp(filter.searchNameTerm, 'i')
@@ -43,9 +43,9 @@ export const blogFilter = {
 
         return null
     }
-  }
+}
 
-  const blogMapper = (blog: BlogDb): BlogOutput => {
+const blogMapper = (blog: BlogDb): BlogOutput => {
     return {
         id: blog._id.toString(),
         name: blog.name,
