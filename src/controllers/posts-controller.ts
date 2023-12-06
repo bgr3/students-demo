@@ -68,7 +68,7 @@ export class PostsController {
       if(accessToken){
         const user = await this.authorizationValidation.getUserByJWTAccessToken(accessToken)  
         if(user) {
-          userId = user!._id.toString()
+          userId = user._id.toString()
         }
       }
       
