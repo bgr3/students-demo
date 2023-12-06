@@ -8,11 +8,12 @@ import { HTTP_STATUSES } from '../settings';
 import { PostsService } from '../domain/post-service';
 import { injectable } from 'inversify';
 import "reflect-metadata";
-import { BlogsQueryRepository2 } from "../controllers/new-class-test3";
+import { AuthorizationValidation } from '../validation/authorization-validation';
 
 @injectable()
 export class BlogsController {
     constructor(
+      protected authorizationValidation: AuthorizationValidation,
         protected blogsService: BlogsService,
         protected blogsQueryRepository: BlogsQueryRepository,
         protected postsService: PostsService,
@@ -62,8 +63,17 @@ export class BlogsController {
     async getPostsforBlog(req: Request, res: Response) {
       const foundBlog = await this.blogsQueryRepository.findBlogByID(req.params.id)
       const queryFilter = postCheckQuery(req.query)
+
+      const accessToken = req.headers.authorization
+      let userId = ''
+      if(accessToken){
+        const user = await this.authorizationValidation.getUserByJWTAccessToken(accessToken)  
+        if(user) {
+          userId = user._id.toString()
+        }
+      }
       
-      const posts = await this.postsQueryRepository.findPosts(req.params.id, queryFilter)
+      const posts = await this.postsQueryRepository.findPosts(req.params.id, queryFilter, userId)
     
       if (!foundBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
