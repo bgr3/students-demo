@@ -28,3 +28,15 @@ export const commentExistMiddleware = async (req: Request, res: Response, next: 
           return
       }
 }
+
+export const postExistMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const post = await postsQueryRepository.findPostByID(req.params.id)
+  
+  if (post) {
+          next()
+          return
+      } else {
+          res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+          return
+      }
+}

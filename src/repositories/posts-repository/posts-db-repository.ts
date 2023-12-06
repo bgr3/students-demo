@@ -59,16 +59,19 @@ export class PostsRepository {
 
             if (!post) return false
 
-            const likeStatus = post.likesInfo.filter(i => i.userId === userId)
+            const oldLikeStatus = post.likesInfo.find(i => i.userId === userId)
 
-            const filter = {
-                userId: userId,
-                login: login,
-                addetAt: likeStatus[0] ? likeStatus[0].addedAt : new Date().toISOString(),
-                likeStatus: likeStatus
+            const filter = (likeStatus: string) => { return {'likesInfo': {
+                    userId: userId,
+                    login: login,
+                    addedAt: oldLikeStatus ? oldLikeStatus.addedAt : new Date().toISOString(),
+                    likeStatus: likeStatus
+                }
             }
-            const resultPull = await PostModel.updateOne({_id: commentId}, {likesInfo: {$pull: filter}})
-            const resultPush = await PostModel.updateOne({_id: commentId}, {likesInfo: {$push: filter}})
+        }
+            
+            const resultPull = await PostModel.updateOne({_id: commentId}, {$pull: filter(oldLikeStatus?.likeStatus || 'None')})
+            const resultPush = await PostModel.updateOne({_id: commentId}, {$push: filter(likeStatus)})
 
             if (!resultPush) return false
 

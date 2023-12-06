@@ -52,8 +52,8 @@ export class PostsQueryRepository {
 }
   
 const postMapper = (post: PostDb, userId: string): PostOutput => {
-    const myStatus = post.likesInfo.filter(i => i.userId === userId)
-    const lastLikes = post.likesInfo.sort((a, b) => a.addedAt < b.addedAt ? 1 : -1)
+    const myStatus = post.likesInfo.find(i => i.userId === userId)
+    const lastLikes = post.likesInfo.filter(i => i.likeStatus === 'Like').sort((a, b) => a.addedAt < b.addedAt ? 1 : -1)
     const likesCount = post.likesInfo.filter(i => i.likeStatus === 'Like').length
     const dislikesCount = post.likesInfo.filter(i => i.likeStatus === 'Dislike').length
 
@@ -68,7 +68,7 @@ const postMapper = (post: PostDb, userId: string): PostOutput => {
         extendedLikesInfo: {
             likesCount: likesCount,
             dislikesCount: dislikesCount,
-            myStatus: myStatus[0] ? myStatus[0].likeStatus : 'None',
+            myStatus: myStatus ? myStatus.likeStatus : 'None',
             newestLikes: lastLikes.slice(0, 3).map(i => likesMapper(i))
         }
     }

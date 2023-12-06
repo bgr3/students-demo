@@ -17,7 +17,7 @@ const startApp = async () => {
 
 startApp()
 
-const ngrok = require('ngrok');
+/*const ngrok = require('ngrok');
 (async function() {
   const url = await ngrok.connect({
     //proto: 'http', // http|tcp|tls, defaults to http
@@ -32,5 +32,5 @@ const ngrok = require('ngrok');
     //onLogEvent: data => {}, // returns stdout messages from ngrok process
   });
   console.log(url)
-})();
+})();*/
 
